@@ -2,7 +2,7 @@ package poly;
 
 import java.io.*;
 import java.util.StringTokenizer;
-
+// ======================================================= CLASS TERM=====
 /**
  * This class implements a term of a polynomial.
  * 
@@ -54,7 +54,7 @@ class Term {
 		}
 	}
 }
-
+// ================================================== CLASS NODE
 /**
  * This class implements a linked list node that contains a Term instance.
  * 
@@ -86,7 +86,7 @@ class Node {
 		this.next = next;
 	}
 }
-
+//============================================= CLASS POLYNOMIAL
 /**
  * This class implements a polynomial.
  * 
@@ -148,7 +148,7 @@ public class Polynomial {
 		}
 	}
 	
-	
+	//===================================================================  COMPLETE ADD METHOD
 	/**
 	 * Returns the polynomial obtained by adding the given polynomial p
 	 * to this polynomial - DOES NOT change this polynomial
@@ -157,10 +157,20 @@ public class Polynomial {
 	 * @return A new polynomial which is the sum of this polynomial and p.
 	 */
 	public Polynomial add(Polynomial p) {
-		/** COMPLETE THIS METHOD **/
-		return null;
+		/** TODO COMPLETE THIS METHOD **/
+		float newCoeff = 0;
+		if (this.poly.term.degree == p.poly.term.degree)
+		{
+			 newCoeff = this.poly.term.coeff + p.poly.term.coeff;
+		}
+		poly = new Node(newCoeff, p.poly.term.degree,p.poly.next);
+		Polynomial sum = new Polynomial();
+		sum.poly.
+		return poly;
 	}
 	
+	
+	//===================================================================  COMPLETE MULTIPLY METHOD
 	/**
 	 * Returns the polynomial obtained by multiplying the given polynomial p
 	 * with this polynomial - DOES NOT change this polynomial
@@ -169,10 +179,11 @@ public class Polynomial {
 	 * @return A new polynomial which is the product of this polynomial and p.
 	 */
 	public Polynomial multiply(Polynomial p) {
-		/** COMPLETE THIS METHOD **/
+		/**TODO COMPLETE THIS METHOD **/
 		return null;
 	}
 	
+	//===================================================================  COMPLETE EVALUATE METHOD
 	/**
 	 * Evaluates this polynomial at the given value of x
 	 * 
@@ -180,7 +191,7 @@ public class Polynomial {
 	 * @return Value of this polynomial at x
 	 */
 	public float evaluate(float x) {
-		/** COMPLETE THIS METHOD **/
+		/** TODO COMPLETE THIS METHOD **/
 		return 0;
 	}
 	
