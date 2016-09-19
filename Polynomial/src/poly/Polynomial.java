@@ -245,8 +245,7 @@ public class Polynomial {
 	 * @return Value of this polynomial at x
 	 */
 	public float evaluate(float x) {
-		/** TODO COMPLETE THIS METHOD **/
-		return 0;
+		
 	}
 	
 	/* (non-Javadoc)
