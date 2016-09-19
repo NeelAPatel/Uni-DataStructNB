@@ -1,4 +1,7 @@
 package Linear;
+
+import Node.Node;
+
 //Integer LinkedList
 public class IntLL {
 	

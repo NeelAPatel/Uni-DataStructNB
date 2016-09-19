@@ -129,10 +129,18 @@ public class StringLL {
 		{
 			return null;
 		}
+		System.out.println(front.data);
+		StringNode temp = null;
+		if(front.data.equals(target))
+		{
+			 temp = front;
+			front = front.next;
+			
+		}
 	
 		StringNode prev = null;
 		StringNode pointer = front;
-
+		System.out.println(pointer);
 		while(pointer != null)
 			{
 				if (pointer.data.equals(target))
@@ -146,14 +154,13 @@ public class StringLL {
 				else
 				{
 					prev = pointer; 
-					
 				}
 				pointer = pointer.next;
 				
 			}
 		
 		
-		traverse();
+		
 		
 		
 		return front;

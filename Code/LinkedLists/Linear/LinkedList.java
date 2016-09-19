@@ -1,22 +1,40 @@
 package Linear;
 
+import java.util.NoSuchElementException;
+
 public class LinkedList <T> // "<T> means generic type
 {
+	Node <T> front;
+	int size;
 	
-	//================================= GENERIC NODE CLASS=================
-	public class Node <T>
+	LinkedList() 
 	{
-		T data;  
-		Node <T> next;
-		Node (T data, Node <T> next)
+		front = null;
+		size = 0;
+	}
+	
+	void addToFront(T data)
+	{
+		front = new Node <T> (data, front);
+		size++;
+	}
+	 
+	void traverse() 
+	{
+		for (Node <T> ptr = front; ptr != null; ptr = ptr.next)
 		{
-			this.data = data;
-			this.next = next;
+			System.out.print(ptr.data + "");
 		}
 	}
 	
-	
-	//================================ GENERIC LINKED LIST =================
-	
+	T deleteFront(){
+		if (front == null)
+			throw new NoSuchElementException("List is empty");
+		T temp = front.data;
+		front = front.next;
+		size --;
+		return temp;
+			
+	}
 	
 }
