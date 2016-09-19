@@ -2,6 +2,10 @@ package poly;
 
 import java.io.*;
 import java.util.StringTokenizer;
+
+//import Linear.Node;
+
+//import Linear.Node;
 // ======================================================= CLASS TERM=====
 /**
  * This class implements a term of a polynomial.
@@ -159,16 +163,66 @@ public class Polynomial {
 	public Polynomial add(Polynomial p) {
 		/** TODO COMPLETE THIS METHOD **/
 		float newCoeff = 0;
-		if (this.poly.term.degree == p.poly.term.degree)
-		{
-			 newCoeff = this.poly.term.coeff + p.poly.term.coeff;
-		}
-		poly = new Node(newCoeff, p.poly.term.degree,p.poly.next);
+		
+		Node thisptr = this.poly;
+		Node pptr = p.poly;
+		
 		Polynomial sum = new Polynomial();
-		sum.poly.
-		return poly;
-	}
+
+//		for(pointer = this.poly; pointer != null ; pointer = pointer.next){
+//			if (this.poly.term.degree == p.poly.term.degree)
+//				 newCoeff = this.poly.term.coeff + p.poly.term.coeff;
+//			
+//			sum.poly = new Node(newCoeff, p.poly.term.degree,p.poly.next);
+//			System.out.print(pointer.term.coeff + "_");
+//		}
+//		
+		System.out.println("THIS.POLY = ");
+		for (thisptr = this.poly; thisptr != null; thisptr = thisptr.next){
+			System.out.print(thisptr.term.coeff + " | ");
+		}
+		
+		System.out.println("P.POLY = ");
+		for (pptr = p.poly; pptr!=null; pptr = pptr.next)
+		{
+			System.out.print(pptr.term.coeff + " | ");
+		}
+		
+		sum.poly = 
+		
+		
+		while(this.poly.next != null)
+		{
+//			if (this.poly.term.degree == p.poly.term.degree)
+//				 newCoeff = this.poly.term.coeff + p.poly.term.coeff;
+			
+			sum.poly = new Node(newCoeff, p.poly.term.degree,p.poly.next);
+			System.out.print(pointer.term.coeff + "_");
+			
+			System.out.println();
+			System.out.print(p.poly.term.coeff + " | ");
+			
+			sum.poly = new Node(newCoeff, p.poly.term.degree,sum.poly.next);
+			this.poly = this.poly.next;
+			p.poly = p.poly.next;
+		}
+		System.out.println();
+		
+//		System.out.println("this.poly.term.degree = " + this.poly.toString());
+//		System.out.println("p.poly.term.degree = " + p.poly.term.degree);
+//		System.out.println("this.poly.term.coef = " + this.poly.term.coeff);
+//		System.out.println("p.poly.term.coef = " + p.poly.term.coeff);
+//		if (this.poly.term.degree == p.poly.term.degree)
+//			 newCoeff = this.poly.term.coeff + p.poly.term.coeff;
+		//poly = new Node(newCoeff, p.poly.term.degree,p.poly.next);
+		
 	
+		return sum;
+	}
+	private static Node addToFront(float newCoeff, int newDegree, Node front){
+		// replace // Node newNode = new Node (newData, null);
+		return new Node(newCoeff, newDegree,front);	
+	}
 	
 	//===================================================================  COMPLETE MULTIPLY METHOD
 	/**

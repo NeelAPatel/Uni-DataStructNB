@@ -19,13 +19,15 @@ public class Polytest {
 		System.out.println(EVALUATE + ". EVALUATE polynomial");
 		System.out.println(QUIT + ". QUIT");
 		System.out.print("\tEnter choice # => ");
-		return (Integer.parseInt(br1.readLine()));
+		//return (Integer.parseInt(br1.readLine()));
+		return (1);
 	}
 	
 	public static void add() 
 	throws IOException {
 		System.out.print("Enter the file containing the polynomial to add => ");
 		br2 = new BufferedReader(new FileReader(br1.readLine()));
+		//br2 = new BufferedReader(new FileReader("ptest2.txt"));
 		p2 = new Polynomial(br2);
 		System.out.println("\n" + p2 + "\n");
 		System.out.println("Sum: " + p1.add(p2) + "\n");
@@ -50,7 +52,8 @@ public class Polytest {
 	public static void main(String[] args) throws IOException {
 		br1 = new BufferedReader(new InputStreamReader(System.in));
 		System.out.print("Enter the name of the polynomial file => ");
-		br2 = new BufferedReader(new FileReader(br1.readLine()));
+		//br2 = new BufferedReader(new FileReader(br1.readLine()));
+		br2 = new BufferedReader(new FileReader("ptest1.txt"));
 		
 		p1 = new Polynomial(br2);
 		System.out.println("\n" + p1 + "\n");
