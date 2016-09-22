@@ -14,8 +14,8 @@ public class StringCLL {
 		StringNode node = new StringNode (data, null                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        );
 		if (rear == null) // List is empty
 		{
-			node.next = node;
-			rear = node;
+			node.next = node; // points to itself
+			rear = node; // rear points to the end of the list  therefore: rear.next = front of list
 		}
 		else
 		{
@@ -62,4 +62,18 @@ public class StringCLL {
 			while(ptr != rear.next);
 			}
 		}	
+	
+	
+	void removeFront()
+	{
+		if (rear == rear.next)
+		{
+			rear = null;
+			size--;
+		}
+		else
+		{
+			rear.next = rear.next.next;  //rear.next = front of list, rear.next.next = second in the list.
+		}
+	}
 }

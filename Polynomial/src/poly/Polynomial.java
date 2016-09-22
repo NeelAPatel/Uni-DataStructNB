@@ -246,6 +246,14 @@ public class Polynomial {
 	 */
 	public float evaluate(float x) {
 		
+		
+		float sum = 0;
+		for(Node pointer = poly; pointer != null;pointer = pointer.next){
+			Term t = pointer.term;
+			sum += t.coeff * (Math.pow(x, t.degree));
+		}
+		
+		return sum;
 	}
 	
 	/* (non-Javadoc)
