@@ -191,54 +191,103 @@ public class Polynomial {
 		//sum.poly = new Node(5,2,null);
 		while (thisptr != null || thatptr != null)
 		{
-			if (thisptr == null && thatptr == null)
+			
+			
+			if (thisptr == null && thatptr == null)  //Current : Null|Null
 				break;
-			else if (thisptr != null && thisptr.next == null)
+			else if ((thisptr == null && thatptr != null)   || (thisptr != null && thatptr == null) )
 			{
-				sumHead = new Node(thisptr.term.coeff, thisptr.term.degree, sumHead);
-				count_this++;
-				thisptr = thisptr.next;
-			}
-			else if(thatptr != null && thatptr.next == null)
-			{
-				sumHead = new Node(thatptr.term.coeff, thatptr.term.degree, sumHead);
-				count_that++;
-				thatptr = thatptr.next;
-			}
-			else if(thisptr != null && thatptr != null)
-			{
-			    if (thisptr.term.degree == thatptr.term.degree)
+				// Current: Null | NotNull
+				if (thisptr == null && thatptr != null)
 				{
 
-					sumHead = new Node(thisptr.term.coeff + thatptr.term.coeff, thisptr.term.degree, sumHead);
-					thatptr = thatptr.next;
-					thisptr = thisptr.next;
-					count_this++;
-					count_that++;
+					 if(thatptr != null && thatptr.next == null)
+					{
+						sumHead = new Node(thatptr.term.coeff, thatptr.term.degree, sumHead);
+						System.out.println("thatptr = " +thatptr.term);
+						count_that++;
+						thatptr = thatptr.next;
+					}
 				}
-				if (thisptr.term.degree < thatptr.term.degree)
+				
+				// Current: NotNull | Null
+				if (thisptr != null && thatptr == null)
 				{
-					sumHead = new Node(thisptr.term.coeff, thisptr.term.degree, sumHead);
-					count_this++;
-					thisptr = thisptr.next;
+					if (thisptr != null && thisptr.next == null)   // When this poly is at the last node
+					{
+						sumHead = new Node(thisptr.term.coeff, thisptr.term.degree, sumHead);
+						count_this++;
+						System.out.println("thisptr = " +thisptr.term );
+						thisptr = thisptr.next;
+						
+					}
+
 				}
-				if (thisptr.term.degree > thatptr.term.degree)
+						
+				
+			}
+			else
+			{
+				// Current: NotNull | NotNull 
+				if(thisptr != null && thatptr != null)
 				{
-					sumHead = new Node(thatptr.term.coeff, thatptr.term.degree, sumHead);
-					count_that++;
-					thatptr = thatptr.next;
-				}
-			} 
-			if (count_this == thisPolyLength)
-				thisptr = null;
-			if (count_that == thatPolyLength)
-				thatptr = null;			
+					System.out.println("Triple Comparision: This degree = " + thisptr.term.degree);
+					System.out.println("That degree = " + thatptr.term.degree);
+				    if (thisptr.term.degree == thatptr.term.degree)
+					{
+				    	if (thisptr.term.coeff + thatptr.term.coeff != 0)
+				    		sumHead = new Node(thisptr.term.coeff + thatptr.term.coeff, thisptr.term.degree, sumHead);
+				    	
+						System.out.println("thisptr = " +thisptr.term +" thatptr = " +thatptr.term);
+						System.out.println("Sum: " + (thisptr.term.coeff + thatptr.term.coeff));
+						thatptr = thatptr.next;
+						thisptr = thisptr.next;
+						count_this++;
+						count_that++;
+					}
+				    else
+					if (thisptr.term.degree < thatptr.term.degree)
+					{
+						sumHead = new Node(thisptr.term.coeff, thisptr.term.degree, sumHead);
+						System.out.println("thisptr = " +thisptr.term +"thatptr = " +thatptr.term);
+						count_this++;
+						thisptr = thisptr.next;
+					}
+					else if (thisptr.term.degree > thatptr.term.degree)
+					{
+						sumHead = new Node(thatptr.term.coeff, thatptr.term.degree, sumHead);
+						System.out.println("thisptr = " +thisptr.term +"thatptr = " +thatptr.term);
+						count_that++;
+						thatptr = thatptr.next;
+					}
+				} 
+			}
+			
+			
+			
+			
+			
 		}
 		
-		sum.poly = sumHead;
+		sum.poly = reverse(sumHead);
+		
 		return sum;
 		
 	}
+	
+	private      Node reverse(Node node) {
+        Node prev = null;
+        Node current = node;
+        Node next = null;
+        while (current != null) {
+            next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+        node = prev;
+        return node;
+    }
 
 	//===================================================================  COMPLETE MULTIPLY METHOD
 	/**
