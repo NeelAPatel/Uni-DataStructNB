@@ -262,20 +262,14 @@ public class Polynomial {
 					}
 				} 
 			}
-			
-			
-			
-			
-			
-		}
+		} // while
 		
 		sum.poly = reverse(sumHead);
-		
 		return sum;
 		
 	}
 	
-	private      Node reverse(Node node) {
+	private Node reverse(Node node) {
         Node prev = null;
         Node current = node;
         Node next = null;
@@ -299,9 +293,91 @@ public class Polynomial {
 	 */
 	public Polynomial multiply(Polynomial p) {
 		/**TODO COMPLETE THIS METHOD **/
-		return null;
+		
+		Polynomial product = new Polynomial();
+		Node completeProduct = null;
+		Node roughProduct = null;
+		
+		Node thisptr = poly;
+		Node thatptr = p.poly;
+		
+		for(thisptr = poly; thisptr != null; thisptr = thisptr.next)
+		{
+			for(thatptr = p.poly; thatptr != null; thatptr = thatptr.next)
+			{
+				roughProduct = new Node(thisptr.term.coeff * thatptr.term.coeff,thisptr.term.degree + thatptr.term.degree , roughProduct);
+			}
+		}
+		
+		
+		
+		completeProduct = simplify(roughProduct);
+		
+		
+		
+		
+		product.poly = reverse(roughProduct);
+		return product;
 	}
 	
+	private Node simplify(Node roughProduct) {
+		// TODO Auto-generated method stub
+		Node ans = null;
+		
+		
+		
+		
+		Node hold = null;
+		boolean found = false;
+		for(Node p = roughProduct; p != null; p = p.next)
+		{
+			for (Node p2 = roughProduct; p2 != null; p2 = p2.next)
+			{
+				if(p.term.degree == p2.term.degree){
+					hold = new Node(p.term.coeff + p2.term.coeff, p.term.degree, hold);
+					p = p.next;
+					
+					p = delete(p,p.term);
+					found = true;
+				}
+			}
+			if (found != true)
+				hold = new Node(p.term.coeff, p.term.degree, hold);
+			
+			
+		}
+		
+		ans = hold;
+			
+		return ans;
+	}
+	
+	
+	
+	
+	public static Node delete(Node front, Term targetToDelete)
+	{
+		Node prev = null;
+		Node ptr = front;
+		
+		while(ptr!=null && ptr.term != targetToDelete)
+		{
+			prev = ptr;
+			ptr = ptr.next;
+		}
+		
+		if(ptr == null)
+		{
+			return front;
+		}
+		else if(ptr == front){
+			return ptr.next;
+		} else {
+			prev.next = ptr.next;
+			return front;
+		}
+	}
+
 	//===================================================================  COMPLETE EVALUATE METHOD
 	/**
 	 * Evaluates this polynomial at the given value of x
