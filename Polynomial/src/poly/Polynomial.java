@@ -177,18 +177,12 @@ public class Polynomial {
 		
 		int thisPolyLength = 0;
 		int thatPolyLength = 0;
-		System.out.println("THIS.POLY = ");
-		for (Node ptr = this.poly; ptr != null; ptr = ptr.next){
-			System.out.print(ptr.term.coeff + " | ");
+	
+		for (Node ptr = this.poly; ptr != null; ptr = ptr.next)
 			thisPolyLength++;
-		}
-		System.out.println();
-		System.out.println("P.POLY = ");
+		
 		for (Node pptr = p.poly; pptr!=null; pptr = pptr.next)
-		{
-			System.out.print(pptr.term.coeff + " | ");
 			thatPolyLength++;
-		}
 		
 		
 		int count_this = 0;
