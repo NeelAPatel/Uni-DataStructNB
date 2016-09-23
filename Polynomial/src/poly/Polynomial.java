@@ -163,115 +163,89 @@ public class Polynomial {
 	 * @return A new polynomial which is the sum of this polynomial and p.
 	 */
 	
+	
+	
+	
+	
 	public Polynomial add(Polynomial p)
 	{
 		
-		Polynomial sum = null; 
-		
+		Polynomial sum = new Polynomial(); 
+		Node sumHead = null;
 		Node thisptr = this.poly;
 		Node thatptr = p.poly;
 		
+		int thisPolyLength = 0;
+		int thatPolyLength = 0;
 		System.out.println("THIS.POLY = ");
 		for (Node ptr = this.poly; ptr != null; ptr = ptr.next){
 			System.out.print(ptr.term.coeff + " | ");
+			thisPolyLength++;
 		}
-		
+		System.out.println();
 		System.out.println("P.POLY = ");
 		for (Node pptr = p.poly; pptr!=null; pptr = pptr.next)
 		{
 			System.out.print(pptr.term.coeff + " | ");
+			thatPolyLength++;
 		}
 		
+		
+		int count_this = 0;
+		int count_that = 0;
+		
+		//sum.poly = new Node(5,2,null);
 		while (thisptr != null || thatptr != null)
 		{
-			if (thisptr.term.degree == thatptr.term.degree)
+			if (thisptr == null && thatptr == null)
+				break;
+			else if (thisptr != null && thisptr.next == null)
 			{
-				// degrees match = add coeff
-				System.out.println("Degrees match: " + thisptr.term.toString() );
-				System.out.println("Degrees match: " + thatptr.term.toString() );
-				
-				//sum.poly.term = new Term (thisptr.term.coeff + thatptr.term.coeff, thisptr.term.degree);
+				sumHead = new Node(thisptr.term.coeff, thisptr.term.degree, sumHead);
+				count_this++;
+				thisptr = thisptr.next;
 			}
-			
-//			if (thisptr.term.degree < thatptr.term.degree)
-//			{
-//				thatptr = thatptr.next;
-//				// degrees do not match => THATptr .next
-//			}
-//			if (thisptr.term.degree > thatptr.term.degree)
-//			{
-//				thisptr = thisptr.next;
-//				// degrees do not match => THIS ptr.next
-//			}
-			
+			else if(thatptr != null && thatptr.next == null)
+			{
+				sumHead = new Node(thatptr.term.coeff, thatptr.term.degree, sumHead);
+				count_that++;
+				thatptr = thatptr.next;
+			}
+			else if(thisptr != null && thatptr != null)
+			{
+			    if (thisptr.term.degree == thatptr.term.degree)
+				{
+
+					sumHead = new Node(thisptr.term.coeff + thatptr.term.coeff, thisptr.term.degree, sumHead);
+					thatptr = thatptr.next;
+					thisptr = thisptr.next;
+					count_this++;
+					count_that++;
+				}
+				if (thisptr.term.degree < thatptr.term.degree)
+				{
+					sumHead = new Node(thisptr.term.coeff, thisptr.term.degree, sumHead);
+					count_this++;
+					thisptr = thisptr.next;
+				}
+				if (thisptr.term.degree > thatptr.term.degree)
+				{
+					sumHead = new Node(thatptr.term.coeff, thatptr.term.degree, sumHead);
+					count_that++;
+					thatptr = thatptr.next;
+				}
+			} 
+			if (count_this == thisPolyLength)
+				thisptr = null;
+			if (count_that == thatPolyLength)
+				thatptr = null;			
 		}
-		return null;
+		
+		sum.poly = sumHead;
+		return sum;
 		
 	}
-//	public Polynomial add(Polynomial p) {
-//		/** TODO COMPLETE THIS METHOD **/
-//		float newCoeff = 0;
-//		
-//		Node thisptr = this.poly;
-//		Node pptr = p.poly;
-//		
-//		Polynomial sum = new Polynomial();
-//
-////		for(pointer = this.poly; pointer != null ; pointer = pointer.next){
-////			if (this.poly.term.degree == p.poly.term.degree)
-////				 newCoeff = this.poly.term.coeff + p.poly.term.coeff;
-////			
-////			sum.poly = new Node(newCoeff, p.poly.term.degree,p.poly.next);
-////			System.out.print(pointer.term.coeff + "_");
-////		}
-////		
-//		System.out.println("THIS.POLY = ");
-//		for (thisptr = this.poly; thisptr != null; thisptr = thisptr.next){
-//			System.out.print(thisptr.term.coeff + " | ");
-//		}
-//		
-//		System.out.println("P.POLY = ");
-//		for (pptr = p.poly; pptr!=null; pptr = pptr.next)
-//		{
-//			System.out.print(pptr.term.coeff + " | ");
-//		}
-//		
-//		sum.poly = 
-//		
-//		
-//		while(this.poly.next != null)
-//		{
-////			if (this.poly.term.degree == p.poly.term.degree)
-////				 newCoeff = this.poly.term.coeff + p.poly.term.coeff;
-//			
-//			sum.poly = new Node(newCoeff, p.poly.term.degree,p.poly.next);
-//			System.out.print(pointer.term.coeff + "_");
-//			
-//			System.out.println();
-//			System.out.print(p.poly.term.coeff + " | ");
-//			
-//			sum.poly = new Node(newCoeff, p.poly.term.degree,sum.poly.next);
-//			this.poly = this.poly.next;
-//			p.poly = p.poly.next;
-//		}
-//		System.out.println();
-//		
-////		System.out.println("this.poly.term.degree = " + this.poly.toString());
-////		System.out.println("p.poly.term.degree = " + p.poly.term.degree);
-////		System.out.println("this.poly.term.coef = " + this.poly.term.coeff);
-////		System.out.println("p.poly.term.coef = " + p.poly.term.coeff);
-////		if (this.poly.term.degree == p.poly.term.degree)
-////			 newCoeff = this.poly.term.coeff + p.poly.term.coeff;
-//		//poly = new Node(newCoeff, p.poly.term.degree,p.poly.next);
-//		
-//	
-//		return sum;
-//	}
-	private static Node addToFront(float newCoeff, int newDegree, Node front){
-		// replace // Node newNode = new Node (newData, null);
-		return new Node(newCoeff, newDegree,front);	
-	}
-	
+
 	//===================================================================  COMPLETE MULTIPLY METHOD
 	/**
 	 * Returns the polynomial obtained by multiplying the given polynomial p
