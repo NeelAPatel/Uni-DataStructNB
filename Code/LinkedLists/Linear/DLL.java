@@ -22,21 +22,35 @@ public class DLL<T> {
 		
 	}
 	
-	void addAfter(T target, T data)
-	{
-		for (NodeDLL <T> ptr = front; ptr != null ; ptr = ptr.next)
-		{
-			if (ptr.data.equals(target))  // target found;
-			{
-				NodeDLL <T> node = new NodeDLL <T> (data, ptr, ptr.next); // fixed 2  references for new node
-				ptr.next.previous = node;
-				ptr.next = node;
-				size++;
-			}
+//	void addAfter(T target, T data)
+//	{
+//		for (NodeDLL <T> ptr = front; ptr != null ; ptr = ptr.next)
+//		{
+//			if (ptr.data.equals(target))  // target found;
+//			{
+//				NodeDLL <T> node = new NodeDLL <T> (data, ptr, ptr.next); // fixed 2  references for new node
+//				ptr.next.previous = node;
+//				ptr.next = node;
+//				size++;
+//			}
+//		}
+//	}
+	
+	void addAfter (T target, T data) {
+		NodeDLL<T> ptr = front;
+		while (ptr != null && !ptr.data.equals(target)) {
+			ptr = ptr.next;
 		}
+		if (ptr == null) {
+			return;
+		}
+		NodeDLL<T> node = new NodeDLL<T>(data, ptr, ptr.next);
+		ptr.next = node;
+		if (node.next != null) {
+			node.next.previous = node;
+		}
+		size++;
 	}
-	
-	
 	void traverse(){
 		for (NodeDLL <T> ptr = front;ptr != null ; ptr = ptr.next)
 		{
@@ -44,26 +58,27 @@ public class DLL<T> {
 		}
 		
 		System.out.println();
+	}	void delete (T target) {
+		NodeDLL<T> ptr = front;
+		while(ptr != null && !ptr.data.equals(target)) {
+			ptr = ptr.next;
+		}
+		if (ptr == null) {
+			return;
+		} else {
+			if (ptr.previous != null) {
+				ptr.previous.next = ptr.next;
+			} else {
+				front = ptr.next;
+			}
+			if (ptr.next != null) {
+				ptr.next.previous = ptr.previous;
+			}
+		}
 	}
 	
 	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		DLL<String> dll = new DLL<String>();
-		dll.addToFront("Real Madrid");
-		dll.addToFront("Barcelona");
-		dll.addToFront("Chelsea");
-		dll.traverse();
-		dll.addAfter("Barcelona", "Liverpool");
-		dll.traverse();
-		
-	}
 
-	
-	
-	
-	
-	
 	
 	
 	

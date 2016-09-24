@@ -23,8 +23,9 @@ public class LinkedList <T> // "<T> means generic type
 	{
 		for (Node <T> ptr = front; ptr != null; ptr = ptr.next)
 		{
-			System.out.print(ptr.data + "");
+			System.out.print(ptr.data + " -> ");
 		}
+		System.out.println("\\");
 	}
 	
 	T deleteFront(){

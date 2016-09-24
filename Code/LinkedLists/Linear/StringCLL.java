@@ -3,6 +3,7 @@ package Linear;
 public class StringCLL {
 	StringNode rear;
 	int size;
+	
 	StringCLL()
 	{
 		rear = null;
@@ -27,41 +28,60 @@ public class StringCLL {
 	}
 	
 	
-	void deleteFront()
-	{
-		if (rear == null)
-			System.out.println("List is empty");
-		else
-			if (rear == rear.next)
-			{
-				size = 0;
-				rear = null;
-			}
-			else
-			{
-				rear.next = rear.next.next;
-			size--;
-			}
-	}
+//	void deleteFront()
+//	{
+//		if (rear == null)
+//			System.out.println("List is empty");
+//		else
+//			if (rear == rear.next)
+//			{
+//				size = 0;
+//				rear = null;
+//			}
+//			else
+//			{
+//				rear.next = rear.next.next;
+//			size--;
+//			}
+//	}
 
-	void search (String target)
-	{
-		if (rear == null)
-		System.out.println("LL is empty");
-		else
-		{
-			
-		
-			StringNode ptr = rear.next;
-			do{
-				if (ptr.data.equals(target))
-				{
-					System.out.println("Found it");
-				}
+	void deleteFront() {
+		if (rear == null || rear.next == rear) {
+			rear = null;
+			size = 0;
+		} else {
+			rear.next = rear.next.next;
+			size--;
+		}
+	}
+	
+	
+	void search (String target) {
+		if (rear == null) {
+			System.out.println("List is empty");
+			return;
+		}
+		StringNode ptr = rear.next;
+		do {
+			if (ptr.data.equals(target)) {
+				System.out.println("Found it");
+				return;
 			}
-			while(ptr != rear.next);
-			}
-		}	
+			ptr = ptr.next;
+		} while (ptr != rear.next);
+		System.out.println(target + " not found");
+	}
+	
+	
+	
+	void traverse () {
+		StringNode ptr = rear.next;
+		do {
+			System.out.print(ptr.data + " -> ");
+			ptr = ptr.next;
+		} while (ptr != rear.next);
+		System.out.println();
+	}
 	
 	
 	void removeFront()

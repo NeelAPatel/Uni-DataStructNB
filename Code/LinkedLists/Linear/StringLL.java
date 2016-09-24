@@ -3,7 +3,7 @@ package Linear;
 public class StringLL {
 
 	StringNode front; //beginning of the LL
-	
+	int size;
 	
 	//Constructor initializes the LinkedList
 	StringLL()
@@ -12,11 +12,35 @@ public class StringLL {
 		//size=0;
 	}
 	
-	
+	void clear() {
+		front = null;
+//		size = 0;
+	}
 	//methods of the LL object
 	public void addToFront(String newData){
 		front = new StringNode(newData, front);
 		//size++;
+	}
+	
+	boolean search (String target) {
+		for (StringNode ptr = front; ptr != null; ptr = ptr.next) {
+			if (ptr.data.equals(target)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	boolean addAfter (String target, String data) {
+		for (StringNode ptr = front; ptr != null; ptr = ptr.next) {
+			if (ptr.data.equals(target)) {
+				StringNode node = new StringNode(data, ptr.next);
+				ptr.next = node;
+//				size++;
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public void traverse()

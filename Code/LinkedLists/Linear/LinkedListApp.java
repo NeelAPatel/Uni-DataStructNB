@@ -1,15 +1,30 @@
 package Linear;
 
-import ProblemSet2.IntLL;
+import java.util.NoSuchElementException;
 
 public class LinkedListApp {
-	public static void main(String[] args)
-	{
-		LinkedList<Integer> int LL  = new LinkedList <Integer>();
-		intLL.addToFront(9);
-		intLL.addToFront(8);
-		intLL.addToFront(7)
+
+	public static void main(String[] args) {
+	
+		LinkedList<String> llS = new LinkedList<String>();
+		llS.addToFront("red delicious");
+		llS.addToFront("gala");
+		llS.addToFront("macintosh");
+		llS.traverse();
+		System.out.println("Just deleted " + llS.deleteFront());
+		llS.traverse();
+		System.out.println("Just deleted " + llS.deleteFront());
+		llS.traverse();
+		System.out.println("Just deleted " + llS.deleteFront());
+		llS.traverse();
 		
-		LinkedList<String> String;
+		try {
+			System.out.println("Just deleted " + llS.deleteFront());
+		} catch (NoSuchElementException e) {
+			System.out.println("Well, the list is empty");
+		}
+
+		llS.traverse();
 	}
+
 }
