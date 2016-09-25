@@ -163,7 +163,22 @@ public class Polynomial {
 	 * @return A new polynomial which is the sum of this polynomial and p.
 	 */
 	
-	
+	//helper method
+		private Node reverse(Node node) {
+	        Node prev = null;
+	        Node current = node;
+	        Node next = null;
+	        while (current != null) {
+	            next = current.next;
+	            current.next = prev;
+	            prev = current;
+	            current = next;
+	        }
+	        node = prev;
+	        return node;
+	    }
+
+
 	
 	
 	
@@ -269,21 +284,7 @@ public class Polynomial {
 		
 	}
 	
-	private Node reverse(Node node) {
-        Node prev = null;
-        Node current = node;
-        Node next = null;
-        while (current != null) {
-            next = current.next;
-            current.next = prev;
-            prev = current;
-            current = next;
-        }
-        node = prev;
-        return node;
-    }
-
-	//===================================================================  COMPLETE MULTIPLY METHOD
+		//===================================================================  COMPLETE MULTIPLY METHOD
 	/**
 	 * Returns the polynomial obtained by multiplying the given polynomial p
 	 * with this polynomial - DOES NOT change this polynomial
@@ -309,14 +310,19 @@ public class Polynomial {
 			}
 		}
 		
+		System.out.print("ROUGH PRODUCT: ");
+		for (Node x = roughProduct; x != null; x = x.next)
+		{
+			System.out.print(x.term +" + ");
+		}
+		System.out.println();
 		
 		
-		completeProduct = simplify(roughProduct);
 		
 		
-		
-		
+		completeProduct = simplify(roughProduct);		
 		product.poly = reverse(roughProduct);
+		//product.poly = roughProduct;
 		return product;
 	}
 	
@@ -328,54 +334,133 @@ public class Polynomial {
 		 
 		
 		Node hold = null;
+		
+		
+		Node pointer = roughProduct;
 		boolean found = false;
-		for(Node p = roughProduct; p != null; p = p.next)
+		float f = 0;
+		while(pointer != null)
 		{
-			for (Node p2 = roughProduct; p2 != null; p2 = p2.next)
+			System.out.println("Current term: " +pointer.term);
+			found = false;
+			for(Node p = pointer.next; p != null; p = p.next)
 			{
-				if(p.term.degree == p2.term.degree){
-					hold = new Node(p.term.coeff + p2.term.coeff, p.term.degree, hold);
-					p = p.next;
+				System.out.print("    search term: " + p.term);
+				f = pointer.term.coeff;
+				if(pointer.term.degree == p.term.degree)
+				{
 					
-					p = delete(p,p.term);
+					f += p.term.coeff; 
+					System.out.print(" ---- MATCH!   " + (pointer.term.coeff + p.term.coeff));
+					
+					
+					roughProduct = delete(roughProduct, p.term );
 					found = true;
 				}
+				System.out.println();
 			}
-			if (found != true)
-				hold = new Node(p.term.coeff, p.term.degree, hold);
 			
 			
+			
+			if (found == false){
+				hold = new Node(pointer.term.coeff, pointer.term.degree,hold);
+			}
+			else{
+				hold = new Node(f,pointer.term.degree,hold);
+			}
+			
+			
+			
+			
+			
+			System.out.println("\n\n\n");
+			pointer = pointer.next;
 		}
+		
+		
+		
+		
+		
+//		for(Node p = roughProduct; p != null; p = p.next)
+//		{
+//			for (Node p2 = roughProduct; p2 != null; p2 = p2.next)
+//			{
+//				if(p.term.degree == p2.term.degree){
+//					hold = new Node(p.term.coeff + p2.term.coeff, p.term.degree, hold);
+//
+//					roughProduct = delete(roughProduct,p.term);
+//					p = p.next;
+//					System.out.print(p.term + " + ");
+//					found = true;
+//				}
+//				else
+//					System.out.print(p.term + " + ");
+//			}
+//			if (found != true)
+//				hold = new Node(p.term.coeff, p.term.degree, hold);
+//			
+//			
+//		}
 		
 		ans = hold;
 			
 		return ans;
 	}
 	
+//	//Helper Method
+//	private  Node delete(Node front, Term targetToDelete)
+//	{
+//		Node prev = null;
+//		Node ptr = front;
+//		
+//		while(ptr!=null && ptr.term != targetToDelete)
+//		{
+//			prev = ptr;
+//			ptr = ptr.next;
+//		}
+//		
+//		if(ptr == null)
+//		{
+//			return front;
+//		}
+//		else if(ptr == front){
+//			return ptr.next;
+//		} else {
+//			prev.next = ptr.next;
+//			return front;
+//		}
+//	}
 	
 	
-	
-	public static Node delete(Node front, Term targetToDelete)
-	{
-		Node prev = null;
+	public static Node delete(Node front, Term target) {
+
 		Node ptr = front;
-		
-		while(ptr!=null && ptr.term != targetToDelete)
-		{
+		Node prev = null;
+
+		/* 1. Traverse Linked List until target is found.
+		 *    Have to keep two pointers: current and a previous. */
+		while (ptr != null && ptr.term != target) {
 			prev = ptr;
 			ptr = ptr.next;
 		}
-		
-		if(ptr == null)
-		{
+
+		/* 2. Delete and return node. 
+		 * Must handle: (a) the list is empty
+		 * 				(b) target is not found, 
+		 *              (c) target is at the front of the list. */
+		if (ptr == null && front == null) {
+			/* LL is empty */
+			return null;
+		} else if (ptr == null) {
+			/* target is not found */
 			return front;
-		}
-		else if(ptr == front){
+		} else if (ptr == front) {
+			/* target is the first node of the list */
 			return ptr.next;
 		} else {
 			prev.next = ptr.next;
 			return front;
-		}
+		}	
 	}
 
 	//===================================================================  COMPLETE EVALUATE METHOD

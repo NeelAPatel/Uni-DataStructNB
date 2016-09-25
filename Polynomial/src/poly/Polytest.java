@@ -36,7 +36,8 @@ public class Polytest {
 	public static void multiply() 
 	throws IOException {
 		System.out.print("Enter the file containing the polynomial to multiply  => ");
-		br2 = new BufferedReader(new FileReader(br1.readLine()));
+		//br2 = new BufferedReader(new FileReader(br1.readLine()));
+		br2 = new BufferedReader(new FileReader("ptest2.txt"));
 		p2 = new Polynomial(br2);
 		System.out.println("\n" + p2 + "\n");
 		System.out.println("Product: " + p1.multiply(p2) + "\n");
@@ -52,8 +53,8 @@ public class Polytest {
 	public static void main(String[] args) throws IOException {
 		br1 = new BufferedReader(new InputStreamReader(System.in));
 		System.out.print("Enter the name of the polynomial file => ");
-		br2 = new BufferedReader(new FileReader(br1.readLine()));
-		//br2 = new BufferedReader(new FileReader("ptest1.txt"));
+		//br2 = new BufferedReader(new FileReader(br1.readLine()));
+		br2 = new BufferedReader(new FileReader("ptest1.txt"));
 		
 		p1 = new Polynomial(br2);
 		System.out.println("\n" + p1 + "\n");

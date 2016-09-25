@@ -9,13 +9,8 @@ public class DLLapp {
 		dll.addToFront("scarlet");
 		dll.addToFront("yellow");
 		dll.traverse();
-		dll.addAfter("scarlet", "green");
-		dll.traverse();
-		dll.delete("green");
-		dll.traverse();
-		dll.delete("scarlet");
-		dll.traverse();
-		dll.delete("yellow");
+		
+		dll.front = dll.reverse(dll.front);
 		dll.traverse();
 
 	}

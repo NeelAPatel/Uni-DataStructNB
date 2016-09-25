@@ -22,35 +22,45 @@ public class DLL<T> {
 		
 	}
 	
-//	void addAfter(T target, T data)
-//	{
-//		for (NodeDLL <T> ptr = front; ptr != null ; ptr = ptr.next)
-//		{
-//			if (ptr.data.equals(target))  // target found;
-//			{
-//				NodeDLL <T> node = new NodeDLL <T> (data, ptr, ptr.next); // fixed 2  references for new node
-//				ptr.next.previous = node;
-//				ptr.next = node;
-//				size++;
-//			}
-//		}
-//	}
-	
-	void addAfter (T target, T data) {
-		NodeDLL<T> ptr = front;
-		while (ptr != null && !ptr.data.equals(target)) {
-			ptr = ptr.next;
+	void addAfter(T target, T data)
+	{
+		for (NodeDLL <T> ptr = front; ptr != null ; ptr = ptr.next)
+		{
+			if (ptr.data.equals(target))  // target found;
+			{
+				NodeDLL <T> node = new NodeDLL <T> (data, ptr, ptr.next); // fixed 2  references for new node
+				ptr.next.previous = node;
+				ptr.next = node;
+				size++;
+			}
 		}
-		if (ptr == null) {
-			return;
-		}
-		NodeDLL<T> node = new NodeDLL<T>(data, ptr, ptr.next);
-		ptr.next = node;
-		if (node.next != null) {
-			node.next.previous = node;
-		}
-		size++;
 	}
+	public NodeDLL reverse(NodeDLL head) {
+	    while (head != null) {
+	        NodeDLL temp = head.next;
+	        head.next = head.previous;
+	        head.previous = temp;
+	        if (temp == null)
+	            break;
+	        head = temp;
+	    }
+	    return head;
+	}
+//	void addAfter (T target, T data) {
+//		NodeDLL<T> ptr = front;
+//		while (ptr != null && !ptr.data.equals(target)) {
+//			ptr = ptr.next;
+//		}
+//		if (ptr == null) {
+//			return;
+//		}
+//		NodeDLL<T> node = new NodeDLL<T>(data, ptr, ptr.next);
+//		ptr.next = node;
+//		if (node.next != null) {
+//			node.next.previous = node;
+//		}
+//		size++;
+//	}
 	void traverse(){
 		for (NodeDLL <T> ptr = front;ptr != null ; ptr = ptr.next)
 		{
