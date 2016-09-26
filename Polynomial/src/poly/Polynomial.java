@@ -330,12 +330,6 @@ public class Polynomial {
 		// TODO Auto-generated method stub
 		Node ans = null;
 		
-		
-		 
-		
-		Node hold = null;
-		
-		
 		Node pointer = roughProduct;
 		boolean found = false;
 		float f = 0;
@@ -359,25 +353,20 @@ public class Polynomial {
 				}
 				System.out.println();
 			}
-			
-			
-			
+			 
 			if (found == false){
-				hold = new Node(pointer.term.coeff, pointer.term.degree,hold);
+				ans = new Node(pointer.term.coeff, pointer.term.degree,ans);
 			}
 			else{
-				hold = new Node(f,pointer.term.degree,hold);
+				ans = new Node(f,pointer.term.degree,ans);
 			}
-			
-			
-			
-			
 			
 			System.out.println("\n\n\n");
 			pointer = pointer.next;
 		}
 		
-		
+		return ans;
+	}		
 		
 		
 		
@@ -401,11 +390,8 @@ public class Polynomial {
 //			
 //			
 //		}
-		
-		ans = hold;
 			
-		return ans;
-	}
+
 	
 //	//Helper Method
 //	private  Node delete(Node front, Term targetToDelete)
