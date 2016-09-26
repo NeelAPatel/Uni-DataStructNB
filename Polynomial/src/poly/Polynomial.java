@@ -301,75 +301,194 @@ public class Polynomial {
 		
 		Node thisptr = poly;
 		Node thatptr = p.poly;
+		Polynomial tempPoly = new Polynomial();
 		
 		for(thisptr = poly; thisptr != null; thisptr = thisptr.next)
 		{
+			
 			for(thatptr = p.poly; thatptr != null; thatptr = thatptr.next)
 			{
 				roughProduct = new Node(thisptr.term.coeff * thatptr.term.coeff,thisptr.term.degree + thatptr.term.degree , roughProduct);
+				
 			}
 		}
 		
+		
+		
+		
 		System.out.print("ROUGH PRODUCT: ");
 		for (Node x = roughProduct; x != null; x = x.next)
-		{
 			System.out.print(x.term +" + ");
-		}
+		System.out.println();
+		
+
+		System.out.print("His code: ");
+		Node a = reverse(reduce(reverse(roughProduct)));
+		for (Node x = a; x != null; x = x.next)
+			System.out.print(x.term +" + ");
+		System.out.println();
+		
+		System.out.print("My code: ");
+		Node b = fix(reverse(simplify(reverse(roughProduct))));
+		for (Node x = b; x != null; x = x.next)
+			System.out.print(x.term +" + ");
 		System.out.println();
 		
 		
 		
-		
-		completeProduct = simplify(roughProduct);		
+		//completeProduct = simplify(roughProduct);		
 		product.poly = reverse(roughProduct);
-		//product.poly = roughProduct;
+		product.poly = simplify(reverse(roughProduct));
 		return product;
 	}
 	
+	
+private Node fix(Node unsorted)
+{
+	Node ptr = unsorted;
+	Node prev = null;
+	int targetDegree = 0;
+	
+	int highestDegree = 0;
+	Node head = null; 
+	
+	
+	// find highest degree
+	for(Node x = unsorted; x != null; x = x.next)
+	{
+		if(x.term.degree > highestDegree)
+			highestDegree = x.term.degree;
+	}
+	
+	
+	
+	for(int x = 0; x <= highestDegree; x++)
+	{
+		
+		for (Node search = ptr; search != null; search = search.next)
+		{
+			if (search.term.degree == x)
+			{
+				head = new Node(search.term.coeff, x, head);
+			}
+		}
+	}
+	return head;
+}
+
+public Node reduce(Node ptr) 
+	{
+		for(Node p1 = ptr; p1 != null; p1 = p1.next)
+		{
+			for(Node p2 = p1.next,p3 = p1; p2 != null; p2 = p2.next)
+			{
+				if(p1.term.degree == p2.term.degree)
+				{
+					p1.term.coeff = p1.term.coeff + p2.term.coeff;
+					p3.next = p2.next;
+					
+					if(p3.next != null)
+					{
+						p2 = p3.next;
+					}
+					else
+					{
+						break;
+					}
+				}
+				p3 = p3.next;
+			}
+		}
+		return ptr;
+	}
+
+
+
 	private Node simplify(Node roughProduct) {
 		// TODO Auto-generated method stub
-		Node ans = null;
-		
+
 		Node pointer = roughProduct;
-		boolean found = false;
-		float f = 0;
-		while(pointer != null)
+		//Node returnpoint = null;
+	//	System.out.println("simplify executed");
+		while (pointer != null)
 		{
-			System.out.println("Current term: " +pointer.term);
-			found = false;
-			for(Node p = pointer.next; p != null; p = p.next)
+			//System.out.println("While pass");
+			for (Node search = pointer.next,returnpoint = pointer; search != null ; search = search.next)
 			{
-				System.out.print("    search term: " + p.term);
-				f = pointer.term.coeff;
-				if(pointer.term.degree == p.term.degree)
+				if (pointer.term.degree == search.term.degree)
 				{
+					//System.out.println("Yes");
+					pointer.term.coeff = pointer.term.coeff + search.term.coeff;
+					returnpoint.next = search.next;
 					
-					f += p.term.coeff; 
-					System.out.print(" ---- MATCH!   " + (pointer.term.coeff + p.term.coeff));
-					
-					
-					roughProduct = delete(roughProduct, p.term );
-					found = true;
+					if(returnpoint.next == null)
+						break;
+					else
+						search = returnpoint.next;
 				}
-				System.out.println();
+				returnpoint = returnpoint.next;
 			}
-			 
-			if (found == false){
-				ans = new Node(pointer.term.coeff, pointer.term.degree,ans);
-			}
-			else{
-				ans = new Node(f,pointer.term.degree,ans);
-			}
+//			for(Node p2 = pointer.next,p3 = pointer; p2 != null; p2 = p2.next)
+//			{
+//				if(pointer.term.degree == p2.term.degree)
+//				{
+//					pointer.term.coeff = pointer.term.coeff + p2.term.coeff;
+//					p3.next = p2.next;
+//					
+//					if(p3.next != null)
+//					{
+//						p2 = p3.next;
+//					}
+//					else
+//					{
+//						break;
+//					}
+//				}
+//				p3 = p3.next;
+//			}
 			
-			System.out.println("\n\n\n");
+			
 			pointer = pointer.next;
 		}
 		
-		return ans;
+		return roughProduct;
 	}		
 		
 		
 		
+	//while(pointer != null)
+//		{
+//			System.out.println("Current term: " +pointer.term);
+//			found = false;
+//			for(Node p = pointer.next; p != null; p = p.next)
+//			{
+//				System.out.print("    search term: " + p.term);
+//				f = pointer.term.coeff;
+//				if(pointer.term.degree == p.term.degree)
+//				{
+//					
+//					f += p.term.coeff; 
+//					System.out.print(" ---- MATCH!   " + (pointer.term.coeff + p.term.coeff));
+//					
+//					
+//					roughProduct = delete(roughProduct, p.term );
+//					found = true;
+//				}
+//				System.out.println();
+//			}
+//			 
+//			if (found == false){
+//				ans = new Node(pointer.term.coeff, pointer.term.degree,ans);
+//			}
+//			else{
+//				ans = new Node(f,pointer.term.degree,ans);
+//			}
+//			
+//			System.out.println("\n\n\n");
+//			pointer = pointer.next;
+//		}
+	
+	
 //		for(Node p = roughProduct; p != null; p = p.next)
 //		{
 //			for (Node p2 = roughProduct; p2 != null; p2 = p2.next)
