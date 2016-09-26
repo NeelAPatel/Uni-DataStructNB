@@ -3,9 +3,6 @@ package poly;
 import java.io.*;
 import java.util.StringTokenizer;
 
-//import Linear.Node;
-
-//import Linear.Node;
 // ======================================================= CLASS TERM=====
 /**
  * This class implements a term of a polynomial.
@@ -162,52 +159,15 @@ public class Polynomial {
 	 * @param p Polynomial to be added
 	 * @return A new polynomial which is the sum of this polynomial and p.
 	 */
-	
-	//helper method
-		private Node reverse(Node node) {
-	        Node prev = null;
-	        Node current = node;
-	        Node next = null;
-	        while (current != null) {
-	            next = current.next;
-	            current.next = prev;
-	            prev = current;
-	            current = next;
-	        }
-	        node = prev;
-	        return node;
-	    }
-
-
-	
-	
-	
 	public Polynomial add(Polynomial p)
 	{
-		
 		Polynomial sum = new Polynomial(); 
 		Node sumHead = null;
 		Node thisptr = this.poly;
 		Node thatptr = p.poly;
-		
-		int thisPolyLength = 0;
-		int thatPolyLength = 0;
-	
-		for (Node ptr = this.poly; ptr != null; ptr = ptr.next)
-			thisPolyLength++;
-		
-		for (Node pptr = p.poly; pptr!=null; pptr = pptr.next)
-			thatPolyLength++;
-		
-		
-		int count_this = 0;
-		int count_that = 0;
-		
-		//sum.poly = new Node(5,2,null);
+
 		while (thisptr != null || thatptr != null)
 		{
-			
-			
 			if (thisptr == null && thatptr == null)  //Current : Null|Null
 				break;
 			else if ((thisptr == null && thatptr != null)   || (thisptr != null && thatptr == null) )
@@ -215,12 +175,9 @@ public class Polynomial {
 				// Current: Null | NotNull
 				if (thisptr == null && thatptr != null)
 				{
-
 					 if(thatptr != null && thatptr.next == null)
 					{
 						sumHead = new Node(thatptr.term.coeff, thatptr.term.degree, sumHead);
-						System.out.println("thatptr = " +thatptr.term);
-						count_that++;
 						thatptr = thatptr.next;
 					}
 				}
@@ -231,48 +188,30 @@ public class Polynomial {
 					if (thisptr != null && thisptr.next == null)   // When this poly is at the last node
 					{
 						sumHead = new Node(thisptr.term.coeff, thisptr.term.degree, sumHead);
-						count_this++;
-						System.out.println("thisptr = " +thisptr.term );
 						thisptr = thisptr.next;
-						
 					}
-
 				}
-						
-				
 			}
 			else
 			{
-				// Current: NotNull | NotNull 
 				if(thisptr != null && thatptr != null)
 				{
-					System.out.println("Triple Comparision: This degree = " + thisptr.term.degree);
-					System.out.println("That degree = " + thatptr.term.degree);
 				    if (thisptr.term.degree == thatptr.term.degree)
 					{
 				    	if (thisptr.term.coeff + thatptr.term.coeff != 0)
 				    		sumHead = new Node(thisptr.term.coeff + thatptr.term.coeff, thisptr.term.degree, sumHead);
-				    	
-						System.out.println("thisptr = " +thisptr.term +" thatptr = " +thatptr.term);
-						System.out.println("Sum: " + (thisptr.term.coeff + thatptr.term.coeff));
 						thatptr = thatptr.next;
 						thisptr = thisptr.next;
-						count_this++;
-						count_that++;
 					}
 				    else
 					if (thisptr.term.degree < thatptr.term.degree)
 					{
 						sumHead = new Node(thisptr.term.coeff, thisptr.term.degree, sumHead);
-						System.out.println("thisptr = " +thisptr.term +"thatptr = " +thatptr.term);
-						count_this++;
 						thisptr = thisptr.next;
 					}
 					else if (thisptr.term.degree > thatptr.term.degree)
 					{
 						sumHead = new Node(thatptr.term.coeff, thatptr.term.degree, sumHead);
-						System.out.println("thisptr = " +thisptr.term +"thatptr = " +thatptr.term);
-						count_that++;
 						thatptr = thatptr.next;
 					}
 				} 
@@ -342,65 +281,98 @@ public class Polynomial {
 		return product;
 	}
 	
-	
-private Node fix(Node unsorted)
-{
-	Node ptr = unsorted;
-	Node prev = null;
-	int targetDegree = 0;
-	
-	int highestDegree = 0;
-	Node head = null; 
-	
-	
-	// find highest degree
-	for(Node x = unsorted; x != null; x = x.next)
-	{
-		if(x.term.degree > highestDegree)
-			highestDegree = x.term.degree;
-	}
-	
-	
-	
-	for(int x = 0; x <= highestDegree; x++)
-	{
-		
-		for (Node search = ptr; search != null; search = search.next)
-		{
-			if (search.term.degree == x)
-			{
-				head = new Node(search.term.coeff, x, head);
-			}
-		}
-	}
-	return head;
-}
 
-public Node reduce(Node ptr) 
+	//===================================================================  COMPLETE EVALUATE METHOD
+	/**
+	 * Evaluates this polynomial at the given value of x
+	 * 
+	 * @param x Value at which this polynomial is to be evaluated
+	 * @return Value of this polynomial at x
+	 */
+	public float evaluate(float x) {
+		float sum = 0;
+		for(Node pointer = poly; pointer != null;pointer = pointer.next){
+			Term t = pointer.term;
+			sum += t.coeff * (Math.pow(x, t.degree));
+		}
+		return sum;
+	}
+	
+	
+	
+	//helper method
+	private Node reverse(Node node) {
+        Node prev = null;
+        Node current = node;
+        Node next = null;
+        while (current != null) {
+            next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+        node = prev;
+        return node;
+    }
+	
+	private Node fix(Node unsorted)
 	{
-		for(Node p1 = ptr; p1 != null; p1 = p1.next)
+		Node ptr = unsorted;
+		Node prev = null;
+		int targetDegree = 0;
+		
+		int highestDegree = 0;
+		Node head = null; 
+		
+		
+		// find highest degree
+		for(Node x = unsorted; x != null; x = x.next)
 		{
-			for(Node p2 = p1.next,p3 = p1; p2 != null; p2 = p2.next)
+			if(x.term.degree > highestDegree)
+				highestDegree = x.term.degree;
+		}
+		
+		
+		
+		for(int x = 0; x <= highestDegree; x++)
+		{
+			
+			for (Node search = ptr; search != null; search = search.next)
 			{
-				if(p1.term.degree == p2.term.degree)
+				if (search.term.degree == x)
 				{
-					p1.term.coeff = p1.term.coeff + p2.term.coeff;
-					p3.next = p2.next;
-					
-					if(p3.next != null)
-					{
-						p2 = p3.next;
-					}
-					else
-					{
-						break;
-					}
+					head = new Node(search.term.coeff, x, head);
 				}
-				p3 = p3.next;
 			}
 		}
-		return ptr;
+		return head;
 	}
+
+	public Node reduce(Node ptr) 
+		{
+			for(Node p1 = ptr; p1 != null; p1 = p1.next)
+			{
+				for(Node p2 = p1.next,p3 = p1; p2 != null; p2 = p2.next)
+				{
+					if(p1.term.degree == p2.term.degree)
+					{
+						p1.term.coeff = p1.term.coeff + p2.term.coeff;
+						p3.next = p2.next;
+						
+						if(p3.next != null)
+						{
+							p2 = p3.next;
+						}
+						else
+						{
+							break;
+						}
+					}
+					p3 = p3.next;
+				}
+			}
+			return ptr;
+		}
 
 
 
@@ -428,65 +400,50 @@ public Node reduce(Node ptr)
 				}
 				returnpoint = returnpoint.next;
 			}
-//			for(Node p2 = pointer.next,p3 = pointer; p2 != null; p2 = p2.next)
-//			{
-//				if(pointer.term.degree == p2.term.degree)
-//				{
-//					pointer.term.coeff = pointer.term.coeff + p2.term.coeff;
-//					p3.next = p2.next;
-//					
-//					if(p3.next != null)
-//					{
-//						p2 = p3.next;
-//					}
-//					else
-//					{
-//						break;
-//					}
-//				}
-//				p3 = p3.next;
-//			}
 			
 			
 			pointer = pointer.next;
 		}
 		
-		return roughProduct;
-	}		
+	}
+	private Node simplify2(Node roughProduct){
 		
+		Node pointer = roughProduct;
+		boolean found= false;
 		
+		while(pointer != null)
+		{
+			System.out.println("Current term: " +pointer.term);
+			found = false;
+			for(Node p = pointer.next; p != null; p = p.next)
+			{
+				System.out.print("    search term: " + p.term);
+				f = pointer.term.coeff;
+				if(pointer.term.degree == p.term.degree)
+				{
+					
+					f += p.term.coeff; 
+					System.out.print(" ---- MATCH!   " + (pointer.term.coeff + p.term.coeff));
+					
+					
+					roughProduct = delete(roughProduct, p.term );
+					found = true;
+				}
+				System.out.println();
+			}
+			 
+			if (found == false){
+				ans = new Node(pointer.term.coeff, pointer.term.degree,ans);
+			}
+			else{
+				ans = new Node(f,pointer.term.degree,ans);
+			}
+			
+			System.out.println("\n\n\n");
+			pointer = pointer.next;
+		}
 		
-	//while(pointer != null)
-//		{
-//			System.out.println("Current term: " +pointer.term);
-//			found = false;
-//			for(Node p = pointer.next; p != null; p = p.next)
-//			{
-//				System.out.print("    search term: " + p.term);
-//				f = pointer.term.coeff;
-//				if(pointer.term.degree == p.term.degree)
-//				{
-//					
-//					f += p.term.coeff; 
-//					System.out.print(" ---- MATCH!   " + (pointer.term.coeff + p.term.coeff));
-//					
-//					
-//					roughProduct = delete(roughProduct, p.term );
-//					found = true;
-//				}
-//				System.out.println();
-//			}
-//			 
-//			if (found == false){
-//				ans = new Node(pointer.term.coeff, pointer.term.degree,ans);
-//			}
-//			else{
-//				ans = new Node(f,pointer.term.degree,ans);
-//			}
-//			
-//			System.out.println("\n\n\n");
-//			pointer = pointer.next;
-//		}
+	}
 	
 	
 //		for(Node p = roughProduct; p != null; p = p.next)
@@ -510,83 +467,23 @@ public Node reduce(Node ptr)
 //			
 //		}
 			
-
-	
-//	//Helper Method
-//	private  Node delete(Node front, Term targetToDelete)
-//	{
-//		Node prev = null;
-//		Node ptr = front;
-//		
-//		while(ptr!=null && ptr.term != targetToDelete)
-//		{
-//			prev = ptr;
-//			ptr = ptr.next;
-//		}
-//		
-//		if(ptr == null)
-//		{
-//			return front;
-//		}
-//		else if(ptr == front){
-//			return ptr.next;
-//		} else {
-//			prev.next = ptr.next;
-//			return front;
-//		}
-//	}
-	
-	
-	public static Node delete(Node front, Term target) {
-
-		Node ptr = front;
-		Node prev = null;
-
-		/* 1. Traverse Linked List until target is found.
-		 *    Have to keep two pointers: current and a previous. */
-		while (ptr != null && ptr.term != target) {
-			prev = ptr;
-			ptr = ptr.next;
-		}
-
-		/* 2. Delete and return node. 
-		 * Must handle: (a) the list is empty
-		 * 				(b) target is not found, 
-		 *              (c) target is at the front of the list. */
-		if (ptr == null && front == null) {
-			/* LL is empty */
-			return null;
-		} else if (ptr == null) {
-			/* target is not found */
-			return front;
-		} else if (ptr == front) {
-			/* target is the first node of the list */
-			return ptr.next;
-		} else {
-			prev.next = ptr.next;
-			return front;
-		}	
-	}
-
-	//===================================================================  COMPLETE EVALUATE METHOD
-	/**
-	 * Evaluates this polynomial at the given value of x
-	 * 
-	 * @param x Value at which this polynomial is to be evaluated
-	 * @return Value of this polynomial at x
-	 */
-	public float evaluate(float x) {
 		
 		
-		float sum = 0;
-		for(Node pointer = poly; pointer != null;pointer = pointer.next){
-			Term t = pointer.term;
-			sum += t.coeff * (Math.pow(x, t.degree));
-		}
 		
-		return sum;
-	}
+		
+		
+		
+		return roughProduct;
+	}		
+		
+		
+		
+
+
 	
+
+
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
