@@ -166,37 +166,33 @@ public class Polynomial {
 		Node thisptr = this.poly;
 		Node thatptr = p.poly;
 
-		while (thisptr != null || thatptr != null)
+		while (thisptr != null || thatptr != null)   // MAIN LOOP: Monitors ends when both loops have been traversed to null. 
 		{
-			if (thisptr == null && thatptr == null)  //Current : Null|Null
+			if (thisptr == null && thatptr == null)  // STATE 1: Both are null = Both loops traversed = kill the while loop. 
 				break;
-			else if ((thisptr == null && thatptr != null)   || (thisptr != null && thatptr == null) )
+			else if ((thisptr == null && thatptr != null)   || (thisptr != null && thatptr == null) )     // STATE 2: One of them is null = other is done traversing.  Takes care of situations when one polynomial has more terms than the other
 			{
 				// Current: Null | NotNull
 				if (thisptr == null && thatptr != null)
-				{
-					 if(thatptr != null && thatptr.next == null)
+					 if(thatptr != null && thatptr.next == null) // When this poly is at the last node
 					{
-						sumHead = new Node(thatptr.term.coeff, thatptr.term.degree, sumHead);
+						sumHead = new Node(thatptr.term.coeff, thatptr.term.degree, sumHead);  // Add the remaining to sumHead
 						thatptr = thatptr.next;
 					}
-				}
 				
 				// Current: NotNull | Null
 				if (thisptr != null && thatptr == null)
-				{
 					if (thisptr != null && thisptr.next == null)   // When this poly is at the last node
 					{
-						sumHead = new Node(thisptr.term.coeff, thisptr.term.degree, sumHead);
+						sumHead = new Node(thisptr.term.coeff, thisptr.term.degree, sumHead);  // Add the remaining to sumHead
 						thisptr = thisptr.next;
 					}
-				}
 			}
-			else
+			else   // STATE 3 : Neither are null = terms available to compare
 			{
 				if(thisptr != null && thatptr != null)
 				{
-				    if (thisptr.term.degree == thatptr.term.degree)
+				    if (thisptr.term.degree == thatptr.term.degree) // Degrees match = add them up
 					{
 				    	if (thisptr.term.coeff + thatptr.term.coeff != 0)
 				    		sumHead = new Node(thisptr.term.coeff + thatptr.term.coeff, thisptr.term.degree, sumHead);
@@ -204,20 +200,19 @@ public class Polynomial {
 						thisptr = thisptr.next;
 					}
 				    else
-					if (thisptr.term.degree < thatptr.term.degree)
+					if (thisptr.term.degree < thatptr.term.degree) // One is less than other 
 					{
 						sumHead = new Node(thisptr.term.coeff, thisptr.term.degree, sumHead);
 						thisptr = thisptr.next;
 					}
-					else if (thisptr.term.degree > thatptr.term.degree)
+					else if (thisptr.term.degree > thatptr.term.degree)// One is less than other
 					{
 						sumHead = new Node(thatptr.term.coeff, thatptr.term.degree, sumHead);
 						thatptr = thatptr.next;
 					}
 				} 
-			}
-		} // while
-		
+			} // State 3
+		}// While Loop
 		sum.poly = reverse(sumHead);
 		return sum;
 		
@@ -232,52 +227,17 @@ public class Polynomial {
 	 * @return A new polynomial which is the product of this polynomial and p.
 	 */
 	public Polynomial multiply(Polynomial p) {
-		/**TODO COMPLETE THIS METHOD **/
-		
 		Polynomial product = new Polynomial();
-		Node completeProduct = null;
 		Node roughProduct = null;
 		
 		Node thisptr = poly;
 		Node thatptr = p.poly;
-		Polynomial tempPoly = new Polynomial();
 		
-		for(thisptr = poly; thisptr != null; thisptr = thisptr.next)
-		{
-			
+		for(thisptr = poly; thisptr != null; thisptr = thisptr.next) // Loop through both, multiply everything. FOIL method.
 			for(thatptr = p.poly; thatptr != null; thatptr = thatptr.next)
-			{
 				roughProduct = new Node(thisptr.term.coeff * thatptr.term.coeff,thisptr.term.degree + thatptr.term.degree , roughProduct);
-				
-			}
-		}
 		
-		
-		
-		
-		System.out.print("ROUGH PRODUCT: ");
-		for (Node x = roughProduct; x != null; x = x.next)
-			System.out.print(x.term +" + ");
-		System.out.println();
-		
-
-		System.out.print("His code: ");
-		Node a = reverse(reduce(reverse(roughProduct)));
-		for (Node x = a; x != null; x = x.next)
-			System.out.print(x.term +" + ");
-		System.out.println();
-		
-		System.out.print("My code: ");
-		Node b = fix(reverse(simplify(reverse(roughProduct))));
-		for (Node x = b; x != null; x = x.next)
-			System.out.print(x.term +" + ");
-		System.out.println();
-		
-		
-		
-		//completeProduct = simplify(roughProduct);		
-		product.poly = reverse(roughProduct);
-		product.poly = simplify(reverse(roughProduct));
+		product.poly = reverse(fix(simplify(roughProduct)));
 		return product;
 	}
 	
@@ -297,99 +257,41 @@ public class Polynomial {
 		}
 		return sum;
 	}
-	
-	
-	
-	//helper method
-	private Node reverse(Node node) {
+		
+	/**
+	 * Reverses the LinkedList around Ex A => Z becomes Z=>A upon return
+	 * @param list Head of the linked list intended to reverse
+	 * @return Reversed LinkedList's head
+	 */
+	private Node reverse(Node list) {
         Node prev = null;
-        Node current = node;
+        Node current = list;
         Node next = null;
-        while (current != null) {
+        while (current != null) { // Swaps pointers around 
             next = current.next;
             current.next = prev;
             prev = current;
             current = next;
         }
-        node = prev;
-        return node;
+        list = prev;
+        return list;
     }
 	
-	private Node fix(Node unsorted)
-	{
-		Node ptr = unsorted;
-		Node prev = null;
-		int targetDegree = 0;
-		
-		int highestDegree = 0;
-		Node head = null; 
-		
-		
-		// find highest degree
-		for(Node x = unsorted; x != null; x = x.next)
-		{
-			if(x.term.degree > highestDegree)
-				highestDegree = x.term.degree;
-		}
-		
-		
-		
-		for(int x = 0; x <= highestDegree; x++)
-		{
-			
-			for (Node search = ptr; search != null; search = search.next)
-			{
-				if (search.term.degree == x)
-				{
-					head = new Node(search.term.coeff, x, head);
-				}
-			}
-		}
-		return head;
-	}
-
-	public Node reduce(Node ptr) 
-		{
-			for(Node p1 = ptr; p1 != null; p1 = p1.next)
-			{
-				for(Node p2 = p1.next,p3 = p1; p2 != null; p2 = p2.next)
-				{
-					if(p1.term.degree == p2.term.degree)
-					{
-						p1.term.coeff = p1.term.coeff + p2.term.coeff;
-						p3.next = p2.next;
-						
-						if(p3.next != null)
-						{
-							p2 = p3.next;
-						}
-						else
-						{
-							break;
-						}
-					}
-					p3 = p3.next;
-				}
-			}
-			return ptr;
-		}
-
-
-
+	
+	/**
+	 * After Multiplying, the answer becomes a list of unsimplified terms 
+	 * which can be paired up and matched to bring it down to simplest form.
+	 * @param roughProduct the head of the linked list with unsimplified terms
+	 * @return Simplified terms
+	 */
 	private Node simplify(Node roughProduct) {
-		// TODO Auto-generated method stub
-
 		Node pointer = roughProduct;
-		//Node returnpoint = null;
-	//	System.out.println("simplify executed");
 		while (pointer != null)
 		{
-			//System.out.println("While pass");
-			for (Node search = pointer.next,returnpoint = pointer; search != null ; search = search.next)
-			{
+			for (Node search = pointer.next,returnpoint = pointer; search != null ; search = search.next)  // loops through the list, returnpoint simply allows 
+			{																							   // the pointer to return to its default place
 				if (pointer.term.degree == search.term.degree)
 				{
-					//System.out.println("Yes");
 					pointer.term.coeff = pointer.term.coeff + search.term.coeff;
 					returnpoint.next = search.next;
 					
@@ -400,89 +302,36 @@ public class Polynomial {
 				}
 				returnpoint = returnpoint.next;
 			}
-			
-			
 			pointer = pointer.next;
 		}
-		
-	}
-	private Node simplify2(Node roughProduct){
-		
-		Node pointer = roughProduct;
-		boolean found= false;
-		
-		while(pointer != null)
-		{
-			System.out.println("Current term: " +pointer.term);
-			found = false;
-			for(Node p = pointer.next; p != null; p = p.next)
-			{
-				System.out.print("    search term: " + p.term);
-				f = pointer.term.coeff;
-				if(pointer.term.degree == p.term.degree)
-				{
-					
-					f += p.term.coeff; 
-					System.out.print(" ---- MATCH!   " + (pointer.term.coeff + p.term.coeff));
-					
-					
-					roughProduct = delete(roughProduct, p.term );
-					found = true;
-				}
-				System.out.println();
-			}
-			 
-			if (found == false){
-				ans = new Node(pointer.term.coeff, pointer.term.degree,ans);
-			}
-			else{
-				ans = new Node(f,pointer.term.degree,ans);
-			}
-			
-			System.out.println("\n\n\n");
-			pointer = pointer.next;
-		}
-		
-	}
-	
-	
-//		for(Node p = roughProduct; p != null; p = p.next)
-//		{
-//			for (Node p2 = roughProduct; p2 != null; p2 = p2.next)
-//			{
-//				if(p.term.degree == p2.term.degree){
-//					hold = new Node(p.term.coeff + p2.term.coeff, p.term.degree, hold);
-//
-//					roughProduct = delete(roughProduct,p.term);
-//					p = p.next;
-//					System.out.print(p.term + " + ");
-//					found = true;
-//				}
-//				else
-//					System.out.print(p.term + " + ");
-//			}
-//			if (found != true)
-//				hold = new Node(p.term.coeff, p.term.degree, hold);
-//			
-//			
-//		}
-			
-		
-		
-		
-		
-		
-		
 		return roughProduct;
-	}		
 		
-		
-		
-
-
+	}
 	
-
-
+	/**
+	 * After simplification, the terms can be out of order by degree. 
+	 * This method sorts them to give a proper answer
+	 * @param unsorted list of terms
+	 * @return sorted list of terms
+	 */
+	private Node fix(Node unsorted)
+	{
+		Node ptr = unsorted;
+		int highestDegree = 0;
+		Node head = null; 
+		
+		// find highest degree
+		for(Node x = unsorted; x != null; x = x.next)
+			if(x.term.degree > highestDegree)
+				highestDegree = x.term.degree;		
+		//Loops from degree 0 to highest degree in the unsorted list, and reorders them 
+		for(int x = 0; x <= highestDegree; x++)
+			for (Node search = ptr; search != null; search = search.next)
+				if (search.term.degree == x)
+					head = new Node(search.term.coeff, x, head);
+		
+		return head;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
