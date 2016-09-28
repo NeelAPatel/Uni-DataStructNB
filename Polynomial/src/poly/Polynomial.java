@@ -161,6 +161,13 @@ public class Polynomial {
 	 */
 	public Polynomial add(Polynomial p)
 	{
+		//NullFileTest
+		if(this.poly == null)
+			return this;
+		else if(p.poly == null)
+			return p;
+		
+		
 		Polynomial sum = new Polynomial(); 
 		Node sumHead = null;
 		Node thisptr = this.poly;
@@ -227,6 +234,14 @@ public class Polynomial {
 	 * @return A new polynomial which is the product of this polynomial and p.
 	 */
 	public Polynomial multiply(Polynomial p) {
+		
+		//NullFileTest
+		if(this.poly == null)
+			return this;
+		else if(p.poly == null)
+			return p;
+		
+		
 		Polynomial product = new Polynomial();
 		Node roughProduct = null;
 		
@@ -235,7 +250,8 @@ public class Polynomial {
 		
 		for(thisptr = poly; thisptr != null; thisptr = thisptr.next) // Loop through both, multiply everything. FOIL method.
 			for(thatptr = p.poly; thatptr != null; thatptr = thatptr.next)
-				roughProduct = new Node(thisptr.term.coeff * thatptr.term.coeff,thisptr.term.degree + thatptr.term.degree , roughProduct);
+				if (thisptr.term.coeff * thatptr.term.coeff != 0)
+					roughProduct = new Node(thisptr.term.coeff * thatptr.term.coeff,thisptr.term.degree + thatptr.term.degree , roughProduct);
 		
 		product.poly = reverse(fix(simplify(roughProduct)));
 		return product;
@@ -250,6 +266,10 @@ public class Polynomial {
 	 * @return Value of this polynomial at x
 	 */
 	public float evaluate(float x) {
+		//NullFileTest
+		if(this.poly == null)
+			return 0;
+
 		float sum = 0;
 		for(Node pointer = poly; pointer != null;pointer = pointer.next){
 			Term t = pointer.term;
