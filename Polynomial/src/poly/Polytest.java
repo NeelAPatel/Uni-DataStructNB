@@ -11,7 +11,7 @@ public class Polytest {
 	public static final int EVALUATE = 3;
 	public static final int QUIT = 4;
 	
-	public static int getChoice() 
+	public static int getChoice()  
 	throws IOException {
 		System.out.println();
 		System.out.println(ADD + ". ADD polynomial");
