@@ -27,7 +27,7 @@ class Term {
 	 * @param degree Degree
 	 */
 	public Term(float coeff, int degree) {
-		this.coeff = coeff;
+		this.coeff = coeff;    
 		this.degree = degree;
 	}
 	
