@@ -3,7 +3,6 @@ package poly;
 import java.io.*;
 import java.util.StringTokenizer;
 
-// ======================================================= CLASS TERM=====
 /**
  * This class implements a term of a polynomial.
  * 
@@ -55,7 +54,7 @@ class Term {
 		}
 	}
 }
-// ================================================== CLASS NODE
+
 /**
  * This class implements a linked list node that contains a Term instance.
  * 
@@ -87,7 +86,7 @@ class Node {
 		this.next = next;
 	}
 }
-//============================================= CLASS POLYNOMIAL
+
 /**
  * This class implements a polynomial.
  * 
@@ -149,9 +148,6 @@ public class Polynomial {
 		}
 	}
 	
-	
-	
-	//===================================================================  COMPLETE ADD METHOD
 	/**
 	 * Returns the polynomial obtained by adding the given polynomial p
 	 * to this polynomial - DOES NOT change this polynomial
@@ -225,7 +221,6 @@ public class Polynomial {
 		
 	}
 	
-		//===================================================================  COMPLETE MULTIPLY METHOD
 	/**
 	 * Returns the polynomial obtained by multiplying the given polynomial p
 	 * with this polynomial - DOES NOT change this polynomial
@@ -257,8 +252,6 @@ public class Polynomial {
 		return product;
 	}
 	
-
-	//===================================================================  COMPLETE EVALUATE METHOD
 	/**
 	 * Evaluates this polynomial at the given value of x
 	 * 
@@ -296,7 +289,6 @@ public class Polynomial {
         list = prev;
         return list;
     }
-	
 	
 	/**
 	 * After Multiplying, the answer becomes a list of unsimplified terms 
@@ -360,7 +352,7 @@ public class Polynomial {
 		String retval;
 		
 		if (poly == null) {
-			return "0";
+			return "0"; 
 		} else {
 			retval = poly.term.toString();
 			for (Node current = poly.next ;
