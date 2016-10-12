@@ -6,8 +6,22 @@ public class BST <T extends Comparable<T>>
 	int size;
 	public BST()
 	{
-		
+		root = null;
+		size = 0;
 	}
+	
+	
+	public void insert (T key)
+	{
+		BSTNode <T> ptr = root;
+		BSTNode <T> p = null;
+		int c = 0;
+		while (ptr != null)
+		{
+			
+		}
+	}
+	
 	
 
 }
