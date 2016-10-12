@@ -18,7 +18,11 @@ public class BST <T extends Comparable<T>>
 		int c = 0;
 		while (ptr != null)
 		{
-			
+			c = key.compareTo(ptr.key);
+			if (c == 0)
+			{
+				throw new IllegalArgumentException (key + " already")
+			}
 		}
 	}
 	
