@@ -36,6 +36,8 @@ public class Expression {
      */
     public Expression(String expr) {
         this.expr = expr;
+        
+        System.out.println("Neel: " + expr);
     }
 
     /**
@@ -47,6 +49,40 @@ public class Expression {
      */
     public void buildSymbols() {
     		/** COMPLETE THIS METHOD **/
+    	
+    	int len = expr.length();
+    	char[] expression = expr.toCharArray();
+    	String name = "";
+    	int ptr = 0;
+    	int hold = 0;
+    	while (ptr < len)
+    	{
+    		name = "";
+    		if ((expression[ptr] >= 'a' && expression[ptr] <= 'z') || (expression[ptr] >= 'A' && expression[ptr] <= 'Z'))
+    		{
+    			do{
+    				name+=expression[ptr];
+    			}
+    			while(Character.isLetter(expression[ptr+1]));
+    			if ()
+    		}
+    	}
+    	
+    	
+    	for(int x = 0; x < len; x++)
+    	{
+    		
+//    		
+//    		if (expression[x] >= 'a' && expression[x] <= 'z')
+//    			scalars.add(new ScalarSymbol(Character.toString(expression[x])));
+//    		else if(expression[x] >= 'A' && expression[x] <= 'Z')
+//    			arrays.add(new ArraySymbol(Character.toString(expression[x])));
+    			
+    		
+    			
+    	}
+    	System.out.println("Arrays" + arrays.toString());
+    	System.out.println("Scalars" + scalars.toString());
     }
     
     /**
@@ -96,6 +132,8 @@ public class Expression {
     public float evaluate() {
     		/** COMPLETE THIS METHOD **/
     		// following line just a placeholder for compilation
+    	
+
     		return 0;
     }
 
