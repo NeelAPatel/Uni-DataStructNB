@@ -13,4 +13,13 @@ public class BSTNode <T> {
 		
 	}
 	
+	public String toString()
+	{
+		
+		// ternary statement
+		return "[" + key + ", " + 
+				(left != null ? left.key : "null") + ", " + 
+				(right != null ? right.key :"null");
+	}
+	
 }
