@@ -58,31 +58,34 @@ public class Expression {
     	while (ptr < len)
     	{
     		name = "";
-    		if ((expression[ptr] >= 'a' && expression[ptr] <= 'z') || (expression[ptr] >= 'A' && expression[ptr] <= 'Z'))
+    		
+    		
+    		
+    		
+    		while (Character.isLetter(expression[ptr]) || Character.isDigit(expression[ptr])) 
     		{
-    			do{
-    				name+=expression[ptr];
-    			}
-    			while(Character.isLetter(expression[ptr+1]));
-    			if ()
+    			name += expression[ptr];
+    			System.out.println(name);
+    			ptr++;
+    		}
+    		if (!(Character.isLetter(expression[ptr]) && Character.isDigit(expression[ptr])))
+    		{
+    			//add to list
     		}
     	}
     	
-    	
-    	for(int x = 0; x < len; x++)
-    	{
-    		
+//    		
 //    		
 //    		if (expression[x] >= 'a' && expression[x] <= 'z')
 //    			scalars.add(new ScalarSymbol(Character.toString(expression[x])));
 //    		else if(expression[x] >= 'A' && expression[x] <= 'Z')
 //    			arrays.add(new ArraySymbol(Character.toString(expression[x])));
-    			
-    		
-    			
-    	}
-    	System.out.println("Arrays" + arrays.toString());
-    	System.out.println("Scalars" + scalars.toString());
+//    			
+//    		
+//    			
+//    	}
+//    	System.out.println("Arrays" + arrays.toString());
+//    	System.out.println("Scalars" + scalars.toString());
     }
     
     /**
