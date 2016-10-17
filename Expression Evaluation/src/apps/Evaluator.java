@@ -13,8 +13,8 @@ public class Evaluator {
 		Scanner sc = new Scanner(System.in);
 		while (true) {
 			System.out.print("\nEnter the expression, or hit return to quit => ");
-			//String line = sc.nextLine();
-			String line = "(varx + vary*varz[(vara+varb[(a+b)*33])])/55";
+			String line = sc.nextLine();
+			//String line = "(varx + vary*varz[(vara+varb[(a+b)*33])])/55";
 			if (line.length() == 0) {
 				break;
 			}

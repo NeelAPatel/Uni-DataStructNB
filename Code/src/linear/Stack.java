@@ -73,7 +73,5 @@ public class Stack<T> {
 	}
 	
 	public static void main (String[] args) {
-		Stack<String> stack = new Stack<String>();
-		
 	}
 }
