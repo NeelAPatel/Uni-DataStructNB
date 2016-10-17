@@ -46,33 +46,185 @@ public class Expression {
      * even if it appears more than once in the expression.
      * At this time, values for all variables are set to
      * zero - they will be loaded from a file in the loadSymbolValues method.
+     * (varx + vary*varz[(vara+varb[(a+b)*33])])/55
      */
     public void buildSymbols() {
-    		/** COMPLETE THIS METHOD **/
+    	System.out.println("\n\n ====== MY CODE ========");
+    	//Initialize ArrayLists
+    	scalars = new ArrayList<ScalarSymbol>();
+    	arrays = new ArrayList<ArraySymbol>();
     	
+    	String myexpr = expr;
+    	StringTokenizer st = new StringTokenizer(myexpr,"\t*/+-() ");
+    	// Only Square Brackets remain
+    	
+        while (st.hasMoreTokens()){
+        	String vars = st.nextToken();
+            if (!(vars.contains("["))){
+            	StringTokenizer inside = new StringTokenizer(vars);
+				while (inside.hasMoreTokens()){
+					String insideToken = inside.nextToken();
+					if ((Character.isLetter(insideToken.charAt(0))))
+						if (!(scalars.contains(new ScalarSymbol(insideToken))))
+							scalars.add(new ScalarSymbol(insideToken));
+				}
+    		}
+            else
+            {
+            	vars = vars.replaceAll("\\[", "\\|");  // Signifies where Array variables end  ex: arrVar|????]
+            	StringTokenizer inSquareBrackets = new StringTokenizer(vars, "]"); // no need for ]
+            	while (inSquareBrackets.hasMoreTokens()){
+            		String iSBTokenized = inSquareBrackets.nextToken();
+					System.out.println(iSBTokenized);
+					if (iSBTokenized.contains("|")){
+						iSBTokenized = iSBTokenized.replaceAll("\\|", "");
+						if (Character.isLetter(iSBTokenized.charAt(0)))
+							if (!(arrays.contains(new ArraySymbol(iSBTokenized))))
+								arrays.add(new ArraySymbol(iSBTokenized));
+					}
+					else
+						if (Character.isLetter(iSBTokenized.charAt(0))) 
+							if (!(scalars.contains(new ScalarSymbol(iSBTokenized))))
+								scalars.add(new ScalarSymbol(iSBTokenized));
+            	}
+            }
+        }//While Loop
+        
+        
+        
+        System.out.println();
+        System.out.println(arrays);
+        System.out.println(scalars);
+    }
+    
+    public void buildSymbols3()
+	{
+		StringTokenizer variables = new StringTokenizer(expr, " \t*+-/()");
+		scalars = new ArrayList<ScalarSymbol>();
+		arrays = new ArrayList<ArraySymbol>();
+		System.out.println(expr);
+		while (variables.hasMoreTokens())
+		{
+			String token = variables.nextToken();
+			System.out.println(token);
+			if (token.contains("["))
+			{
+				token = token.replaceAll("\\[", "\\&\\[");
+				System.out.println(token);
+				StringTokenizer inside = new StringTokenizer(token, "][");
+				while (inside.hasMoreTokens())
+				{
+					String insideToken = inside.nextToken();
+					System.out.println(insideToken);
+					if (insideToken.contains("&"))
+					{
+						insideToken = insideToken.replaceAll("\\&", "");
+						if (Character.isLetter(insideToken.charAt(0)))
+						{
+							ArraySymbol newArraySymbol = new ArraySymbol(insideToken);
+							if (!(arrays.contains(newArraySymbol)))
+							{
+								arrays.add(newArraySymbol);
+							}
+						}
+					}
+					else
+					{
+						if (Character.isLetter(insideToken.charAt(0)))
+						{
+							ScalarSymbol newScalarSymbol = new ScalarSymbol(insideToken);
+							if (!(scalars.contains(newScalarSymbol)))
+							{
+								scalars.add(newScalarSymbol);
+							}
+						}
+					}
+				}
+			}
+			else
+			{
+				StringTokenizer inside = new StringTokenizer(token, "[]");
+				while (inside.hasMoreTokens())
+				{
+					String insideToken = inside.nextToken();
+					if ((Character.isLetter(insideToken.charAt(0))))
+					{
+						ScalarSymbol newScalarSymbol = new ScalarSymbol(insideToken);
+						if (!(scalars.contains(newScalarSymbol)))
+						{
+							scalars.add(newScalarSymbol);
+						}
+					}
+				}
+			}
+		}
+		
+		
+        System.out.println();
+        System.out.println(arrays);
+        System.out.println(scalars);
+	}
+    
+    public void buildSymbols2()
+    {
     	int len = expr.length();
     	char[] expression = expr.toCharArray();
     	String name = "";
-    	int ptr = 0;
-    	int hold = 0;
-    	while (ptr < len)
+    	int ptr = 0, curr = 0;
+    	boolean hold = false;
+    	
+    	if (len == 1)
     	{
-    		name = "";
-    		
-    		
-    		
-    		
-    		while (Character.isLetter(expression[ptr]) || Character.isDigit(expression[ptr])) 
+    		if ((Character.isLetter(expr.charAt(0))) || Character.isDigit(expr.charAt(0)))
     		{
-    			name += expression[ptr];
-    			System.out.println(name);
-    			ptr++;
+    			ScalarSymbol x = new ScalarSymbol(expr);
+    			scalars.add(x);
+    			System.out.println("Scalar added: " + expr);
     		}
-    		if (!(Character.isLetter(expression[ptr]) && Character.isDigit(expression[ptr])))
-    		{
-    			//add to list
-    		}
+				
+    		else
+    			return;
     	}
+    	else
+    	{ // length is more than one
+    		while (ptr < len)
+        	{
+        		name = "";
+        		curr = ptr;
+        		hold = false;
+        		System.out.println("Length " + len);
+        		while ((Character.isLetter(expression[ptr]) || Character.isDigit(expression[ptr])) ) 
+        		{
+        			System.out.println("ptr = " + ptr);
+        			name += expression[ptr];
+        			System.out.println(name);
+        			hold = true;
+        			ptr++;
+        		}
+        		
+        		System.out.println("Variable = "+ name);
+        		if (ptr > curr)
+        		{
+        			if (expression[ptr] == '[')
+        			{
+    					ArraySymbol x = new ArraySymbol(name);
+    					arrays.add(x);
+    					System.out.println("ArraySymbol added: " + name);
+        			}
+        			else
+        			{
+        				ScalarSymbol x = new ScalarSymbol(name);
+        				scalars.add(x);
+        				System.out.println("ScalarSymbol added: " + name);
+        			}
+        		}
+        		
+        		if (hold == false)
+        			ptr++;
+        	}
+    	}
+    	
+    	
     	
 //    		
 //    		
