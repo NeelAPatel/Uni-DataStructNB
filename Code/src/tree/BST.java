@@ -1,5 +1,6 @@
 package tree;
 
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 /*
@@ -50,7 +51,7 @@ public class BST <T extends Comparable<T>> {
 		size++;
 	}
 	public void delete (T key) {
-		// 1. find node x to delete
+		// 1. find node x to delete (call it x)
 		BSTNode<T> x = root;
 		BSTNode<T> p = null;
 		int c = 0;
@@ -98,7 +99,32 @@ public class BST <T extends Comparable<T>> {
 		size--;
 	}
 	
+	private static <T extends Comparable> void inOrder (BSTNode<T> root,ArrayList<T> list){
+			if (root == null)
+				return;
+			inOrder(root.left, list);
+			list.add(root.key);
+			inOrder(root.right,list);
+		}
 	
+		
+	private static void main (String[] args)
+	{
+		int[] array ={35, 67, 30, 20, 45, 57};
+		BST<Integer> bst = new BST();
+		
+		for(int i = 0; i <array.length; i++)
+		{
+			bst.insert(i);
+		}
+		
+		ArrayList<Integer> list = new ArrayList<Integer>();
+				inOrder(bst.root,list);
+				
+		System.out.println(list);
+		
+		
+	}
 	
 	
 	
