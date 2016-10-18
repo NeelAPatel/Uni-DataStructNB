@@ -133,7 +133,19 @@ public class Expression {
             }
         }
     }
-    
+
+    private String removeExtraSpaces()
+    {
+    	StringTokenizer split = new StringTokenizer(expr," ");
+    	String exp = "";
+    	while(split.hasMoreTokens())
+    	{
+    		String x = split.nextToken();
+    		exp += x;
+    	}
+    	
+    	return exp;
+    }
     
     /**
      * Evaluates the expression, using RECURSION to evaluate subexpressions and to evaluate array 
@@ -142,9 +154,40 @@ public class Expression {
      * @return Result of evaluation
      */
     public float evaluate() {
+    	//Expression w/o extra spaces
+    	String exp = removeExtraSpaces();
+    	
+    	
+    	System.out.println(exp);
+    	
+    	StringTokenizer entries = new StringTokenizer (exp,delims,true);  //Recieved hint: using ,true = getting symbols back such as + ( as indiv tokens
+    	
+    	
+    	
+    	Stack <String> opps = new Stack<String>();  // Will contain + - / *
+    	Stack <Double> nums = new Stack<Double>(); // Will contain constants + solved values
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	return 0;
+    }
+    
+    /**
+     * Evaluates the expression, using RECURSION to evaluate subexpressions and to evaluate array 
+     * subscript expressions.
+     * 
+     * @return Result of evaluation
+     */
+    public float evaluate2() {
     		/** COMPLETE THIS METHOD **/
     		// following line just a placeholder for compilation
     String exp = expr;
+    
     
     int length = exp.length();
     int index = 0;
@@ -159,7 +202,7 @@ public class Expression {
     		holdIndex = index;
     		index++;
     		
-    		System.out.println("\n\nIndex: [" + index + "] \n HoldIndex = [" + holdIndex + "]");
+    		//System.out.println("\n\nIndex: [" + index + "] \n HoldIndex = [" + holdIndex + "]");
     	}
     	else if (hold == '(' && exp.charAt(index) == ')')
     	{
@@ -167,9 +210,9 @@ public class Expression {
     		hold2Index = index;
     		
     		
-    		System.out.println("\n\n A = Index: [" + index + "] \n Hold2Index = [" + hold2Index + "]");
+    		//System.out.println("\n\n A = Index: [" + index + "] \n Hold2Index = [" + hold2Index + "]");
     		String innerExpression = exp.substring(holdIndex+1, hold2Index);
-    		System.out.println(innerExpression);
+    		System.out.println("Inner Expression: " + innerExpression);
     		// calculate here
     		StringTokenizer st = new StringTokenizer(innerExpression, "\t*/+-");
     		while (st.hasMoreTokens())
@@ -179,11 +222,6 @@ public class Expression {
 				{
     				int symbolIndex = vars.length();
     				char operation = innerExpression.charAt(symbolIndex);
-    				switch (operation)
-    				{
-    				case '+'
-    				
-    				}
 				}
     		}
     		
@@ -254,148 +292,3 @@ public class Expression {
     }
 
 }
-
-
-
-//public void buildSymbols3()
-//{
-//	StringTokenizer variables = new StringTokenizer(expr, " \t*+-/()");
-//	scalars = new ArrayList<ScalarSymbol>();
-//	arrays = new ArrayList<ArraySymbol>();
-//	System.out.println(expr);
-//	while (variables.hasMoreTokens())
-//	{
-//		String token = variables.nextToken();
-//		System.out.println(token);
-//		if (token.contains("["))
-//		{
-//			token = token.replaceAll("\\[", "\\&\\[");
-//			System.out.println(token);
-//			StringTokenizer inside = new StringTokenizer(token, "][");
-//			while (inside.hasMoreTokens())
-//			{
-//				String insideToken = inside.nextToken();
-//				System.out.println(insideToken);
-//				if (insideToken.contains("&"))
-//				{
-//					insideToken = insideToken.replaceAll("\\&", "");
-//					if (Character.isLetter(insideToken.charAt(0)))
-//					{
-//						ArraySymbol newArraySymbol = new ArraySymbol(insideToken);
-//						if (!(arrays.contains(newArraySymbol)))
-//						{
-//							arrays.add(newArraySymbol);
-//						}
-//					}
-//				}
-//				else
-//				{
-//					if (Character.isLetter(insideToken.charAt(0)))
-//					{
-//						ScalarSymbol newScalarSymbol = new ScalarSymbol(insideToken);
-//						if (!(scalars.contains(newScalarSymbol)))
-//						{
-//							scalars.add(newScalarSymbol);
-//						}
-//					}
-//				}
-//			}
-//		}
-//		else
-//		{
-//			StringTokenizer inside = new StringTokenizer(token, "[]");
-//			while (inside.hasMoreTokens())
-//			{
-//				String insideToken = inside.nextToken();
-//				if ((Character.isLetter(insideToken.charAt(0))))
-//				{
-//					ScalarSymbol newScalarSymbol = new ScalarSymbol(insideToken);
-//					if (!(scalars.contains(newScalarSymbol)))
-//					{
-//						scalars.add(newScalarSymbol);
-//					}
-//				}
-//			}
-//		}
-//	}
-//	
-//	
-//  System.out.println();
-//  System.out.println(arrays);
-//  System.out.println(scalars);
-//}
-//
-//public void buildSymbols2()
-//{
-//	int len = expr.length();
-//	char[] expression = expr.toCharArray();
-//	String name = "";
-//	int ptr = 0, curr = 0;
-//	boolean hold = false;
-//	
-//	if (len == 1)
-//	{
-//		if ((Character.isLetter(expr.charAt(0))) || Character.isDigit(expr.charAt(0)))
-//		{
-//			ScalarSymbol x = new ScalarSymbol(expr);
-//			scalars.add(x);
-//			System.out.println("Scalar added: " + expr);
-//		}
-//			
-//		else
-//			return;
-//	}
-//	else
-//	{ // length is more than one
-//		while (ptr < len)
-//  	{
-//  		name = "";
-//  		curr = ptr;
-//  		hold = false;
-//  		System.out.println("Length " + len);
-//  		while ((Character.isLetter(expression[ptr]) || Character.isDigit(expression[ptr])) ) 
-//  		{
-//  			System.out.println("ptr = " + ptr);
-//  			name += expression[ptr];
-//  			System.out.println(name);
-//  			hold = true;
-//  			ptr++;
-//  		}
-//  		
-//  		System.out.println("Variable = "+ name);
-//  		if (ptr > curr)
-//  		{
-//  			if (expression[ptr] == '[')
-//  			{
-//					ArraySymbol x = new ArraySymbol(name);
-//					arrays.add(x);
-//					System.out.println("ArraySymbol added: " + name);
-//  			}
-//  			else
-//  			{
-//  				ScalarSymbol x = new ScalarSymbol(name);
-//  				scalars.add(x);
-//  				System.out.println("ScalarSymbol added: " + name);
-//  			}
-//  		}
-//  		
-//  		if (hold == false)
-//  			ptr++;
-//  	}
-//	}
-//	
-//	
-//	
-////		
-////		
-////		if (expression[x] >= 'a' && expression[x] <= 'z')
-////			scalars.add(new ScalarSymbol(Character.toString(expression[x])));
-////		else if(expression[x] >= 'A' && expression[x] <= 'Z')
-////			arrays.add(new ArraySymbol(Character.toString(expression[x])));
-////			
-////		
-////			
-////	}
-////	System.out.println("Arrays" + arrays.toString());
-////	System.out.println("Scalars" + scalars.toString());
-//}
