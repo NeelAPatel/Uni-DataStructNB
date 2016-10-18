@@ -41,7 +41,7 @@ public class Expression {
     }
 
     /**
-     * Populates the scalars and arrays lists with symbols for scalar and array
+     * Populates the scalars and arrays lists with symbols for scalar ad array
      * variables in the expression. For every variable, a SINGLE symbol is created and stored,
      * even if it appears more than once in the expression.
      * At this time, values for all variables are set to
@@ -155,24 +155,97 @@ public class Expression {
      */
     public float evaluate() {
     	//Expression w/o extra spaces
-    	String exp = removeExtraSpaces();
+    	expr = removeExtraSpaces();
     	
     	
-    	System.out.println(exp);
+    	System.out.println("\n\n" + expr);
+    	Stack <Integer> LBRIndex = new Stack<Integer>();
+    	Stack <Integer> RBRIndex = new Stack<Integer>();
     	
-    	StringTokenizer entries = new StringTokenizer (exp,delims,true);  //Recieved hint: using ,true = getting symbols back such as + ( as indiv tokens
+    	//Find First Occurance of ) or ]
+    	int rBracketFirstOccurence = 0;
+    	for (int i = 0; i < expr.length(); i++)
+    		if (expr.charAt(i) == ')' || expr.charAt(i) == ']'){
+    			rBracketFirstOccurence = i;
+    			break;
+    		}
+    	System.out.println("first occurence at [" + rBracketFirstOccurence +"]");
+    	// add to stacks
+    	
+    	//Left stacks
+    	for (int i = rBracketFirstOccurence-1 ; i >= 0; i--)
+    	{
+    		if (expr.charAt(i) == '(' || expr.charAt(i) == '['){
+    			
+    			LBRIndex.push(i);
+    			System.out.println("Pushed LBR index: " + i);
+    		}
+    	}
+    	
+    	for (int i = rBracketFirstOccurence ; i < expr.length(); i++)
+    	{
+    		if (expr.charAt(i) == ')' || expr.charAt(i) == ']'){
+    			RBRIndex.push(i);
+    			System.out.println("Pushed RBR index: " + i);
+    		}
+    	}
+
+    	
+    	System.out.println("\n Calculate");
+    	return calculate (expr, LBRIndex, RBRIndex);
+    }
+    
+    
+    
+    private float calculate (String exp, Stack <Integer> LBRIndex, Stack <Integer> RBRIndex)
+    {
     	
     	
+    	int lbr = LBRIndex.pop();
+    	int rbr = RBRIndex.pop();
+    	boolean isSquareBracket = (expr.charAt(lbr) == '[');
     	
-    	Stack <String> opps = new Stack<String>();  // Will contain + - / *
-    	Stack <Double> nums = new Stack<Double>(); // Will contain constants + solved values
+    	String inExp = expr.substring(lbr+1, rbr);
     	
-    	
-    	
-    	
-    	
-    	
-    	
+    	System.out.println(inExp);
+    	if (inExp.contains("(") || inExp.contains("[") || inExp.contains("]") || inExp.contains(")")) 
+    	{ 
+    		return calculate(inExp,LBRIndex,RBRIndex);    		
+    	}
+    	else
+    	{
+    		
+    		StringTokenizer st = new StringTokenizer(inExp,delims, true);
+    		
+    		int stLength = 0;
+    		while (st.hasMoreTokens())
+    		{
+    			st.nextToken();
+    			stLength++;
+    		}
+    		String[] vars = new String[stLength];
+    		int i = 0;
+    		while (st.hasMoreTokens())
+    		{
+    			vars[i] = st.nextToken();  
+    		}
+    		
+    		
+    		
+    		
+    		
+    		
+    		
+    		
+    		
+    		// Determine order of operations
+    		// calculate accordingly
+    		// String tokenizer w/ return delim
+    		// put tokens in array list so im able to access * / location and before/after of those indexes
+    		// Get values ???? 
+    		
+    	}
+    		
     	
     	return 0;
     }
