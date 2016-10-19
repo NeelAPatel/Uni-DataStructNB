@@ -75,7 +75,7 @@ public class Expression {
             	StringTokenizer inSquareBrackets = new StringTokenizer(vars, "]"); // no need for ]
             	while (inSquareBrackets.hasMoreTokens()){
             		String iSBTokenized = inSquareBrackets.nextToken();
-					System.out.println(iSBTokenized);
+					//System.out.println(iSBTokenized);
 					if (iSBTokenized.contains("|")){
 						iSBTokenized = iSBTokenized.replaceAll("\\|", "");
 						if (Character.isLetter(iSBTokenized.charAt(0)))
@@ -204,147 +204,189 @@ public class Expression {
     	int lbr = LBRIndex.pop();
     	int rbr = RBRIndex.pop();
     	boolean isSquareBracket = (expr.charAt(lbr) == '[');
-    	
+    	float answer = 0;
     	String inExp = expr.substring(lbr+1, rbr);
     	
     	System.out.println(inExp);
     	if (inExp.contains("(") || inExp.contains("[") || inExp.contains("]") || inExp.contains(")")) 
     	{ 
-    		return calculate(inExp,LBRIndex,RBRIndex);    		
+    		answer =  calculate(inExp,LBRIndex,RBRIndex);    
+    		//return answer;
     	}
     	else
-    	{
-    		
+    	{ // Does not contain brackets
+    		System.out.println("============No Brackets==================");
     		StringTokenizer st = new StringTokenizer(inExp,delims, true);
     		
-    		int stLength = 0;
+    		//Make an array of strings  and store each value
+    		ArrayList<String> tempvars = new ArrayList<String>();
     		while (st.hasMoreTokens())
+    			tempvars.add(st.nextToken());
+    		
+    		
+    		String[] vars = tempvars.toArray(new String[tempvars.size()]);
+    		
+    		System.out.print("Current vars: ");
+    		for (int x = 0; x < vars.length; x++)
+    			System.out.print(vars[x] + " ");
+    		System.out.println();
+    		
+    		
+    		//replace variables w/ values
+    		for (int index = 0; index < vars.length; index++)
     		{
-    			st.nextToken();
-    			stLength++;
+    			for (ScalarSymbol x : scalars)
+    			{
+    				if (vars[index].equals(x.name))
+    				{
+    					vars[index] = "" + x.value;
+    				}
+    			}
     		}
-    		String[] vars = new String[stLength];
-    		int i = 0;
-    		while (st.hasMoreTokens())
+
+    		System.out.print("Vars w/ value: ");
+    		for (int x = 0; x < vars.length; x++)
+    			System.out.print(vars[x] + " ");
+    		System.out.println();
+    		
+    		
+    		
+    		//Calculate w/ order of ops
+    		// ==================================================== MULTIPLY DIVIDE ============
+    		while (inExp.contains("*") || inExp.contains("/"))
     		{
-    			vars[i] = st.nextToken();  
+    			float ans = 0;
+    			boolean isStartAffected = false;
+    			int symbolIndex = 0;
+    			
+	    		for (int index = 0; index < vars.length; index ++)
+	    		{
+	    			if (vars[index].equals("*")){
+	    				// calculate answer
+	    				ans = (Integer.parseInt(vars[index-1]) * Integer.parseInt(vars[index+1]));
+	    				symbolIndex = index;
+	    				if (index-1 == 0)
+	    					isStartAffected = true;
+	    				break;
+	    			} else if (vars[index].equals("/"))
+	    			{
+	    				ans = (Integer.parseInt(vars[index-1]) / Integer.parseInt(vars[index+1]));
+	    				symbolIndex = index;
+	    				if (index-1 == 0)
+	    					isStartAffected = true;
+	    				break;
+	    			}
+	    		}
+	    		
+	    		String[] newArr = new String[vars.length-2];
+	    		
+	    		
+	    		if(isStartAffected)
+	    		{
+	    			newArr[0] = "" + ans;
+	    			System.arraycopy(vars, symbolIndex+2, newArr, 1,vars.length-3);	
+	    		}
+	    		else
+	    		{
+	    			System.arraycopy(vars, 0, newArr, 0, symbolIndex-1);
+	    			newArr[symbolIndex-1] = "" + ans;
+	    			System.arraycopy(vars, symbolIndex+2, newArr, symbolIndex, newArr.length-symbolIndex);
+	    			
+	    		}
+	    		
+	    		
+	    		//convert array to inExp
+	    		inExp = "";
+	    		for(int i = 0; i < newArr.length; i++)
+	    		{
+	    			inExp += "" + newArr[i];
+	    		}
+	    		answer +=ans;
+	    		vars = newArr;
+	    		
     		}
     		
     		
-    		
-    		
-    		
-    		
-    		
-    		
-    		
-    		// Determine order of operations
-    		// calculate accordingly
-    		// String tokenizer w/ return delim
-    		// put tokens in array list so im able to access * / location and before/after of those indexes
-    		// Get values ???? 
-    		
+    		while (inExp.contains("+") || inExp.contains("-"))
+    		{
+    			float ans = 0;
+    			boolean isStartAffected = false;
+    			int symbolIndex = 0;
+    			
+	    		for (int index = 0; index < vars.length; index ++)
+	    		{
+	    			if (vars[index].equals("+")){
+	    				// calculate answer
+	    				ans = (Integer.parseInt(vars[index-1]) + Integer.parseInt(vars[index+1]));
+	    				symbolIndex = index;
+	    				if (index-1 == 0)
+	    					isStartAffected = true;
+	    				break;
+	    			} else if (vars[index].equals("-"))
+	    			{
+	    				ans = (Integer.parseInt(vars[index-1]) - Integer.parseInt(vars[index+1]));
+	    				symbolIndex = index;
+	    				if (index-1 == 0)
+	    					isStartAffected = true;
+	    				break;
+	    			}
+	    		}
+	    		
+	    		String[] newArr = new String[vars.length-2];
+	    		
+	    		
+	    		if(isStartAffected)
+	    		{
+	    			newArr[0] = "" + ans;
+	    			if(newArr.length >= 3)
+	    				System.arraycopy(vars, symbolIndex+2, newArr, 1,vars.length-3);	
+	    		}
+	    		else
+	    		{
+	    			newArr[symbolIndex-1] = "" + ans;
+	    			if(newArr.length >= 3) 
+	    			{
+	    				System.arraycopy(vars, 0, newArr, 0, symbolIndex-1);
+		    			System.arraycopy(vars, symbolIndex+2, newArr, symbolIndex, newArr.length-symbolIndex);	
+	    			}
+	    			
+	    			
+	    		}
+	    		
+	    		
+	    		//convert array to inExp
+	    		inExp = "";
+	    		for(int i = 0; i < newArr.length; i++)
+	    		{
+	    			inExp += "" + newArr[i];
+	    		}
+	    		answer+=ans;
+	    		vars = newArr;
+	    		
+    		}
+    		//return answer;
     	}
-    		
     	
-    	return 0;
+    	return answer;
     }
     
-    /**
-     * Evaluates the expression, using RECURSION to evaluate subexpressions and to evaluate array 
-     * subscript expressions.
-     * 
-     * @return Result of evaluation
-     */
-    public float evaluate2() {
-    		/** COMPLETE THIS METHOD **/
-    		// following line just a placeholder for compilation
-    String exp = expr;
     
     
-    int length = exp.length();
-    int index = 0;
-    char hold = '|', hold2 = '|';
-    int holdIndex = -1, hold2Index = -1;
-       
-    while (index < length)
+    public boolean isInteger( String input )
     {
-    	if (exp.charAt(index) == '(' || exp.charAt(index) == '[')
-    	{
-    		hold = exp.charAt(index);
-    		holdIndex = index;
-    		index++;
-    		
-    		//System.out.println("\n\nIndex: [" + index + "] \n HoldIndex = [" + holdIndex + "]");
-    	}
-    	else if (hold == '(' && exp.charAt(index) == ')')
-    	{
-    		hold2 = ')';
-    		hold2Index = index;
-    		
-    		
-    		//System.out.println("\n\n A = Index: [" + index + "] \n Hold2Index = [" + hold2Index + "]");
-    		String innerExpression = exp.substring(holdIndex+1, hold2Index);
-    		System.out.println("Inner Expression: " + innerExpression);
-    		// calculate here
-    		StringTokenizer st = new StringTokenizer(innerExpression, "\t*/+-");
-    		while (st.hasMoreTokens())
-    		{
-    			String vars = st.nextToken();
-    			if (!(vars.contains("(")))
-				{
-    				int symbolIndex = vars.length();
-    				char operation = innerExpression.charAt(symbolIndex);
-				}
-    		}
-    		
-    		
-    		exp = exp.substring(0, holdIndex) + exp.substring(hold2Index+1); // deletes substring from the main string
-    		System.out.println(exp);
-    	}
-    	else if (hold == '[' && exp.charAt(index) == ']')
-    	{
-    		hold2 = ']';
-    		hold2Index = index;
-    		System.out.println("B = Index: [" + index + "] \n Hold2Index = [" + hold2Index + "]");
-    		String innerExpression = exp.substring(holdIndex+1, hold2Index);
-    		System.out.println(innerExpression);
-    		// calculate here
-    		StringTokenizer st = new StringTokenizer(innerExpression, "\t*/+-");
-
-    		exp = exp.substring(0, holdIndex) + exp.substring(hold2Index+1); // deletes substring from the main string
-    		System.out.println(exp); // deletes substring from the main string
-    	}
-    	else
-    	{
-    		
-    		
-    		index ++;
-    	}
-    	
-    	
-    	
-    	
+       try
+       {
+          Integer.parseInt( input );
+          return true;
+       }
+       catch(Exception e)
+       {
+          return false;
+       }
     }
     
-    	
-    		/**
-    		 * Find First bracket and hold position  ( , ) , [ , ]
-    		 * Find second bracket
-    		 * > If  ( or [
-    		 * 		then replace First Hold with new position 
-    		 * 			hold variable prior to parentheses i.e A*(??)  or A[??]
-    		 * 			repeat method
-    		 * > else if ) and matches firstHold  OR     ] and matches firstHold
-    		 * > 	then Substring expr from First hold to secondHold(Matches first hold)
-    		 * >		remove substring from expr  i.e ~~~~<deleted>~~~~
-    		 * 			Calculate
-    		 * 			repeat method
-    		 * 		
-    		 */
-
-    		return 0;
-    }
+    
+    
 
     /**
      * Utility method, prints the symbols in the scalars list
