@@ -55,7 +55,7 @@ public class Expression {
     	arrays = new ArrayList<ArraySymbol>();
     	
     	String myexpr = expr;
-    	StringTokenizer st = new StringTokenizer(myexpr,"\t*/+-() ");
+    	StringTokenizer st = new StringTokenizer(myexpr,"\t*/+-() ]");
     	// Only Square Brackets remain
     	
         while (st.hasMoreTokens()){
@@ -66,7 +66,10 @@ public class Expression {
 					String insideToken = inside.nextToken();
 					if ((Character.isLetter(insideToken.charAt(0))))
 						if (!(scalars.contains(new ScalarSymbol(insideToken))))
+						{
+							System.out.println(insideToken);
 							scalars.add(new ScalarSymbol(insideToken));
+						}
 				}
     		}
             else
@@ -75,7 +78,7 @@ public class Expression {
             	StringTokenizer inSquareBrackets = new StringTokenizer(vars, "]"); // no need for ]
             	while (inSquareBrackets.hasMoreTokens()){
             		String iSBTokenized = inSquareBrackets.nextToken();
-					//System.out.println(iSBTokenized);
+					System.out.println(iSBTokenized);
 					if (iSBTokenized.contains("|")){
 						iSBTokenized = iSBTokenized.replaceAll("\\|", "");
 						if (Character.isLetter(iSBTokenized.charAt(0)))
@@ -85,16 +88,14 @@ public class Expression {
 					else
 						if (Character.isLetter(iSBTokenized.charAt(0))) 
 							if (!(scalars.contains(new ScalarSymbol(iSBTokenized))))
+							{
+								System.out.println(iSBTokenized);
 								scalars.add(new ScalarSymbol(iSBTokenized));
+							}
             	}
             }
-        }//While Loop
-        
-//        
-//        
-//        System.out.println();
-//        System.out.println(arrays);
-//        System.out.println(scalars);
+        }
+
     }
     
     /**
@@ -146,7 +147,7 @@ public class Expression {
     	
     	return exp;
     }
-    
+
     /**
      * Evaluates the expression, using RECURSION to evaluate subexpressions and to evaluate array 
      * subscript expressions.
@@ -158,7 +159,7 @@ public class Expression {
     	expr = removeExtraSpaces();
     	
     	
-    	System.out.println("\n\n" + expr);
+    	System.out.println("\n\nNO SPACES: " + expr);
     	Stack <Integer> LBRIndex = new Stack<Integer>();
     	Stack <Integer> RBRIndex = new Stack<Integer>();
     	
@@ -191,6 +192,9 @@ public class Expression {
     	}
 
     	
+    	
+    	
+    	
     	System.out.println("\n Calculate");
     	return calculate (expr, LBRIndex, RBRIndex);
     }
@@ -203,19 +207,35 @@ public class Expression {
     	
     	int lbr = LBRIndex.pop();
     	int rbr = RBRIndex.pop();
-    	boolean isSquareBracket = (expr.charAt(lbr) == '[');
-    	float answer = 0;
+    	
+    	float finalAnswer = 0;
     	String inExp = expr.substring(lbr+1, rbr);
     	
     	System.out.println(inExp);
     	if (inExp.contains("(") || inExp.contains("[") || inExp.contains("]") || inExp.contains(")")) 
     	{ 
-    		answer =  calculate(inExp,LBRIndex,RBRIndex);    
+    		 finalAnswer += calculate(inExp,LBRIndex,RBRIndex);
+    		 System.out.println("===== Example====");
+    		 System.out.println(expr.substring(0, lbr));
+    		 System.out.println(finalAnswer);
+    		 System.out.println(expr.substring(rbr));
+    		 expr = expr.substring(0, lbr-1) + finalAnswer + expr.substring(lbr+1);
+    		 
+    		 
+    		 //Convert to index
+    		 int indexFinalAnswer = expr.indexOf(""+ finalAnswer);
+    		 if (expr.charAt(indexFinalAnswer - 1) == '[')
+    		 {
+    			 //convert to number
+    			 
+    			 String isolate = expr.substring(0, indexFinalAnswer-1);
+    		 }
+    		//expr = expr.substring(0, lbr) + answer + expr.substring(rbr);
     		//return answer;
     	}
-    	else
-    	{ // Does not contain brackets
+    	// Does not contain brackets
     		System.out.println("============No Brackets==================");
+    		
     		StringTokenizer st = new StringTokenizer(inExp,delims, true);
     		
     		//Make an array of strings  and store each value
@@ -224,151 +244,193 @@ public class Expression {
     			tempvars.add(st.nextToken());
     		
     		
-    		String[] vars = tempvars.toArray(new String[tempvars.size()]);
+    		String[] vars = new String[tempvars.size()];
+    		int a = 0;
+    		for (String x : tempvars)
+    		{
+    			vars[a] = x;
+    			a++;
+    		}
+    		
+    		
+    		//String[] vars = tempvars.toArray(new String[tempvars.size()]);
     		
     		System.out.print("Current vars: ");
     		for (int x = 0; x < vars.length; x++)
     			System.out.print(vars[x] + " ");
     		System.out.println();
+    	
     		
     		
-    		//replace variables w/ values
+    		
+    	
     		for (int index = 0; index < vars.length; index++)
     		{
     			for (ScalarSymbol x : scalars)
     			{
+    				System.out.println (x.name);
     				if (vars[index].equals(x.name))
     				{
+    					System.out.println(x.value);
     					vars[index] = "" + x.value;
     				}
     			}
     		}
-
+	
     		System.out.print("Vars w/ value: ");
     		for (int x = 0; x < vars.length; x++)
-    			System.out.print(vars[x] + " ");
+    			System.out.print(vars[x]);
     		System.out.println();
     		
+    		finalAnswer = solve(inExp, vars);
     		
+    		// fix expr
+    		//expr = expr.substring(0, lbr) + finalAnswer + expr.substring(rbr);
     		
-    		//Calculate w/ order of ops
-    		// ==================================================== MULTIPLY DIVIDE ============
-    		while (inExp.contains("*") || inExp.contains("/"))
-    		{
-    			float ans = 0;
-    			boolean isStartAffected = false;
-    			int symbolIndex = 0;
-    			
-	    		for (int index = 0; index < vars.length; index ++)
-	    		{
-	    			if (vars[index].equals("*")){
-	    				// calculate answer
-	    				ans = (Integer.parseInt(vars[index-1]) * Integer.parseInt(vars[index+1]));
-	    				symbolIndex = index;
-	    				if (index-1 == 0)
-	    					isStartAffected = true;
-	    				break;
-	    			} else if (vars[index].equals("/"))
-	    			{
-	    				ans = (Integer.parseInt(vars[index-1]) / Integer.parseInt(vars[index+1]));
-	    				symbolIndex = index;
-	    				if (index-1 == 0)
-	    					isStartAffected = true;
-	    				break;
-	    			}
-	    		}
-	    		
-	    		String[] newArr = new String[vars.length-2];
-	    		
-	    		
-	    		if(isStartAffected)
-	    		{
-	    			newArr[0] = "" + ans;
-	    			System.arraycopy(vars, symbolIndex+2, newArr, 1,vars.length-3);	
-	    		}
-	    		else
-	    		{
-	    			System.arraycopy(vars, 0, newArr, 0, symbolIndex-1);
-	    			newArr[symbolIndex-1] = "" + ans;
-	    			System.arraycopy(vars, symbolIndex+2, newArr, symbolIndex, newArr.length-symbolIndex);
-	    			
-	    		}
-	    		
-	    		
-	    		//convert array to inExp
-	    		inExp = "";
-	    		for(int i = 0; i < newArr.length; i++)
-	    		{
-	    			inExp += "" + newArr[i];
-	    		}
-	    		answer +=ans;
-	    		vars = newArr;
-	    		
-    		}
-    		
-    		
-    		while (inExp.contains("+") || inExp.contains("-"))
-    		{
-    			float ans = 0;
-    			boolean isStartAffected = false;
-    			int symbolIndex = 0;
-    			
-	    		for (int index = 0; index < vars.length; index ++)
-	    		{
-	    			if (vars[index].equals("+")){
-	    				// calculate answer
-	    				ans = (Integer.parseInt(vars[index-1]) + Integer.parseInt(vars[index+1]));
-	    				symbolIndex = index;
-	    				if (index-1 == 0)
-	    					isStartAffected = true;
-	    				break;
-	    			} else if (vars[index].equals("-"))
-	    			{
-	    				ans = (Integer.parseInt(vars[index-1]) - Integer.parseInt(vars[index+1]));
-	    				symbolIndex = index;
-	    				if (index-1 == 0)
-	    					isStartAffected = true;
-	    				break;
-	    			}
-	    		}
-	    		
-	    		String[] newArr = new String[vars.length-2];
-	    		
-	    		
-	    		if(isStartAffected)
-	    		{
-	    			newArr[0] = "" + ans;
-	    			if(newArr.length >= 3)
-	    				System.arraycopy(vars, symbolIndex+2, newArr, 1,vars.length-3);	
-	    		}
-	    		else
-	    		{
-	    			newArr[symbolIndex-1] = "" + ans;
-	    			if(newArr.length >= 3) 
-	    			{
-	    				System.arraycopy(vars, 0, newArr, 0, symbolIndex-1);
-		    			System.arraycopy(vars, symbolIndex+2, newArr, symbolIndex, newArr.length-symbolIndex);	
-	    			}
-	    			
-	    			
-	    		}
-	    		
-	    		
-	    		//convert array to inExp
-	    		inExp = "";
-	    		for(int i = 0; i < newArr.length; i++)
-	    		{
-	    			inExp += "" + newArr[i];
-	    		}
-	    		answer+=ans;
-	    		vars = newArr;
-	    		
-    		}
-    		//return answer;
-    	}
+    		return finalAnswer;
     	
-    	return answer;
     }
+    
+    
+    
+    
+    
+    private float solve (String inExp, String[] x)
+    {
+    	String[] vars = x;
+    	float answer = 0;
+    	//boolean squarebracket = expr.charAt(expr.indexOf(inExp)-2) == '[';
+    	
+    	//Calculate w/ order of ops
+		// ==================================================== MULTIPLY DIVIDE ============
+		while (inExp.contains("*") || inExp.contains("/"))
+		{
+			float singleAns = 0;
+			boolean isStartAffected = false;
+			int symbolIndex = 0;
+			
+    		for (int index = 0; index < vars.length; index ++)
+    		{
+    			if (vars[index].equals("*")){
+    				// calculate answer
+    				System.out.print(vars[index-1] + " | " + vars[index+1] + " error \n");
+    				singleAns = (Float.parseFloat(vars[index-1]) * Float.parseFloat(vars[index+1]));
+    				System.out.println(singleAns);
+    				symbolIndex = index;
+    				if (index-1 == 0)
+    					isStartAffected = true;
+    				break;
+    			} else if (vars[index].equals("/"))
+    			{
+    				singleAns = (Float.parseFloat(vars[index-1]) / Float.parseFloat(vars[index+1]));
+    				System.out.println(singleAns);
+    				symbolIndex = index;
+    				if (index-1 == 0)
+    					isStartAffected = true;
+    				break;
+    			}
+    		}
+    		
+    		String[] newArr = new String[vars.length-2];
+    		
+    		if(isStartAffected)
+    		{
+    			newArr[0] = "" + singleAns;
+    			System.arraycopy(vars, symbolIndex+2, newArr, 1,vars.length-3);	
+    		}
+    		else
+    		{
+    			System.arraycopy(vars, 0, newArr, 0, symbolIndex-1);
+    			newArr[symbolIndex-1] = "" + singleAns;
+    			System.arraycopy(vars, symbolIndex+2, newArr, symbolIndex, newArr.length-symbolIndex);
+    		} 
+    		
+    		//singleAns ==> full
+    		answer = singleAns;
+    		
+    		//convert array to inExp
+    		inExp = "";
+    		for(int i = 0; i < newArr.length; i++)
+    		{
+    			inExp += "" + newArr[i];
+    		}
+    		
+    		vars = newArr;
+    		
+		}
+		
+		
+		while (inExp.contains("+") || inExp.contains("-"))
+		{
+			float singleAns = 0;
+			boolean isStartAffected = false;
+			int symbolIndex = 0;
+			
+    		for (int index = 0; index < vars.length; index ++)
+    		{
+    			if (vars[index].equals("+")){
+    				// calculate answer
+    				singleAns = (Float.parseFloat(vars[index-1]) + Float.parseFloat(vars[index+1]));
+    				System.out.println(singleAns);
+    				symbolIndex = index;
+    				if (index-1 == 0)
+    					isStartAffected = true;
+    				break;
+    			} else if (vars[index].equals("-"))
+    			{
+    				singleAns = (Float.parseFloat(vars[index-1]) - Float.parseFloat(vars[index+1]));
+    				System.out.println(singleAns);
+    				symbolIndex = index;
+    				if (index-1 == 0)
+    					isStartAffected = true;
+    				break;
+    			}
+    		}
+    		
+    		String[] newArr = new String[vars.length-2];
+    		
+    		
+    		if(isStartAffected)
+    		{
+    			newArr[0] = "" + singleAns;
+    			if(newArr.length >= 3)
+    				System.arraycopy(vars, symbolIndex+2, newArr, 1,vars.length-3);	
+    		}
+    		else
+    		{
+    			newArr[symbolIndex-1] = "" + singleAns;
+    			if(newArr.length >= 3) 
+    			{
+    				System.arraycopy(vars, 0, newArr, 0, symbolIndex-1);
+	    			System.arraycopy(vars, symbolIndex+2, newArr, symbolIndex, newArr.length-symbolIndex);	
+    			}
+    			
+    			
+    		}
+    		//singleAns ==> full
+    		answer = singleAns;
+    		
+    		//convert array to inExp
+    		inExp = "";
+    		for(int i = 0; i < newArr.length; i++)
+    		{
+    			inExp += "" + newArr[i];
+    		}
+    		
+    		vars = newArr;
+    		
+		}
+		
+		
+		
+		
+		return answer;
+    }
+    
+    
+    
+    
+    
     
     
     
