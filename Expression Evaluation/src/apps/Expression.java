@@ -49,7 +49,7 @@ public class Expression {
      * (varx + vary*varz[(vara+varb[(a+b)*33])])/55
      */
     public void buildSymbols() {
-    	System.out.println("\n\n ====== MY CODE ========");
+    	//System.out.println("\n\n ====== MY CODE ========");
     	//Initialize ArrayLists
     	scalars = new ArrayList<ScalarSymbol>();
     	arrays = new ArrayList<ArraySymbol>();
@@ -67,7 +67,7 @@ public class Expression {
 					if ((Character.isLetter(insideToken.charAt(0))))
 						if (!(scalars.contains(new ScalarSymbol(insideToken))))
 						{
-							System.out.println(insideToken);
+							//System.out.println(insideToken);
 							scalars.add(new ScalarSymbol(insideToken));
 						}
 				}
@@ -78,7 +78,7 @@ public class Expression {
             	StringTokenizer inSquareBrackets = new StringTokenizer(vars, "]"); // no need for ]
             	while (inSquareBrackets.hasMoreTokens()){
             		String iSBTokenized = inSquareBrackets.nextToken();
-					System.out.println(iSBTokenized);
+					//System.out.println(iSBTokenized);
 					if (iSBTokenized.contains("|")){
 						iSBTokenized = iSBTokenized.replaceAll("\\|", "");
 						if (Character.isLetter(iSBTokenized.charAt(0)))
@@ -89,7 +89,7 @@ public class Expression {
 						if (Character.isLetter(iSBTokenized.charAt(0))) 
 							if (!(scalars.contains(new ScalarSymbol(iSBTokenized))))
 							{
-								System.out.println(iSBTokenized);
+								//System.out.println(iSBTokenized);
 								scalars.add(new ScalarSymbol(iSBTokenized));
 							}
             	}
@@ -203,24 +203,30 @@ public class Expression {
     
     private float calculate (String exp, Stack <Integer> LBRIndex, Stack <Integer> RBRIndex)
     {
-    	
+    	//(a + A[a*2-b])
     	
     	int lbr = LBRIndex.pop();
     	int rbr = RBRIndex.pop();
-    	
+    	//int prev 
     	float finalAnswer = 0;
     	String inExp = expr.substring(lbr+1, rbr);
     	
     	System.out.println(inExp);
     	if (inExp.contains("(") || inExp.contains("[") || inExp.contains("]") || inExp.contains(")")) 
     	{ 
+    		System.out.println("\n" + expr);
     		 finalAnswer += calculate(inExp,LBRIndex,RBRIndex);
-    		 System.out.println("===== Example====");
-    		 System.out.println(expr.substring(0, lbr));
+    		 System.out.println("===== Answer from inner ====");
+    		 System.out.println(expr);
+    		 System.out.println(lbr + " | " + rbr);
+    		 System.out.println("Left side <<" + expr.substring(0, rbr) + ">> ");
     		 System.out.println(finalAnswer);
-    		 System.out.println(expr.substring(rbr));
-    		 expr = expr.substring(0, lbr-1) + finalAnswer + expr.substring(lbr+1);
-    		 
+    		 System.out.println(" <<" + expr.substring(rbr) + ">>");
+    		 System.out.println("========================================");
+    		 if (lbr-1 < 0)
+    			 expr = expr.substring(0, lbr+1) + finalAnswer + expr.substring(lbr+1);
+    		 else
+    			 expr = expr.substring(0, lbr	) + finalAnswer + expr.substring(lbr+1);
     		 
     		 //Convert to index
     		 int indexFinalAnswer = expr.indexOf(""+ finalAnswer);
@@ -229,6 +235,7 @@ public class Expression {
     			 //convert to number
     			 
     			 String isolate = expr.substring(0, indexFinalAnswer-1);
+    			 System.out.println(isolate);
     		 }
     		//expr = expr.substring(0, lbr) + answer + expr.substring(rbr);
     		//return answer;
@@ -268,10 +275,10 @@ public class Expression {
     		{
     			for (ScalarSymbol x : scalars)
     			{
-    				System.out.println (x.name);
+    				//System.out.println (x.name);
     				if (vars[index].equals(x.name))
     				{
-    					System.out.println(x.value);
+    					//System.out.println(x.value);
     					vars[index] = "" + x.value;
     				}
     			}
@@ -291,7 +298,7 @@ public class Expression {
     	
     }
     
-    
+    //hchu2497@gmail.com
     
     
     
@@ -313,9 +320,9 @@ public class Expression {
     		{
     			if (vars[index].equals("*")){
     				// calculate answer
-    				System.out.print(vars[index-1] + " | " + vars[index+1] + " error \n");
+    				//System.out.print(vars[index-1] + " | " + vars[index+1] + " error \n");
     				singleAns = (Float.parseFloat(vars[index-1]) * Float.parseFloat(vars[index+1]));
-    				System.out.println(singleAns);
+    				System.out.println("Multiply " + vars[index-1] + vars[index] + vars[index+1] + " = " + singleAns);
     				symbolIndex = index;
     				if (index-1 == 0)
     					isStartAffected = true;
@@ -323,7 +330,7 @@ public class Expression {
     			} else if (vars[index].equals("/"))
     			{
     				singleAns = (Float.parseFloat(vars[index-1]) / Float.parseFloat(vars[index+1]));
-    				System.out.println(singleAns);
+    				System.out.println("Divide " + vars[index-1] + vars[index] + vars[index+1] + " = " + singleAns);
     				symbolIndex = index;
     				if (index-1 == 0)
     					isStartAffected = true;
@@ -371,7 +378,7 @@ public class Expression {
     			if (vars[index].equals("+")){
     				// calculate answer
     				singleAns = (Float.parseFloat(vars[index-1]) + Float.parseFloat(vars[index+1]));
-    				System.out.println(singleAns);
+    				System.out.println("Add " + vars[index-1] + vars[index] + vars[index+1] + " = " + singleAns);
     				symbolIndex = index;
     				if (index-1 == 0)
     					isStartAffected = true;
@@ -379,7 +386,7 @@ public class Expression {
     			} else if (vars[index].equals("-"))
     			{
     				singleAns = (Float.parseFloat(vars[index-1]) - Float.parseFloat(vars[index+1]));
-    				System.out.println(singleAns);
+    				System.out.println("Subtract " + vars[index-1] + vars[index] + vars[index+1] + " = " + singleAns);
     				symbolIndex = index;
     				if (index-1 == 0)
     					isStartAffected = true;
@@ -421,6 +428,12 @@ public class Expression {
     		
 		}
 		
+		
+		
+		
+		// replace answer value in expr
+		
+		//System.out.println("Possible Replacement: " +expr.substring(0, expr.expr.indexOf(vars[0])) + answer);
 		
 		
 		
