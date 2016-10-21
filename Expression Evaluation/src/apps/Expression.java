@@ -257,17 +257,23 @@ public class Expression {
     {
     	System.out.println("========== Calculate ============ ");
     	
+    	String inExp = "";
+    	float finalAnswer = 0;
     	//(a + A[a*2-b])
-    	
+    	if (!(LBRIndex.isEmpty())){
     	int lbr = LBRIndex.pop();
     	int rbr = RBRIndex.pop();
     	//int prev 
-    	float finalAnswer = 0;
-    	String inExp = expr.substring(lbr+1, rbr);
+    	
+    	inExp = expr.substring(lbr+1, rbr);
     	System.out.println("expr: " + expr);
     	System.out.println("inExp: " + inExp);
     	
-    	
+    	}
+    	else
+    	{
+    		inExp = expr;
+    	}
     	if (inExp.contains("(") || inExp.contains("[") || inExp.contains("]") || inExp.contains(")")) 
     	{ 
     		 

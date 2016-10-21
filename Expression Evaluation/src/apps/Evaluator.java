@@ -16,7 +16,7 @@ public class Evaluator {
 			//String line = sc.nextLine();
 			//String line = "(varx + vary*varz[(vara+varb[(a+b)*33])])/55"     (a + A[a*2-b])  ;
 			//String line = "a +b + A[a*2-b]";
-			String line = "a + A[a*2-b]";
+			String line = "(a + A[a*2-b])";
 			
 			if (line.length() == 0) {
 				break;
