@@ -195,7 +195,7 @@ public class Expression {
     	
     	
     	
-    	System.out.println("\n Calculate");
+    	System.out.println();
     	return calculate (expr, LBRIndex, RBRIndex);
     }
     
@@ -203,6 +203,8 @@ public class Expression {
     
     private float calculate (String exp, Stack <Integer> LBRIndex, Stack <Integer> RBRIndex)
     {
+    	System.out.println("========== Calculate ============ ");
+    	
     	//(a + A[a*2-b])
     	
     	int lbr = LBRIndex.pop();
@@ -210,33 +212,37 @@ public class Expression {
     	//int prev 
     	float finalAnswer = 0;
     	String inExp = expr.substring(lbr+1, rbr);
-    	
-    	System.out.println(inExp);
+    	System.out.println("expr: " + expr);
+    	System.out.println("inExp: " + inExp);
     	if (inExp.contains("(") || inExp.contains("[") || inExp.contains("]") || inExp.contains(")")) 
     	{ 
-    		System.out.println("\n" + expr);
+    		 
     		 finalAnswer += calculate(inExp,LBRIndex,RBRIndex);
-    		 System.out.println("===== Answer from inner ====");
+    		 System.out.println("   ===== Answer from inner ====");
     		 System.out.println(expr);
-    		 System.out.println(lbr + " | " + rbr);
-    		 System.out.println("Left side <<" + expr.substring(0, rbr) + ">> ");
+    		 System.out.println(lbr + " | " + rbr + " | " + expr.charAt(expr.indexOf("" + finalAnswer)-1));
+    		 // returns one character behind final answer expr.charAt(expr.indexOf("" + finalAnswer)-1)
+    		 
+   
+    		 
+    		 System.out.println("Left side <<" + expr.substring(0, rbr) + ">>" + inExp);
     		 System.out.println(finalAnswer);
     		 System.out.println(" <<" + expr.substring(rbr) + ">>");
-    		 System.out.println("========================================");
-    		 if (lbr-1 < 0)
-    			 expr = expr.substring(0, lbr+1) + finalAnswer + expr.substring(lbr+1);
-    		 else
-    			 expr = expr.substring(0, lbr	) + finalAnswer + expr.substring(lbr+1);
-    		 
-    		 //Convert to index
-    		 int indexFinalAnswer = expr.indexOf(""+ finalAnswer);
-    		 if (expr.charAt(indexFinalAnswer - 1) == '[')
-    		 {
-    			 //convert to number
-    			 
-    			 String isolate = expr.substring(0, indexFinalAnswer-1);
-    			 System.out.println(isolate);
-    		 }
+    		 System.out.println("   ========================================");
+//    		 if (lbr-1 < 0)
+//    			 expr = expr.substring(0, lbr+1) + finalAnswer + expr.substring(lbr+1);
+//    		 else
+//    			 expr = expr.substring(0, lbr	) + finalAnswer + expr.substring(lbr+1);
+//    		 
+//    		 //Convert to index
+//    		 int indexFinalAnswer = expr.indexOf(""+ finalAnswer);
+//    		 if (expr.charAt(indexFinalAnswer - 1) == '[')
+//    		 {
+//    			 //convert to number
+//    			 
+//    			 String isolate = expr.substring(0, indexFinalAnswer-1);
+//    			 System.out.println(isolate);
+//    		 }
     		//expr = expr.substring(0, lbr) + answer + expr.substring(rbr);
     		//return answer;
     	}
@@ -259,31 +265,29 @@ public class Expression {
     			a++;
     		}
     		
-    		
-    		//String[] vars = tempvars.toArray(new String[tempvars.size()]);
-    		
-    		System.out.print("Current vars: ");
+    		// PRINTS CURRENT VARIABLES
+    		System.out.print("Current vars : ");
     		for (int x = 0; x < vars.length; x++)
-    			System.out.print(vars[x] + " ");
+    			System.out.print(vars[x]);
     		System.out.println();
     	
     		
     		
     		
-    	
+    		// Assign values to vars string array
     		for (int index = 0; index < vars.length; index++)
     		{
     			for (ScalarSymbol x : scalars)
     			{
-    				//System.out.println (x.name);
     				if (vars[index].equals(x.name))
     				{
-    					//System.out.println(x.value);
     					vars[index] = "" + x.value;
     				}
     			}
     		}
-	
+    		
+    		
+    		// PRINTS VALUES WITH VALUE
     		System.out.print("Vars w/ value: ");
     		for (int x = 0; x < vars.length; x++)
     			System.out.print(vars[x]);
@@ -291,22 +295,32 @@ public class Expression {
     		
     		finalAnswer = solve(inExp, vars);
     		
+
+    		
+    		
+    		
     		// fix expr
     		//expr = expr.substring(0, lbr) + finalAnswer + expr.substring(rbr);
+    		
+    		
     		
     		return finalAnswer;
     	
     }
-    
-    //hchu2497@gmail.com
-    
-    
+
     
     private float solve (String inExp, String[] x)
     {
+    	
+    	System.out.println("          ========== Solve ============");
     	String[] vars = x;
     	float answer = 0;
     	//boolean squarebracket = expr.charAt(expr.indexOf(inExp)-2) == '[';
+    	System.out.println(expr);
+    	int leftIndex = expr.indexOf(inExp) - 1;
+    	int rightIndex = expr.indexOf(inExp) + inExp.length();
+    	System.out.println("Left Index = " + leftIndex + "    " + expr.charAt(leftIndex));
+    	System.out.println("Right Index = " + rightIndex + "    "+ expr.charAt(rightIndex));
     	
     	//Calculate w/ order of ops
 		// ==================================================== MULTIPLY DIVIDE ============
@@ -430,7 +444,7 @@ public class Expression {
 		
 		
 		
-		
+		expr = expr.substring(0, leftIndex+1) + answer + expr.substring(rightIndex);
 		// replace answer value in expr
 		
 		//System.out.println("Possible Replacement: " +expr.substring(0, expr.expr.indexOf(vars[0])) + answer);
