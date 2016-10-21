@@ -40,6 +40,57 @@ public class Expression {
         System.out.println("Neel: " + expr);
     }
 
+    
+    public void buildSymbols() {
+		StringTokenizer variables = new StringTokenizer(expr, " \t*+-/()");
+		scalars = new ArrayList<ScalarSymbol>();
+		arrays = new ArrayList<ArraySymbol>();
+
+		while (variables.hasMoreTokens()) {
+			String token = variables.nextToken();
+			if (token.contains("[")) {
+				token = token.replaceAll("\\[", "\\&\\[");
+				StringTokenizer inside = new StringTokenizer(token, "][");
+				while (inside.hasMoreTokens()) {
+					String insideToken = inside.nextToken();
+					if (insideToken.contains("&")) {
+						insideToken = insideToken.replaceAll("\\&", "");
+						if (Character.isLetter(insideToken.charAt(0))) {
+							ArraySymbol newArraySymbol = new ArraySymbol(insideToken);
+							if (!(arrays.contains(newArraySymbol))) {
+								arrays.add(newArraySymbol);
+							}
+						}
+					} else {
+						if (Character.isLetter(insideToken.charAt(0))) {
+							ScalarSymbol newScalarSymbol = new ScalarSymbol(insideToken);
+							if (!(scalars.contains(newScalarSymbol))) {
+								scalars.add(newScalarSymbol);
+							}
+						}
+					}
+				}
+			} else {
+				StringTokenizer inside = new StringTokenizer(token, "[]");
+				while (inside.hasMoreTokens()) {
+					String insideToken = inside.nextToken();
+					if ((Character.isLetter(insideToken.charAt(0)))) {
+						ScalarSymbol newScalarSymbol = new ScalarSymbol(insideToken);
+						if (!(scalars.contains(newScalarSymbol))) {
+							scalars.add(newScalarSymbol);
+						}
+					}
+				}
+			}
+		}
+	}
+    
+    
+    
+    
+    
+    
+    
     /**
      * Populates the scalars and arrays lists with symbols for scalar ad array
      * variables in the expression. For every variable, a SINGLE symbol is created and stored,
@@ -48,7 +99,7 @@ public class Expression {
      * zero - they will be loaded from a file in the loadSymbolValues method.
      * (varx + vary*varz[(vara+varb[(a+b)*33])])/55
      */
-    public void buildSymbols() {
+    public void buildSymbols2() {
     	//System.out.println("\n\n ====== MY CODE ========");
     	//Initialize ArrayLists
     	scalars = new ArrayList<ScalarSymbol>();
@@ -196,12 +247,13 @@ public class Expression {
     	
     	
     	System.out.println();
-    	return calculate (expr, LBRIndex, RBRIndex);
+    	String modifiedExpr = expr;
+    	return calculate (modifiedExpr,LBRIndex, RBRIndex);
     }
     
     
     
-    private float calculate (String exp, Stack <Integer> LBRIndex, Stack <Integer> RBRIndex)
+    private float calculate (String modExpr, Stack <Integer> LBRIndex, Stack <Integer> RBRIndex)
     {
     	System.out.println("========== Calculate ============ ");
     	
@@ -214,108 +266,199 @@ public class Expression {
     	String inExp = expr.substring(lbr+1, rbr);
     	System.out.println("expr: " + expr);
     	System.out.println("inExp: " + inExp);
+    	
+    	
     	if (inExp.contains("(") || inExp.contains("[") || inExp.contains("]") || inExp.contains(")")) 
     	{ 
     		 
-    		 finalAnswer += calculate(inExp,LBRIndex,RBRIndex);
+    		 finalAnswer += calculate(modExpr,LBRIndex,RBRIndex);
     		 System.out.println("   ===== Answer from inner ====");
     		 System.out.println(expr);
-    		 System.out.println(lbr + " | " + rbr + " | " + expr.charAt(expr.indexOf("" + finalAnswer)-1));
-    		 // returns one character behind final answer expr.charAt(expr.indexOf("" + finalAnswer)-1)
+    		 modExpr = modExpr.replace(inExp, ""+finalAnswer);
+    		 System.out.println(modExpr);
+    		 System.out.println(inExp);
     		 
-   
-    		 
-    		 System.out.println("Left side <<" + expr.substring(0, rbr) + ">>" + inExp);
-    		 System.out.println(finalAnswer);
-    		 System.out.println(" <<" + expr.substring(rbr) + ">>");
-    		 System.out.println("   ========================================");
-//    		 if (lbr-1 < 0)
-//    			 expr = expr.substring(0, lbr+1) + finalAnswer + expr.substring(lbr+1);
-//    		 else
-//    			 expr = expr.substring(0, lbr	) + finalAnswer + expr.substring(lbr+1);
-//    		 
-//    		 //Convert to index
-//    		 int indexFinalAnswer = expr.indexOf(""+ finalAnswer);
-//    		 if (expr.charAt(indexFinalAnswer - 1) == '[')
-//    		 {
-//    			 //convert to number
-//    			 
-//    			 String isolate = expr.substring(0, indexFinalAnswer-1);
-//    			 System.out.println(isolate);
-//    		 }
-    		//expr = expr.substring(0, lbr) + answer + expr.substring(rbr);
-    		//return answer;
     	}
     	// Does not contain brackets
-    		System.out.println("============No Brackets==================");
+    		System.out.println("        ============No Brackets==================");
     		
     		StringTokenizer st = new StringTokenizer(inExp,delims, true);
     		
-    		//Make an array of strings  and store each value
-    		ArrayList<String> tempvars = new ArrayList<String>();
-    		while (st.hasMoreTokens())
-    			tempvars.add(st.nextToken());
-    		
-    		
-    		String[] vars = new String[tempvars.size()];
-    		int a = 0;
-    		for (String x : tempvars)
-    		{
-    			vars[a] = x;
-    			a++;
-    		}
-    		
-    		// PRINTS CURRENT VARIABLES
-    		System.out.print("Current vars : ");
-    		for (int x = 0; x < vars.length; x++)
-    			System.out.print(vars[x]);
-    		System.out.println();
-    	
-    		
-    		
-    		
-    		// Assign values to vars string array
-    		for (int index = 0; index < vars.length; index++)
-    		{
-    			for (ScalarSymbol x : scalars)
-    			{
-    				if (vars[index].equals(x.name))
-    				{
-    					vars[index] = "" + x.value;
-    				}
-    			}
-    		}
-    		
-    		
-    		// PRINTS VALUES WITH VALUE
-    		System.out.print("Vars w/ value: ");
-    		for (int x = 0; x < vars.length; x++)
-    			System.out.print(vars[x]);
-    		System.out.println();
+    		String[] vars = tokenizerToArray(st);
     		
     		finalAnswer = solve(inExp, vars);
+    		System.out.println("Solution of " + inExp + " is " + finalAnswer);
     		
-
+    		System.out.println("expr : " + expr);
+    		modExpr = modExpr.replace(inExp, ""+finalAnswer);
+    		System.out.println("modExpr: " + modExpr);
+    		System.out.println("inExp : " + inExp);
+    		//replace inExp PART in expr with finalAnswer
+    		String newExpr = expr.substring(0, expr.indexOf(inExp)) + finalAnswer;
     		
+    		newExpr = newExpr + expr.substring((newExpr.indexOf(""+finalAnswer) + ("" + finalAnswer).length() +2));
+    		System.out.println(newExpr);
+    		//expr = newExpr;
     		
+	   		 if (modExpr.charAt(modExpr.indexOf(""+finalAnswer)-1) == '[')
+	   		 {
+	   			 StringTokenizer tokens = new StringTokenizer(modExpr,delims,true);
+	   			
+	   			 
+	   			ArrayList<String> tempvars = new ArrayList<String>();
+	   			while (tokens.hasMoreTokens())
+	   				tempvars.add(tokens.nextToken());
+	   			String[] vars2 = new String[tempvars.size()];
+	   			int a = 0;
+	   			for (String x : tempvars)
+	   			{
+	   				vars2[a] = x;
+	   				a++;
+	   			}
+	   			 
+	   			 
+	      		
+	   			modExpr = arrayFix(vars2,finalAnswer);
+	   			finalAnswer += calculate(modExpr,LBRIndex,RBRIndex);
+	   		 }
+    		System.out.println(modExpr);
     		
-    		// fix expr
-    		//expr = expr.substring(0, lbr) + finalAnswer + expr.substring(rbr);
-    		
-    		
-    		
+    		System.out.println("        =============End of No brackets ==========");
     		return finalAnswer;
     	
     }
 
     
-    private float solve (String inExp, String[] x)
+    private String arrayFix(String[] vars,float finalAnswer)
     {
     	
-    	System.out.println("          ========== Solve ============");
+    	System.out.println("======= Array Fix =========");
+    	 // returns one character behind final answer expr.charAt(expr.indexOf("" + finalAnswer)-1)
+    	//int sbFinalAnswer = expr.indexOf("" + finalAnswer) - 1;
+    	
+    	int finalIndex = 0;
+    	
+    	for(int i = 0; i < vars.length ; i++)
+    	{
+    		if(vars[i].equals("" + finalAnswer))
+    		{
+    			finalIndex = i;
+    			break;
+    		}
+    	}
+    	System.out.println(finalIndex);
+    	boolean isStartAffected= false;
+    	if (finalIndex-2 == 0)
+    		isStartAffected = true;
+    	
+    	
+    	System.out.println(vars[finalIndex-2]);
+    	
+    	
+    	int truncFinalIndex = (int) finalAnswer;
+    	
+    	int arrayAns = 0;
+			for (ArraySymbol x : arrays)
+			{
+				System.out.println(x.name);
+				if ((x.name).equals(vars[finalIndex-2]))
+				{
+					System.out.println("WORKS");
+					arrayAns = x.values[truncFinalIndex];
+				}
+			}
+			
+			
+			
+			System.out.println(arrayAns);
+			
+			
+			String[] newArr = new String[vars.length-3];
+    		
+    		if(isStartAffected)
+    		{
+    			newArr[0] = "" + arrayAns;
+    			System.arraycopy(vars, finalIndex+2, newArr, 1,vars.length-3);	
+    		}
+    		else
+    		{
+    			System.arraycopy(vars, 0, newArr, 0, finalIndex-2);
+    			newArr[finalIndex-2] = "" + arrayAns;
+    			System.arraycopy(vars, finalIndex+2, newArr, finalIndex-1, newArr.length-finalIndex +1);
+    		} 
+			
+			
+    		vars = newArr;
+			String ansExp = "";
+			// PRINTS VALUES WITH VALUE
+			System.out.print("Vars w/ value: ");
+			for (int x = 0; x < vars.length; x++)
+			{
+				System.out.print(vars[x]);
+				ansExp += vars[x];
+			}
+				
+			System.out.println();
+    	
+    	
+    	
+			System.out.println("======= End Array Fix =========");
+    	return ansExp;
+    }
+    
+    
+    private String[] tokenizerToArray(StringTokenizer st) {
+		// TODO Auto-generated method stub
+    	
+    	//Make an array of strings  and store each value
+		ArrayList<String> tempvars = new ArrayList<String>();
+		while (st.hasMoreTokens())
+			tempvars.add(st.nextToken());
+		String[] vars = new String[tempvars.size()];
+		int a = 0;
+		for (String x : tempvars)
+		{
+			vars[a] = x;
+			a++;
+		}
+		
+		// PRINTS CURRENT VARIABLES
+		System.out.print("Current vars : ");
+		for (int x = 0; x < vars.length; x++)
+			System.out.print(vars[x]);
+		System.out.println();
+	
+	
+			// Assign values to vars string array
+			for (int index = 0; index < vars.length; index++)
+			{
+				for (ScalarSymbol x : scalars)
+				{
+					if (vars[index].equals(x.name))
+					{
+						vars[index] = "" + x.value;
+					}
+				}
+			}
+		
+		
+		// PRINTS VALUES WITH VALUE
+		System.out.print("Vars w/ value: ");
+		for (int x = 0; x < vars.length; x++)
+			System.out.print(vars[x]);
+		System.out.println();
+		
+		return vars;
+	}
+
+	private float solve (String inExp, String[] x)
+    {
+    	
+    	System.out.println("           ========== Solve ============");
     	String[] vars = x;
     	float answer = 0;
     	//boolean squarebracket = expr.charAt(expr.indexOf(inExp)-2) == '[';
+    	System.out.println(inExp);
     	System.out.println(expr);
     	int leftIndex = expr.indexOf(inExp) - 1;
     	int rightIndex = expr.indexOf(inExp) + inExp.length();
@@ -438,14 +581,18 @@ public class Expression {
     			inExp += "" + newArr[i];
     		}
     		
+    		
+    		
     		vars = newArr;
     		
 		}
 		
 		
+		System.out.println("Answer of inExp = " + answer + "\n           =====EndofSolve====");
+		//expr = expr.substring(0, leftIndex+1) + answer + expr.substring(rightIndex);
+		//System.out.println("expr inside solve: " + expr);
 		
-		expr = expr.substring(0, leftIndex+1) + answer + expr.substring(rightIndex);
-		// replace answer value in expr
+
 		
 		//System.out.println("Possible Replacement: " +expr.substring(0, expr.expr.indexOf(vars[0])) + answer);
 		
@@ -454,28 +601,7 @@ public class Expression {
 		return answer;
     }
     
-    
-    
-    
-    
-    
-    
-    
-    public boolean isInteger( String input )
-    {
-       try
-       {
-          Integer.parseInt( input );
-          return true;
-       }
-       catch(Exception e)
-       {
-          return false;
-       }
-    }
-    
-    
-    
+
 
     /**
      * Utility method, prints the symbols in the scalars list
