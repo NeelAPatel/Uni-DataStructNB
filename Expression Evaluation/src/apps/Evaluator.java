@@ -14,10 +14,13 @@ public class Evaluator {
 		while (true) {
 			System.out.print("\nEnter the expression, or hit return to quit => ");
 			//String line = sc.nextLine();
-			//String line = "(varx + vary*varz[(vara+varb[(a+b)*33])])/55"     (a + A[a*2-b])  ;
+			//String line = "(a - (b+A[B[2]])*d + 3)";
+			//String line = "(varx + vary*varz[(vara+varb[(a+b)*33])])/55"      ;
 			//String line = "a +b + A[a*2-b]";
-			String line = "(a + A[a*2-b])";
 			
+			//String line = "a + A[a*2-b]";
+			//String line = "a + A[4]";
+			String line = "a - (b+A[B[2]])*d + 3";
 			if (line.length() == 0) {
 				break;
 			}

@@ -10,38 +10,45 @@ public class Expression {
 	/**
 	 * Expression to be evaluated
 	 */
-	String expr;                
-    
+	String expr;
+
 	/**
-	 * Scalar symbols in the expression 
+	 * Scalar symbols in the expression
 	 */
-	ArrayList<ScalarSymbol> scalars;   
-	
+	ArrayList<ScalarSymbol> scalars;
+
 	/**
 	 * Array symbols in the expression
 	 */
 	ArrayList<ArraySymbol> arrays;
-    
-    /**
-     * String containing all delimiters (characters other than variables and constants), 
-     * to be used with StringTokenizer
-     */
-    public static final String delims = " \t*+-/()[]";
-    
-    /**
-     * Initializes this Expression object with an input expression. Sets all other
-     * fields to null.
-     * 
-     * @param expr Expression
-     */
-    public Expression(String expr) {
-        this.expr = expr;
-        
-        System.out.println("Neel: " + expr);
-    }
 
-    
-    public void buildSymbols() {
+	/**
+	 * String containing all delimiters (characters other than variables and
+	 * constants), to be used with StringTokenizer
+	 */
+	public static final String delims = " \t*+-/()[]";
+
+	/**
+	 * Initializes this Expression object with an input expression. Sets all
+	 * other fields to null.
+	 * 
+	 * @param expr
+	 *            Expression
+	 */
+	public Expression(String expr) {
+		this.expr = expr;
+		System.out.println("Input: " + expr);
+	}
+
+	/**
+	 * Populates the scalars and arrays lists with symbols for scalar ad array
+	 * variables in the expression. For every variable, a SINGLE symbol is
+	 * created and stored, even if it appears more than once in the expression.
+	 * At this time, values for all variables are set to zero - they will be
+	 * loaded from a file in the loadSymbolValues method. (varx +
+	 * vary*varz[(vara+varb[(a+b)*33])])/55
+	 */
+	public void buildSymbols() {
 		StringTokenizer variables = new StringTokenizer(expr, " \t*+-/()");
 		scalars = new ArrayList<ScalarSymbol>();
 		arrays = new ArrayList<ArraySymbol>();
@@ -84,547 +91,533 @@ public class Expression {
 			}
 		}
 	}
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Populates the scalars and arrays lists with symbols for scalar ad array
-     * variables in the expression. For every variable, a SINGLE symbol is created and stored,
-     * even if it appears more than once in the expression.
-     * At this time, values for all variables are set to
-     * zero - they will be loaded from a file in the loadSymbolValues method.
-     * (varx + vary*varz[(vara+varb[(a+b)*33])])/55
-     */
-    public void buildSymbols2() {
-    	//System.out.println("\n\n ====== MY CODE ========");
-    	//Initialize ArrayLists
-    	scalars = new ArrayList<ScalarSymbol>();
-    	arrays = new ArrayList<ArraySymbol>();
-    	
-    	String myexpr = expr;
-    	StringTokenizer st = new StringTokenizer(myexpr,"\t*/+-() ]");
-    	// Only Square Brackets remain
-    	
-        while (st.hasMoreTokens()){
-        	String vars = st.nextToken();
-            if (!(vars.contains("["))){
-            	StringTokenizer inside = new StringTokenizer(vars);
-				while (inside.hasMoreTokens()){
-					String insideToken = inside.nextToken();
-					if ((Character.isLetter(insideToken.charAt(0))))
-						if (!(scalars.contains(new ScalarSymbol(insideToken))))
-						{
-							//System.out.println(insideToken);
-							scalars.add(new ScalarSymbol(insideToken));
-						}
-				}
-    		}
-            else
-            {
-            	vars = vars.replaceAll("\\[", "\\|");  // Signifies where Array variables end  ex: arrVar|????]
-            	StringTokenizer inSquareBrackets = new StringTokenizer(vars, "]"); // no need for ]
-            	while (inSquareBrackets.hasMoreTokens()){
-            		String iSBTokenized = inSquareBrackets.nextToken();
-					//System.out.println(iSBTokenized);
-					if (iSBTokenized.contains("|")){
-						iSBTokenized = iSBTokenized.replaceAll("\\|", "");
-						if (Character.isLetter(iSBTokenized.charAt(0)))
-							if (!(arrays.contains(new ArraySymbol(iSBTokenized))))
-								arrays.add(new ArraySymbol(iSBTokenized));
-					}
-					else
-						if (Character.isLetter(iSBTokenized.charAt(0))) 
-							if (!(scalars.contains(new ScalarSymbol(iSBTokenized))))
-							{
-								//System.out.println(iSBTokenized);
-								scalars.add(new ScalarSymbol(iSBTokenized));
-							}
-            	}
-            }
-        }
 
-    }
-    
-    /**
-     * Loads values for symbols in the expression
-     * 
-     * @param sc Scanner for values input
-     * @throws IOException If there is a problem with the input 
-     */
-    public void loadSymbolValues(Scanner sc) 
-    throws IOException {
-        while (sc.hasNextLine()) {
-            StringTokenizer st = new StringTokenizer(sc.nextLine().trim());
-            int numTokens = st.countTokens();
-            String sym = st.nextToken();
-            ScalarSymbol ssymbol = new ScalarSymbol(sym);
-            ArraySymbol asymbol = new ArraySymbol(sym);
-            int ssi = scalars.indexOf(ssymbol);
-            int asi = arrays.indexOf(asymbol);
-            if (ssi == -1 && asi == -1) {
-            	continue;
-            }
-            int num = Integer.parseInt(st.nextToken());
-            if (numTokens == 2) { // scalar symbol
-                scalars.get(ssi).value = num;
-            } else { // array symbol
-            	asymbol = arrays.get(asi);
-            	asymbol.values = new int[num];
-                // following are (index,val) pairs
-                while (st.hasMoreTokens()) {
-                    String tok = st.nextToken();
-                    StringTokenizer stt = new StringTokenizer(tok," (,)");
-                    int index = Integer.parseInt(stt.nextToken());
-                    int val = Integer.parseInt(stt.nextToken());
-                    asymbol.values[index] = val;              
-                }
-            }
-        }
-    }
-
-    private String removeExtraSpaces()
-    {
-    	StringTokenizer split = new StringTokenizer(expr," ");
-    	String exp = "";
-    	while(split.hasMoreTokens())
-    	{
-    		String x = split.nextToken();
-    		exp += x;
-    	}
-    	
-    	return exp;
-    }
-
-    /**
-     * Evaluates the expression, using RECURSION to evaluate subexpressions and to evaluate array 
-     * subscript expressions.
-     * 
-     * @return Result of evaluation
-     */
-    public float evaluate() {
-    	//Expression w/o extra spaces
-    	expr = removeExtraSpaces();
-    	
-    	
-    	System.out.println("\n\nNO SPACES: " + expr);
-    	Stack <Integer> LBRIndex = new Stack<Integer>();
-    	Stack <Integer> RBRIndex = new Stack<Integer>();
-    	
-    	//Find First Occurance of ) or ]
-    	int rBracketFirstOccurence = 0;
-    	for (int i = 0; i < expr.length(); i++)
-    		if (expr.charAt(i) == ')' || expr.charAt(i) == ']'){
-    			rBracketFirstOccurence = i;
-    			break;
-    		}
-    	System.out.println("first occurence at [" + rBracketFirstOccurence +"]");
-    	// add to stacks
-    	
-    	//Left stacks
-    	for (int i = rBracketFirstOccurence-1 ; i >= 0; i--)
-    	{
-    		if (expr.charAt(i) == '(' || expr.charAt(i) == '['){
-    			
-    			LBRIndex.push(i);
-    			System.out.println("Pushed LBR index: " + i);
-    		}
-    	}
-    	
-    	for (int i = rBracketFirstOccurence ; i < expr.length(); i++)
-    	{
-    		if (expr.charAt(i) == ')' || expr.charAt(i) == ']'){
-    			RBRIndex.push(i);
-    			System.out.println("Pushed RBR index: " + i);
-    		}
-    	}
-
-    	
-    	
-    	
-    	
-    	System.out.println();
-    	String modifiedExpr = expr;
-    	return calculate (modifiedExpr,LBRIndex, RBRIndex);
-    }
-    
-    
-    
-    private float calculate (String modExpr, Stack <Integer> LBRIndex, Stack <Integer> RBRIndex)
-    {
-    	System.out.println("========== Calculate ============ ");
-    	
-    	String inExp = "";
-    	float finalAnswer = 0;
-    	//(a + A[a*2-b])
-    	if (!(LBRIndex.isEmpty())){
-    	int lbr = LBRIndex.pop();
-    	int rbr = RBRIndex.pop();
-    	//int prev 
-    	
-    	inExp = expr.substring(lbr+1, rbr);
-    	System.out.println("expr: " + expr);
-    	System.out.println("inExp: " + inExp);
-    	
-    	}
-    	else
-    	{
-    		inExp = expr;
-    	}
-    	if (inExp.contains("(") || inExp.contains("[") || inExp.contains("]") || inExp.contains(")")) 
-    	{ 
-    		 
-    		 finalAnswer += calculate(modExpr,LBRIndex,RBRIndex);
-    		 System.out.println("   ===== Answer from inner ====");
-    		 System.out.println(expr);
-    		 modExpr = modExpr.replace(inExp, ""+finalAnswer);
-    		 System.out.println(modExpr);
-    		 System.out.println(inExp);
-    		 
-    	}
-    	// Does not contain brackets
-    		System.out.println("        ============No Brackets==================");
-    		
-    		StringTokenizer st = new StringTokenizer(inExp,delims, true);
-    		
-    		String[] vars = tokenizerToArray(st);
-    		
-    		finalAnswer = solve(inExp, vars);
-    		System.out.println("Solution of " + inExp + " is " + finalAnswer);
-    		
-    		System.out.println("expr : " + expr);
-    		modExpr = modExpr.replace(inExp, ""+finalAnswer);
-    		System.out.println("modExpr: " + modExpr);
-    		System.out.println("inExp : " + inExp);
-    		//replace inExp PART in expr with finalAnswer
-    		String newExpr = expr.substring(0, expr.indexOf(inExp)) + finalAnswer;
-    		
-    		newExpr = newExpr + expr.substring((newExpr.indexOf(""+finalAnswer) + ("" + finalAnswer).length() +2));
-    		System.out.println(newExpr);
-    		//expr = newExpr;
-    		
-	   		 if (modExpr.charAt(modExpr.indexOf(""+finalAnswer)-1) == '[')
-	   		 {
-	   			 StringTokenizer tokens = new StringTokenizer(modExpr,delims,true);
-	   			
-	   			 
-	   			ArrayList<String> tempvars = new ArrayList<String>();
-	   			while (tokens.hasMoreTokens())
-	   				tempvars.add(tokens.nextToken());
-	   			String[] vars2 = new String[tempvars.size()];
-	   			int a = 0;
-	   			for (String x : tempvars)
-	   			{
-	   				vars2[a] = x;
-	   				a++;
-	   			}
-	   			 
-	   			 
-	      		
-	   			modExpr = arrayFix(vars2,finalAnswer);
-	   			finalAnswer += calculate(modExpr,LBRIndex,RBRIndex);
-	   		 }
-    		System.out.println(modExpr);
-    		
-    		System.out.println("        =============End of No brackets ==========");
-    		return finalAnswer;
-    	
-    }
-
-    
-    private String arrayFix(String[] vars,float finalAnswer)
-    {
-    	
-    	System.out.println("======= Array Fix =========");
-    	 // returns one character behind final answer expr.charAt(expr.indexOf("" + finalAnswer)-1)
-    	//int sbFinalAnswer = expr.indexOf("" + finalAnswer) - 1;
-    	
-    	int finalIndex = 0;
-    	
-    	for(int i = 0; i < vars.length ; i++)
-    	{
-    		if(vars[i].equals("" + finalAnswer))
-    		{
-    			finalIndex = i;
-    			break;
-    		}
-    	}
-    	System.out.println(finalIndex);
-    	boolean isStartAffected= false;
-    	if (finalIndex-2 == 0)
-    		isStartAffected = true;
-    	
-    	
-    	System.out.println(vars[finalIndex-2]);
-    	
-    	
-    	int truncFinalIndex = (int) finalAnswer;
-    	
-    	int arrayAns = 0;
-			for (ArraySymbol x : arrays)
-			{
-				System.out.println(x.name);
-				if ((x.name).equals(vars[finalIndex-2]))
-				{
-					System.out.println("WORKS");
-					arrayAns = x.values[truncFinalIndex];
+	/**
+	 * Loads values for symbols in the expression
+	 * 
+	 * @param sc
+	 *            Scanner for values input
+	 * @throws IOException
+	 *             If there is a problem with the input
+	 */
+	public void loadSymbolValues(Scanner sc) throws IOException {
+		while (sc.hasNextLine()) {
+			StringTokenizer st = new StringTokenizer(sc.nextLine().trim());
+			int numTokens = st.countTokens();
+			String sym = st.nextToken();
+			ScalarSymbol ssymbol = new ScalarSymbol(sym);
+			ArraySymbol asymbol = new ArraySymbol(sym);
+			int ssi = scalars.indexOf(ssymbol);
+			int asi = arrays.indexOf(asymbol);
+			if (ssi == -1 && asi == -1) {
+				continue;
+			}
+			int num = Integer.parseInt(st.nextToken());
+			if (numTokens == 2) { // scalar symbol
+				scalars.get(ssi).value = num;
+			} else { // array symbol
+				asymbol = arrays.get(asi);
+				asymbol.values = new int[num];
+				// following are (index,val) pairs
+				while (st.hasMoreTokens()) {
+					String tok = st.nextToken();
+					StringTokenizer stt = new StringTokenizer(tok, " (,)");
+					int index = Integer.parseInt(stt.nextToken());
+					int val = Integer.parseInt(stt.nextToken());
+					asymbol.values[index] = val;
 				}
 			}
-			
-			
-			
-			System.out.println(arrayAns);
-			
-			
-			String[] newArr = new String[vars.length-3];
-    		
-    		if(isStartAffected)
-    		{
-    			newArr[0] = "" + arrayAns;
-    			System.arraycopy(vars, finalIndex+2, newArr, 1,vars.length-3);	
-    		}
-    		else
-    		{
-    			System.arraycopy(vars, 0, newArr, 0, finalIndex-2);
-    			newArr[finalIndex-2] = "" + arrayAns;
-    			System.arraycopy(vars, finalIndex+2, newArr, finalIndex-1, newArr.length-finalIndex +1);
-    		} 
-			
-			
-    		vars = newArr;
-			String ansExp = "";
-			// PRINTS VALUES WITH VALUE
-			System.out.print("Vars w/ value: ");
-			for (int x = 0; x < vars.length; x++)
-			{
-				System.out.print(vars[x]);
-				ansExp += vars[x];
+		}
+	}
+
+	private String removeExtraSpaces() {
+		StringTokenizer split = new StringTokenizer(expr, " ");
+		String exp = "";
+		while (split.hasMoreTokens()) {
+			String x = split.nextToken();
+			exp += x;
+		}
+		// exp = "(" + expr + ")";
+		return exp;
+	}
+
+	/**
+	 * Evaluates the expression, using RECURSION to evaluate subexpressions and
+	 * to evaluate array subscript expressions.
+	 * 
+	 * @return Result of evaluation
+	 */
+	public float evaluate() {
+		// Expression w/o extra spaces
+		expr = removeExtraSpaces();
+		System.out.println(expr);
+
+		System.out.println("\n\nNO SPACES: " + expr);
+		Stack<Integer> LBRIndex = new Stack<Integer>();
+		Stack<Integer> RBRIndex = new Stack<Integer>();
+		Stack<Integer> depth = new Stack<Integer>();
+		// Find First Occurance of ) or ]
+		int rBracketFirstOccurence = 0;
+		for (int i = 0; i < expr.length(); i++)
+			if (expr.charAt(i) == ')' || expr.charAt(i) == ']') {
+				rBracketFirstOccurence = i;
+				break;
 			}
-				
-			System.out.println();
-    	
-    	
-    	
-			System.out.println("======= End Array Fix =========");
-    	return ansExp;
-    }
-    
-    
-    private String[] tokenizerToArray(StringTokenizer st) {
-		// TODO Auto-generated method stub
-    	
-    	//Make an array of strings  and store each value
+		System.out.println("first occurence at [" + rBracketFirstOccurence + "]");
+
+		// Left stacks
+		for (int i = rBracketFirstOccurence - 1; i >= 0; i--) {
+			if (expr.charAt(i) == '(') {
+
+				LBRIndex.push(i);
+				System.out.println("Pushed LBR index: " + i);
+			}
+		}
+
+		for (int i = rBracketFirstOccurence; i < expr.length(); i++) {
+			if (expr.charAt(i) == ')') {
+				RBRIndex.push(i);
+				System.out.println("Pushed RBR index: " + i);
+			}
+		}
+
+		StringTokenizer st = new StringTokenizer(expr, delims, true);
 		ArrayList<String> tempvars = new ArrayList<String>();
 		while (st.hasMoreTokens())
 			tempvars.add(st.nextToken());
 		String[] vars = new String[tempvars.size()];
 		int a = 0;
-		for (String x : tempvars)
-		{
+		for (String x : tempvars) {
 			vars[a] = x;
 			a++;
 		}
-		
-		// PRINTS CURRENT VARIABLES
-		System.out.print("Current vars : ");
-		for (int x = 0; x < vars.length; x++)
-			System.out.print(vars[x]);
-		System.out.println();
-	
-	
-			// Assign values to vars string array
-			for (int index = 0; index < vars.length; index++)
-			{
-				for (ScalarSymbol x : scalars)
-				{
-					if (vars[index].equals(x.name))
-					{
-						vars[index] = "" + x.value;
-					}
+
+		for (int index = 0; index < vars.length; index++) {
+			for (ScalarSymbol x : scalars) {
+				if (vars[index].equals(x.name)) {
+					vars[index] = "" + x.value;
 				}
 			}
-		
-		
-		// PRINTS VALUES WITH VALUE
-		System.out.print("Vars w/ value: ");
-		for (int x = 0; x < vars.length; x++)
-			System.out.print(vars[x]);
-		System.out.println();
-		
-		return vars;
+		}
+		expr = "";
+		for (int index = 0; index < vars.length; index++) {
+			expr += vars[index];
+		}
+
+		System.out.println(expr);
+		String modifiedExpr = expr;
+		return calculate(modifiedExpr, LBRIndex, RBRIndex);
+		// return 0;
 	}
 
-	private float solve (String inExp, String[] x)
-    {
-    	
-    	System.out.println("           ========== Solve ============");
-    	String[] vars = x;
-    	float answer = 0;
-    	//boolean squarebracket = expr.charAt(expr.indexOf(inExp)-2) == '[';
-    	System.out.println(inExp);
-    	System.out.println(expr);
-    	int leftIndex = expr.indexOf(inExp) - 1;
-    	int rightIndex = expr.indexOf(inExp) + inExp.length();
-    	System.out.println("Left Index = " + leftIndex + "    " + expr.charAt(leftIndex));
-    	System.out.println("Right Index = " + rightIndex + "    "+ expr.charAt(rightIndex));
-    	
-    	//Calculate w/ order of ops
-		// ==================================================== MULTIPLY DIVIDE ============
-		while (inExp.contains("*") || inExp.contains("/"))
-		{
-			float singleAns = 0;
-			boolean isStartAffected = false;
-			int symbolIndex = 0;
-			
-    		for (int index = 0; index < vars.length; index ++)
-    		{
-    			if (vars[index].equals("*")){
-    				// calculate answer
-    				//System.out.print(vars[index-1] + " | " + vars[index+1] + " error \n");
-    				singleAns = (Float.parseFloat(vars[index-1]) * Float.parseFloat(vars[index+1]));
-    				System.out.println("Multiply " + vars[index-1] + vars[index] + vars[index+1] + " = " + singleAns);
-    				symbolIndex = index;
-    				if (index-1 == 0)
-    					isStartAffected = true;
-    				break;
-    			} else if (vars[index].equals("/"))
-    			{
-    				singleAns = (Float.parseFloat(vars[index-1]) / Float.parseFloat(vars[index+1]));
-    				System.out.println("Divide " + vars[index-1] + vars[index] + vars[index+1] + " = " + singleAns);
-    				symbolIndex = index;
-    				if (index-1 == 0)
-    					isStartAffected = true;
-    				break;
-    			}
-    		}
-    		
-    		String[] newArr = new String[vars.length-2];
-    		
-    		if(isStartAffected)
-    		{
-    			newArr[0] = "" + singleAns;
-    			System.arraycopy(vars, symbolIndex+2, newArr, 1,vars.length-3);	
-    		}
-    		else
-    		{
-    			System.arraycopy(vars, 0, newArr, 0, symbolIndex-1);
-    			newArr[symbolIndex-1] = "" + singleAns;
-    			System.arraycopy(vars, symbolIndex+2, newArr, symbolIndex, newArr.length-symbolIndex);
-    		} 
-    		
-    		//singleAns ==> full
-    		answer = singleAns;
-    		
-    		//convert array to inExp
-    		inExp = "";
-    		for(int i = 0; i < newArr.length; i++)
-    		{
-    			inExp += "" + newArr[i];
-    		}
-    		
-    		vars = newArr;
-    		
-		}
-		
-		
-		while (inExp.contains("+") || inExp.contains("-"))
-		{
-			float singleAns = 0;
-			boolean isStartAffected = false;
-			int symbolIndex = 0;
-			
-    		for (int index = 0; index < vars.length; index ++)
-    		{
-    			if (vars[index].equals("+")){
-    				// calculate answer
-    				singleAns = (Float.parseFloat(vars[index-1]) + Float.parseFloat(vars[index+1]));
-    				System.out.println("Add " + vars[index-1] + vars[index] + vars[index+1] + " = " + singleAns);
-    				symbolIndex = index;
-    				if (index-1 == 0)
-    					isStartAffected = true;
-    				break;
-    			} else if (vars[index].equals("-"))
-    			{
-    				singleAns = (Float.parseFloat(vars[index-1]) - Float.parseFloat(vars[index+1]));
-    				System.out.println("Subtract " + vars[index-1] + vars[index] + vars[index+1] + " = " + singleAns);
-    				symbolIndex = index;
-    				if (index-1 == 0)
-    					isStartAffected = true;
-    				break;
-    			}
-    		}
-    		
-    		String[] newArr = new String[vars.length-2];
-    		
-    		
-    		if(isStartAffected)
-    		{
-    			newArr[0] = "" + singleAns;
-    			if(newArr.length >= 3)
-    				System.arraycopy(vars, symbolIndex+2, newArr, 1,vars.length-3);	
-    		}
-    		else
-    		{
-    			newArr[symbolIndex-1] = "" + singleAns;
-    			if(newArr.length >= 3) 
-    			{
-    				System.arraycopy(vars, 0, newArr, 0, symbolIndex-1);
-	    			System.arraycopy(vars, symbolIndex+2, newArr, symbolIndex, newArr.length-symbolIndex);	
-    			}
-    			
-    			
-    		}
-    		//singleAns ==> full
-    		answer = singleAns;
-    		
-    		//convert array to inExp
-    		inExp = "";
-    		for(int i = 0; i < newArr.length; i++)
-    		{
-    			inExp += "" + newArr[i];
-    		}
-    		
-    		
-    		
-    		vars = newArr;
-    		
-		}
-		
-		
-		System.out.println("Answer of inExp = " + answer + "\n           =====EndofSolve====");
-		//expr = expr.substring(0, leftIndex+1) + answer + expr.substring(rightIndex);
-		//System.out.println("expr inside solve: " + expr);
-		
+	private float calculate(String inExp, Stack<Integer> LBRIndex, Stack<Integer> RBRIndex) {
+		System.out.println("========== Calculate ======== ");
 
+		float finalAnswer = 0;
+		int lbr, rbr;
 		
-		//System.out.println("Possible Replacement: " +expr.substring(0, expr.expr.indexOf(vars[0])) + answer);
+		if (inExp.contains("(") && (!(LBRIndex.isEmpty()))) {
+
+			lbr = LBRIndex.pop();
+			rbr = RBRIndex.pop();
+			System.out.println("popped" + lbr + " | " + rbr);
+			inExp = inExp.substring(lbr+1, rbr);
+		} else {
+			lbr = 0;
+			rbr = expr.length();
+			System.out.println(inExp);
+			//inExp = inExp.substring(lbr, rbr-1);
+		}
+
+		System.out.println("expr   : " + expr);
+		System.out.println("inExp  : " + inExp);
 		
 		
 		
+		
+		
+		
+		
+		
+		
+		
+		
+		//TEST CASES
+		
+		
+		if (isNumeric(expr))
+			return Float.parseFloat(expr);
+		
+		if (inExp.indexOf("(") == -1 && inExp.indexOf("[") == -1)  // FALSE FALSE
+		{
+			System.out.println("===Case 1");
+			System.out.println("1expr   : " + expr);
+			System.out.println("1inExp  : " + inExp);
+			finalAnswer = solve(inExp);
+			
+			System.out.println("Returned from first TestCase");
+			return finalAnswer;
+		}
+		else if (!(inExp.indexOf("[") == -1) && inExp.indexOf("(") == -1)
+		{
+			
+			System.out.println("===  Case 2");
+			String oriinExp = inExp;
+			System.out.println("3expr   : " + expr);
+			System.out.println("3inExp  : " + inExp);
+			System.out.println("3OriInExp"  + oriinExp);
+			
+			//int leftbracket = inExp.indexOf("[");
+			inExp = fixSquareBrackets(inExp);
+			System.out.println(inExp);
+			int left = 0;
+			if (expr.indexOf(oriinExp)-1 < 0)
+			{
+				left = 0;
+			}
+			else
+			{
+				left = expr.indexOf(oriinExp)-1;
+			}
+			
+			//int right = 0;
+			
+			
+//			System.out.println(expr.charAt(expr.indexOf(oriinExp)-1));
+//			System.out.println(expr.substring(expr.indexOf(oriinExp)+oriinExp.length()+1));
+//			System.out.println(left + inExp + expr.substring(expr.indexOf(oriinExp)+oriinExp.length()));
+//			
+			
+			inExp = "" + solve(inExp);
+			
+			String newinExp = expr.substring(0, left) + inExp;
+			newinExp = newinExp + expr.substring(newinExp.length()+1);
+			
+			
+			System.out.println("inExp in ThirdTestCase = " + inExp);
+			return calculate(newinExp,LBRIndex,RBRIndex);
+		}
+		else if (inExp.contains("(") ||inExp.contains(")"))    // TRUE 
+ 
+		{
+			System.out.println("===Case 3");
+			System.out.println("2expr   : " + expr);
+			System.out.println("2inExp  : " + inExp);
+			//ystem.out.println("SecondCase : inExp : "+inExp);
+			
+			inExp = inExp.substring(lbr+1, rbr);
+			System.out.println("Returned from second TestCase");
+			return calculate(inExp, LBRIndex, RBRIndex);
+		}
+		
+		// Does not contain brackets
+		System.out.println(">>>======End of No brackets ==========");
+		System.out.println("================== END OF CALCULATION ========");
+		
+		return finalAnswer;
+
+	}
+
+	private String fixSquareBrackets(String inExp)
+	{
+		while (inExp.contains("[") || inExp.contains("]")) // Array value
+			// exists.
+		{
+		String originalinExp = inExp;
+		int indexInnerMostArrayName = 0;
+		int indexInnerMostLSB = 0;
+		int indexValueOfSB = 0;
+		int indexInnerMostRSB = 0;
+		boolean difference = false;
+		
+		for (int i = 0; i < inExp.length(); i++)
+		if (inExp.charAt(i) == '[') {
+		indexInnerMostLSB = i;
+		for (int j = i; j < inExp.length(); j++)
+		if (inExp.charAt(j) == ']') {
+		indexInnerMostRSB = j;
+		break;
+		}
+		}
+		
+		if ((indexInnerMostRSB - indexInnerMostLSB) > 2) {
+		difference = true;
+		}
+		if (difference) {
+		
+		String result;
+		// System.out.println("UH OHH");
+		// //System.out.println(inExp.substring(indexInnerMostLSB+1,
+		// indexInnerMostRSB));
+		// System.out.println("Original inExp" + originalinExp);
+		
+		float ans = solve(inExp.substring(indexInnerMostLSB + 1, indexInnerMostRSB));
+		String temp = inExp.substring(0, indexInnerMostLSB + 1) + ans + inExp.charAt(indexInnerMostRSB);
+		// System.out.println("temp " + temp );
+		// System.out.println("UH OHHOVER");
+		// System.out.println("Original inExp" + originalinExp);
+		inExp = temp;
+		// break;
+		// Solve expression inside
+		// fix inExp with result
+		
+		}
+		
+		indexInnerMostArrayName = indexInnerMostLSB - 1;
+		indexValueOfSB = indexInnerMostLSB + 1;
+		// System.out.println(inExp.substring(indexInnerMostLSB-1,indexInnerMostRSB+1));
+		
+		// Convert token ==> Array
+		StringTokenizer st = new StringTokenizer(inExp, delims, true);
+		ArrayList<String> stAL = new ArrayList<String>();
+		while (st.hasMoreTokens())
+		stAL.add(st.nextToken());
+		String[] inExprArr = new String[stAL.size()];
+		int a = 0;
+		for (String x : stAL) {
+		inExprArr[a] = x;
+		a++;
+		}
+		
+		int arrayAns = 0;
+		// System.out.println("Name: " +
+		// inExprArr[indexInnerMostArrayName]);
+		for (ArraySymbol x : arrays) {
+		// System.out.println(x.name);
+		if ((x.name).equals(inExprArr[indexInnerMostArrayName])) {
+		// System.out.println("WORKS");
+		arrayAns = x.values[(int) Float.parseFloat((inExprArr[indexValueOfSB]))];
+		}
+		}
+		
+		// At this point arrayAns = value of B[2]
+		// System.out.println("Array ans of"
+		// +inExp.substring(indexInnerMostLSB-1,indexInnerMostRSB+1) + " = "
+		// + arrayAns );
+		String newinExpr = "";
+		int a1 = 0;
+		for (a1 = 0; a1 < inExprArr.length; a1++) {
+			if (a1 == (indexInnerMostArrayName)) {
+					newinExpr += arrayAns;
+					a1 += 3;
+				} 
+				else
+				newinExpr += inExprArr[a1];
+				
+		}
+//		System.out.println(newinExpr);
+//		
+//		if(inExprArr.length > 1){
+//			float answer  = solve(newinExpr);
+//			inExp = "" +answer; 
+//		}
+		inExp = newinExpr;
+		
+		} // END OF WHILE
+		
+		return inExp;
+	}
+	
+	
+	public static boolean isNumeric(String str) {
+		try {
+			float d = Float.parseFloat(str);
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
+		return true;
+	}
+
+	private float solve(String inExp) {
+
+		System.out.println("           ========== Solve ============");
+
+		StringTokenizer st = new StringTokenizer(inExp, delims, true);
+		ArrayList<String> tempvars = new ArrayList<String>();
+		while (st.hasMoreTokens())
+			tempvars.add(st.nextToken());
+		String[] vars = new String[tempvars.size()];
+		int a = 0;
+		for (String x : tempvars) {
+			vars[a] = x;
+			a++;
+		}
+
+		for (int index = 0; index < vars.length; index++) {
+			for (ScalarSymbol x : scalars) {
+				if (vars[index].equals(x.name)) {
+					vars[index] = "" + x.value;
+				}
+			}
+		}
+
+		float answer = 0;
+		// boolean squarebracket = expr.charAt(expr.indexOf(inExp)-2) == '[';
+		System.out.println("inExp: " + inExp);
+		System.out.println(expr);
+
+		System.out.println("inExp: " + inExp + "\nVARS: ");
+		for (int x1 = 0; x1 < vars.length; x1++) {
+			System.out.print(vars[x1]);
+		}
+		System.out.println();
+
+		String calcExp = inExp;
+		System.out.println("Before everything: " + inExp);
+		System.out.println("Before Multiply/Divide : " + calcExp);
+		// Calculate w/ order of ops
+		// ==================================================== MULTIPLY DIVIDE
+		// ============
+		while (calcExp.contains("*") || calcExp.contains("/")) {
+			System.out.println("multiply " + calcExp);
+			float singleAns = 0;
+			boolean isStartAffected = false;
+			int symbolIndex = 0;
+
+			for (int index = 0; index < vars.length; index++) {
+				if (vars[index].equals("*")) {
+
+					singleAns = (Float.parseFloat(vars[index - 1]) * Float.parseFloat(vars[index + 1]));
+					System.out
+							.println("Multiply " + vars[index - 1] + vars[index] + vars[index + 1] + " = " + singleAns);
+					symbolIndex = index;
+					if (index - 1 == 0)
+						isStartAffected = true;
+					break;
+				} else if (vars[index].equals("/")) {
+					singleAns = (Float.parseFloat(vars[index - 1]) / Float.parseFloat(vars[index + 1]));
+					System.out.println("Divide " + vars[index - 1] + vars[index] + vars[index + 1] + " = " + singleAns);
+					symbolIndex = index;
+					if (index - 1 == 0)
+						isStartAffected = true;
+					break;
+				}
+			}
+
+			String[] newArr = new String[vars.length - 2];
+
+			if (isStartAffected) {
+				newArr[0] = "" + singleAns;
+				System.arraycopy(vars, symbolIndex + 2, newArr, 1, vars.length - 3);
+			} else {
+				System.arraycopy(vars, 0, newArr, 0, symbolIndex - 1);
+				newArr[symbolIndex - 1] = "" + singleAns;
+				System.arraycopy(vars, symbolIndex + 2, newArr, symbolIndex, newArr.length - symbolIndex);
+			}
+
+			// singleAns ==> full
+			answer = singleAns;
+
+			// convert array to calcExp
+			calcExp = "";
+			for (int i = 0; i < newArr.length; i++) {
+				calcExp += "" + newArr[i];
+			}
+
+			vars = newArr;
+
+		}
+		System.out.println("After Multiply/Divide : " + calcExp);
+		System.out.println("Before Add/Substract : " + calcExp);
+		while (calcExp.contains("+") || calcExp.contains("-")) {
+
+			float singleAns = 0;
+			boolean isStartAffected = false;
+			int symbolIndex = 0;
+
+			for (int index = 0; index < vars.length; index++) {
+				if (vars[index].equals("+")) {
+					// calculate answer
+					singleAns = (Float.parseFloat(vars[index - 1]) + Float.parseFloat(vars[index + 1]));
+					System.out.println("Add " + vars[index - 1] + vars[index] + vars[index + 1] + " = " + singleAns);
+					symbolIndex = index;
+					if (index - 1 == 0)
+						isStartAffected = true;
+					break;
+				} else if (vars[index].equals("-")) {
+					singleAns = (Float.parseFloat(vars[index - 1]) - Float.parseFloat(vars[index + 1]));
+					System.out
+							.println("Subtract " + vars[index - 1] + vars[index] + vars[index + 1] + " = " + singleAns);
+					symbolIndex = index;
+					if (index - 1 == 0)
+						isStartAffected = true;
+					break;
+				}
+			}
+
+			String[] newArr = null;
+			if (vars.length - 2 > 0) {
+				newArr = new String[vars.length - 2];
+
+				if (isStartAffected) {
+					newArr[0] = "" + singleAns;
+					if (newArr.length >= 3)
+						System.arraycopy(vars, symbolIndex + 2, newArr, 1, vars.length - 3);
+				} else {
+					newArr[symbolIndex - 1] = "" + singleAns;
+					if (newArr.length >= 3) {
+						System.arraycopy(vars, 0, newArr, 0, symbolIndex - 1);
+						System.arraycopy(vars, symbolIndex + 2, newArr, symbolIndex, newArr.length - symbolIndex);
+					}
+
+				}
+
+				// convert array to calcExp
+				calcExp = "";
+				for (int i = 0; i < newArr.length; i++) {
+					calcExp += "" + newArr[i];
+				}
+			} else {
+				newArr = new String[1];
+				newArr[0] = "" + singleAns;
+			}
+
+			answer = singleAns;
+			System.out.println(calcExp);
+
+			vars = newArr;
+			
+			
+			if (isNumeric(calcExp))
+			{
+				break;
+			}
+
+		}
+
+		System.out.println("aftereverything: " + inExp);
+
+		System.out.println("Answer of calcExp = " + answer + "\n           =====EndofSolve====");
+
 		return answer;
-    }
-    
+	}
 
+//	private boolean isNegativeNumber(String str) {
+//		try {
+//			float d = Float.parseFloat(str);
+//		} catch (NumberFormatException nfe) {
+//			return false;
+//		}
+//		return true;
+//		return false;
+//	}
 
-    /**
-     * Utility method, prints the symbols in the scalars list
-     */
-    public void printScalars() {
-        for (ScalarSymbol ss: scalars) {
-            System.out.println(ss);
-        }
-    }
-    
-    /**
-     * Utility method, prints the symbols in the arrays list
-     */
-    public void printArrays() {
-    		for (ArraySymbol as: arrays) {
-    			System.out.println(as);
-    		}
-    }
+	/**
+	 * Utility method, prints the symbols in the scalars list
+	 */
+	public void printScalars() {
+		for (ScalarSymbol ss : scalars) {
+			System.out.println(ss);
+		}
+	}
+
+	/**
+	 * Utility method, prints the symbols in the arrays list
+	 */
+	public void printArrays() {
+		for (ArraySymbol as : arrays) {
+			System.out.println(as);
+		}
+	}
 
 }
