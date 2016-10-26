@@ -465,7 +465,7 @@ public class Expression {
 		String calcExp = inExp;
 		System.out.println("Before everything: " + inExp);
 		System.out.println("Before Multiply/Divide : " + calcExp);
-		// Calculate w/ order of ops
+		// Calculate w/ order of opsw
 		// ==================================================== MULTIPLY DIVIDE
 		// ============
 		while (calcExp.contains("*") || calcExp.contains("/")) {
@@ -591,16 +591,6 @@ public class Expression {
 
 		return answer;
 	}
-
-//	private boolean isNegativeNumber(String str) {
-//		try {
-//			float d = Float.parseFloat(str);
-//		} catch (NumberFormatException nfe) {
-//			return false;
-//		}
-//		return true;
-//		return false;
-//	}
 
 	/**
 	 * Utility method, prints the symbols in the scalars list

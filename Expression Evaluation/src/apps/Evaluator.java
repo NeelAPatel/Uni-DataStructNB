@@ -13,14 +13,14 @@ public class Evaluator {
 		Scanner sc = new Scanner(System.in);
 		while (true) {
 			System.out.print("\nEnter the expression, or hit return to quit => ");
-			//String line = sc.nextLine();
+			String line = sc.nextLine();
 			//String line = "(a - (b+A[B[2]])*d + 3)";
 			//String line = "(varx + vary*varz[(vara+varb[(a+b)*33])])/55"      ;
 			//String line = "a +b + A[a*2-b]";
 			
 			//String line = "a + A[a*2-b]";
 			//String line = "a + A[4]";
-			String line = "a - (b+A[B[2]])*d + 3";
+			//String line = "a - (b+A[B[2]])*d + 3";
 			if (line.length() == 0) {
 				break;
 			}
@@ -33,7 +33,7 @@ public class Evaluator {
 			if (line.length() != 0) {
 				Scanner scfile = new Scanner(new File(line));
 				expr.loadSymbolValues(scfile);
-				//expr.printScalars();
+				expr.printScalars();
 				//expr.printArrays();
 			}
 			System.out.println("Value of expression = " + expr.evaluate());
