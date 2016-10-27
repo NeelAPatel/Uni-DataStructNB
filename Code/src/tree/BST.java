@@ -1,6 +1,7 @@
 package tree;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 /*
@@ -51,46 +52,47 @@ public class BST <T extends Comparable<T>> {
 		size++;
 	}
 	public void delete (T key) {
-		// 1. find node x to delete (call it x)
+		// 1. find node to delete (call it x)
 		BSTNode<T> x = root;
-		BSTNode<T> p = null;
+		BSTNode<T> p = null; // parent
 		int c = 0;
 		while (x != null) {
 			c = key.compareTo(x.key);
-			if (c == 0) { // found it
+			if (c == 0) {
+				// found key
 				break;
 			}
 			p = x;
-			x = (c < 0) ? x.left : x.right; // ternary statement
+			x = (c < 0) ? x.left : x.right;
 		}
-		// 2. key is not found
+		// 2. x is not found
 		if (x == null) {
 			throw new NoSuchElementException(key + " not found");
 		}
-		// 3. check if has two children
-		BSTNode<T> y = null;
+		// 3. check case 3 first
+		BSTNode<T> y = null; // will hold x's inorder predecessor
 		if (x.left != null && x.right != null) {
-			// find inorder predecessor (y)
 			y = x.left;
 			p = x;
 			while (y.right != null) {
 				p = y;
 				y = y.right;
 			}
-			// copy y into x
+			// copy y's key over x
 			x.key = y.key;
 			
-			// prepare to delete y
+			// prepare to remove y
 			x = y;
 		}
-		// 4. p is null, x is the root and x does not have two children
+		// 4. x is the root
 		if (p == null) {
-			root = x.left != null ? x.left : x.right;
+			root = (x.left != null) ? x.left : x.right;
 			size--;
 			return;
 		}
-		// 5. handle case 1 and 2 at the same code
-		BSTNode<T> tmp = x.right != null ? x.right : x.left;
+		// 5. handle case 1 and 2 in the same code
+		// tmp is the x's child (in case of one child)
+		BSTNode<T> tmp = (x.right != null) ? x.right : x.left;
 		if (x == p.left) {
 			p.left = tmp;
 		} else {
@@ -98,41 +100,42 @@ public class BST <T extends Comparable<T>> {
 		}
 		size--;
 	}
-	
-	private static <T extends Comparable> void inOrder (BSTNode<T> root,ArrayList<T> list){
-			if (root == null)
-				return;
-			inOrder(root.left, list);
-			list.add(root.key);
-			inOrder(root.right,list);
+
+	/*
+	 * Static becuase it does not use the BST object's root.
+	 * Every recursive call gets its own root.
+	 * 
+	 * Also, need to define T separately for the static method since
+	 * it does NOT fall under the scope of the object 
+	 */
+	private static <T extends Comparable> void inorder (BSTNode<T> root, ArrayList<T> list) {
+		if (root == null) {
+			return;
 		}
-	
-		
-	private static void main (String[] args)
-	{
-		int[] array ={35, 67, 30, 20, 45, 57};
-		BST<Integer> bst = new BST();
-		
-		for(int i = 0; i <array.length; i++)
-		{
-			bst.insert(i);
-		}
-		
-		ArrayList<Integer> list = new ArrayList<Integer>();
-				inOrder(bst.root,list);
-				
-		System.out.println(list);
-		
-		
+		inorder(root.left, list);
+		list.add(root.key);
+		inorder(root.right, list);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	/*
+	 * Treesort algorithm to sort an array.
+	 * 1. Insert every element from the array into a BST
+	 * 2. Add back elements to array as we traverse the BST inorder
+	 */
+	public static <T extends Comparable<T>> void treeSort (ArrayList<T> array) {
+		// create bst and insert array items
+		BST<T> bst = new BST<T>();
+		for (int i = 0; i < array.size(); i++) {
+			bst.insert(array.get(i));
+		}
+		// clean up the initial array
+		array.clear(); 
+		// call inorder to traverse the BST and put items back into array
+		inorder(bst.root, array);
+	}
+	public static void main (String[] args) {
+		ArrayList<Integer> array = new ArrayList<Integer>(
+				Arrays.asList(67,35,90,56,70,14,40));
+		treeSort(array);
+		System.out.println(array);
+	}
 }
