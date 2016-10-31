@@ -41,23 +41,21 @@ public class Trie {
 	public void insertWord(String word) {
 		/** COMPLETE THIS METHOD **/
 		
-		String lword = word.toLowerCase();
-		words.add(lword);
-		int wordsArrayIndex = words.size()-1;
+		word = word.toLowerCase();
+		words.add(word);
+		
 		//check if tree is null
-		String[] wordsArr = new String[words.size()];
-		words.toArray(wordsArr);
-		int newWordIndex = wordsArr.length-1;
+		int wordIndex = 0;
 		
 		if (root.firstChild == null)
 		{
 			// No trie 
-			Indexes i = new Indexes(wordsArrayIndex, (short) 0,(short)( lword.length()-1));
+			Indexes i = new Indexes(wordIndex, (short) 0,(short)( word.length()-1));
 			TrieNode n = new TrieNode(i,null,null);
 			root.firstChild = n;
 			
 
-			System.out.println("Word: " + lword);
+			System.out.println("Word: " + word);
 			
 			System.out.println("Indexes toString: " + i.toString());
 			System.out.println("TrieNode toString: " + n.toString());
@@ -65,17 +63,71 @@ public class Trie {
 		}
 		else
 		{
+			
 			TrieNode ptr = root.firstChild;
-			System.out.println(lword);
-			System.out.println(wordsArr[wordsArrayIndex]);
-			System.out.println(wordsArr[wordsArrayIndex-1]);
-			System.out.println(lword.charAt(0));
-			System.out.println(wordsArr[0].charAt(ptr.substr.startIndex));
-			if (lword.charAt(0) != wordsArr[0].charAt(ptr.substr.startIndex))
-			{
-				Indexes i = new Indexes(wordsArrayIndex, (short) 0,(short)( lword.length()-1));
-				TrieNode n = new TrieNode(i,null,null);
-				ptr.sibling = n;
+			String prefix = "";
+			String currNode = words.get(ptr.substr.wordIndex);
+			int startIndex = 0;
+			
+			
+			while (ptr != null) {
+				
+				
+				for(int i = startIndex; i <word.length(); i++)
+				{
+					if(word.charAt(i) == currNode.charAt(i))
+						prefix+=word.charAt(i);
+					else
+						break;
+				}
+				
+				
+				if (prefix.length() >= 1)
+				{
+					//child
+					
+					if (ptr.firstChild == null)
+					{
+						//fix ptr index
+						ptr.substr.startIndex = (short) startIndex;
+						ptr.substr.endIndex = (short) (startIndex + prefix.length()-1);
+						
+						
+						
+						//add two children for trailing substring
+						Indexes i1 = new Indexes(words.indexOf(currNode), (short) (startIndex + prefix.length()), (short) (currNode.length()-1));
+						TrieNode n1 = new TrieNode(i1,null,null);
+						ptr.firstChild = n1;
+						
+						Indexes i2 = new Indexes(words.indexOf(word), (short)(startIndex + prefix.length()), (short) (currNode.length()-1));
+						TrieNode n2 = new TrieNode(i2,null,null);
+						ptr.firstChild.sibling = n2;
+						break;
+					}
+					else
+					{
+						startIndex  = startIndex + prefix.length();
+						ptr = ptr.firstChild;
+						continue;
+					}
+						
+				}
+				else
+				{
+					// sibling
+					if (ptr.sibling == null)
+					{
+						Indexes i = new Indexes(words.indexOf(word), (short) (0), (short) (word.length()-1));
+						TrieNode n = new TrieNode(i,null,null);
+						ptr.sibling = n;
+						break;
+					}
+					else
+					{
+						ptr = ptr.sibling;
+					}
+				}
+
 			}
 			
 		}
