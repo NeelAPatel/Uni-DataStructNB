@@ -40,6 +40,47 @@ public class Trie {
 	 */
 	public void insertWord(String word) {
 		/** COMPLETE THIS METHOD **/
+		
+		String lword = word.toLowerCase();
+		words.add(lword);
+		int wordsArrayIndex = words.size()-1;
+		//check if tree is null
+		String[] wordsArr = new String[words.size()];
+		words.toArray(wordsArr);
+		int newWordIndex = wordsArr.length-1;
+		
+		if (root.firstChild == null)
+		{
+			// No trie 
+			Indexes i = new Indexes(wordsArrayIndex, (short) 0,(short)( lword.length()-1));
+			TrieNode n = new TrieNode(i,null,null);
+			root.firstChild = n;
+			
+
+			System.out.println("Word: " + lword);
+			
+			System.out.println("Indexes toString: " + i.toString());
+			System.out.println("TrieNode toString: " + n.toString());
+			
+		}
+		else
+		{
+			TrieNode ptr = root.firstChild;
+			System.out.println(lword);
+			System.out.println(wordsArr[wordsArrayIndex]);
+			System.out.println(wordsArr[wordsArrayIndex-1]);
+			System.out.println(lword.charAt(0));
+			System.out.println(wordsArr[0].charAt(ptr.substr.startIndex));
+			if (lword.charAt(0) != wordsArr[0].charAt(ptr.substr.startIndex))
+			{
+				Indexes i = new Indexes(wordsArrayIndex, (short) 0,(short)( lword.length()-1));
+				TrieNode n = new TrieNode(i,null,null);
+				ptr.sibling = n;
+			}
+			
+		}
+		
+
 	}
 	
 	/**
