@@ -85,13 +85,18 @@ public class Trie {
 							break;
 					else
 						break;
-//					System.out.println("prefix: " + prefix);	
+					System.out.println("88 prefix: " + prefix);	
 				}
-				System.out.println("prefix: " + prefix);
+				System.out.println(" 90 prefix: " + prefix);
 				
 				if (prefix.length() >= 1)
 				{
 					//child
+					
+					//check siblings before children somehow
+					
+					
+					
 					
 					if (ptr.firstChild == null)
 					{
