@@ -65,22 +65,29 @@ public class Trie {
 		{
 			
 			TrieNode ptr = root.firstChild;
-			String prefix = "";
-			String currNode = words.get(ptr.substr.wordIndex);
+			
 			int startIndex = 0;
-			
-			
+
 			while (ptr != null) {
+				String prefix = "";
+				String currNode = words.get(ptr.substr.wordIndex);
 				
-				
+				System.out.println("word: " + word);
+				System.out.println("currNode: " + currNode);
 				for(int i = startIndex; i <word.length(); i++)
 				{
-					if(word.charAt(i) == currNode.charAt(i))
-						prefix+=word.charAt(i);
+					
+					
+					if (i != currNode.length()-1)
+						if(word.charAt(i) == currNode.charAt(i))
+							prefix+=word.charAt(i);
+						else
+							break;
 					else
 						break;
+//					System.out.println("prefix: " + prefix);	
 				}
-				
+				System.out.println("prefix: " + prefix);
 				
 				if (prefix.length() >= 1)
 				{
@@ -92,14 +99,12 @@ public class Trie {
 						ptr.substr.startIndex = (short) startIndex;
 						ptr.substr.endIndex = (short) (startIndex + prefix.length()-1);
 						
-						
-						
 						//add two children for trailing substring
 						Indexes i1 = new Indexes(words.indexOf(currNode), (short) (startIndex + prefix.length()), (short) (currNode.length()-1));
 						TrieNode n1 = new TrieNode(i1,null,null);
 						ptr.firstChild = n1;
 						
-						Indexes i2 = new Indexes(words.indexOf(word), (short)(startIndex + prefix.length()), (short) (currNode.length()-1));
+						Indexes i2 = new Indexes(words.indexOf(word), (short)(startIndex + prefix.length()), (short) (word.length()-1));
 						TrieNode n2 = new TrieNode(i2,null,null);
 						ptr.firstChild.sibling = n2;
 						break;
@@ -151,8 +156,21 @@ public class Trie {
 		/** COMPLETE THIS METHOD **/
 		
 		/** FOLLOWING LINE IS A PLACEHOLDER FOR COMPILATION **/
+		
+		ArrayList <String> foundWords = new ArrayList<String>();
+		
+		for (int i = 0; i < words.size(); i++)
+		{
+			String word = words.get(i);
+			if(word.substring(0, prefix.length()).equals(prefix))
+				foundWords.add(word);
+		}
+		
+		
+		
+		
 		/** REPLACE WITH YOUR IMPLEMENTATION **/
-		return null;
+		return foundWords;
 	}
 	
 	
