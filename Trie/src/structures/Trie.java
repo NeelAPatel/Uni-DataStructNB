@@ -162,11 +162,11 @@ public class Trie {
 		for (int i = 0; i < words.size(); i++)
 		{
 			String word = words.get(i);
-			if(word.substring(0, prefix.length()).equals(prefix))
-				foundWords.add(word);
+			if (word.length() >= prefix.length())
+				if(word.substring(0, prefix.length()).equals(prefix))
+					foundWords.add(word);
 		}
-		
-		
+				
 		
 		
 		/** REPLACE WITH YOUR IMPLEMENTATION **/
