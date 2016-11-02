@@ -32,6 +32,20 @@ public class Trie {
 		words = new ArrayList<String>();
 	}
 	
+	
+	private int compareWords(String word1, String word2)
+	{
+		int common = 0;
+		for(int i = 0; i < word1.length(); i++)
+			if(word1.charAt(i) == (word2.charAt(i)))
+				common++;
+			else
+				break;
+			
+		return common;
+	}
+	
+	
 	/**
 	 * Inserts a word into this trie. Converts to lower case before adding.
 	 * The word is first added to the words array list, then inserted into the trie.
@@ -89,89 +103,47 @@ public class Trie {
 				
 				if (prefix.length() >= 1)
 				{
-					System.out.println("92: prefix entered");
-					    System.out.println("  : ptr            = " + words.get(ptr.substr.wordIndex));
-					if (ptr.firstChild != null)
-						System.out.println("  : ptr.FirstChild = " + words.get(ptr.firstChild.substr.wordIndex));
-					else
-						System.out.println("  : ptr.firstChild = null");
-					
-					if (ptr.sibling != null)
-						System.out.println("  : ptr.sibling    = " + words.get(ptr.sibling.substr.wordIndex));
-					else
-						System.out.println("  : ptr.sibling    = null");
-					
-					while(words.get(ptr.firstChild.substr.wordIndex).substring(0, prefix.length()-1).equals(prefix))
-					{
-						ptr = ptr.firstChild;
-					}
-					
-					/**
-					 * PLAN: if it matches the first child of ptr, then go down a level because all first childs will be left most until ptr.firstchild == null. 
-					 * if it doesn't match, check siblings and while loop ^ 
-					 * 
-					 * So while (ptr.sibling != null)
-					 * while(ptrfirst child matches, repeat until ptr.firstchild is null)
-					 * break out of everything when you reach ptr.firstchild = null and continue. 
-					 * if 
-					 */
-					
+//					System.out.println("92: prefix entered");
+//					    System.out.println("  : ptr            = " + words.get(ptr.substr.wordIndex));
+//					if (ptr.firstChild != null)
+//						System.out.println("  : ptr.FirstChild = " + words.get(ptr.firstChild.substr.wordIndex));
+//					else
+//						System.out.println("  : ptr.firstChild = null");
+//					
+//					if (ptr.sibling != null)
+//						System.out.println("  : ptr.sibling    = " + words.get(ptr.sibling.substr.wordIndex));
+//					else
+//						System.out.println("  : ptr.sibling    = null");
+
+				
 					
 					if (ptr.firstChild == null)
 					{
-						//fix ptr index
-						ptr.substr.startIndex = (short) startIndex;
-						ptr.substr.endIndex = (short) (startIndex + prefix.length()-1);
 						
-						//add two children for trailing substring
-						Indexes i1 = new Indexes(words.indexOf(currNode), (short) (startIndex + prefix.length()), (short) (currNode.length()-1));
-						TrieNode n1 = new TrieNode(i1,null,null);
-						ptr.firstChild = n1;
+							//fix ptr index
+							ptr.substr.startIndex = (short) startIndex;
+							ptr.substr.endIndex = (short) (startIndex + prefix.length()-1);
+							
+							//add two children for trailing substring
+							Indexes i1 = new Indexes(words.indexOf(currNode), (short) (startIndex + prefix.length()), (short) (currNode.length()-1));
+							TrieNode n1 = new TrieNode(i1,null,null);
+							ptr.firstChild = n1;
+							
+							Indexes i2 = new Indexes(words.indexOf(word), (short)(startIndex + prefix.length()), (short) (word.length()-1));
+							TrieNode n2 = new TrieNode(i2,null,null);
+							ptr.firstChild.sibling = n2;
+							break;
 						
-						Indexes i2 = new Indexes(words.indexOf(word), (short)(startIndex + prefix.length()), (short) (word.length()-1));
-						TrieNode n2 = new TrieNode(i2,null,null);
-						ptr.firstChild.sibling = n2;
-						break;
 					}
 					else
 					{
-//						TrieNode ptrS = ptr.firstChild;
-//						if (words.get(ptrS.substr.wordIndex).contains(prefix))
-//						{
-//							ptr = ptr.firstChild;
-//							//fix ptr index
-//							ptr.substr.startIndex = (short) startIndex;
-//							ptr.substr.endIndex = (short) (startIndex + prefix.length()-1);
-//							
-//							
-//							//add two children for trailing substring
-//							Indexes i1 = new Indexes(words.indexOf(currNode), (short) (startIndex + prefix.length()), (short) (currNode.length()-1));
-//							TrieNode n1 = new TrieNode(i1,null,null);
-//							ptr.firstChild = n1;
-//							
-//							Indexes i2 = new Indexes(words.indexOf(word), (short)(startIndex + prefix.length()), (short) (word.length()-1));
-//							TrieNode n2 = new TrieNode(i2,null,null);
-//							ptr.firstChild.sibling = n2;
-//							break;
-//						}
-//						else
-//						{
-//							while(ptrS.sibling != null)
-//							{
-//								System.out.println("Sibling ptrs: " + words.get(ptrS.sibling.substr.wordIndex));
-//								ptrS = ptrS.sibling;
-//							}
-//						}
-//						if (ptr.firstChild != null)
-//							System.out.println("121 : " + words.get(ptr.firstChild.substr.wordIndex));
-//						else
-//							System.out.println("121  : null");
-						
 						
 						startIndex  += prefix.length();
 						ptr = ptr.firstChild;
 						continue;
 					}
+					
+					
 					
 					
 
@@ -213,6 +185,36 @@ public class Trie {
 	 * @return List of all words in tree that start with the prefix, order of words in list does not matter.
 	 *         If there is no word in the tree that has this prefix, null is returned.
 	 */
+	public ArrayList<String> completionList2(String prefix) {
+		/** COMPLETE THIS METHOD **/
+		
+		/** FOLLOWING LINE IS A PLACEHOLDER FOR COMPILATION **/
+		
+		TrieNode ptr = root.firstChild;
+		ArrayList<String> foundWords = new ArrayList<String>();
+		foundWords.add(words.get(ptr.substr.wordIndex));
+				
+		while (ptr.firstChild != null)
+		{
+			if (ptr.sibling == null)
+			{
+				// next level
+			}
+			else
+			{
+				
+			}
+		}
+		
+		
+		
+		/** REPLACE WITH YOUR IMPLEMENTATION **/
+		return foundWords;
+	}
+	
+	
+	
+	
 	public ArrayList<String> completionList(String prefix) {
 		/** COMPLETE THIS METHOD **/
 		
@@ -233,6 +235,7 @@ public class Trie {
 		/** REPLACE WITH YOUR IMPLEMENTATION **/
 		return foundWords;
 	}
+	
 	
 	
 	public void print() {
