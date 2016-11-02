@@ -16,7 +16,8 @@ public class TrieApp {
 	throws IOException {
 		
 		System.out.print("(u)ser input, or (f)ile: ");
-		char inp = stdin.next().toLowerCase().charAt(0);
+		//char inp = stdin.next().toLowerCase().charAt(0);
+		char inp = 'f';
 		if (inp == 'u') {
 			getWordsFromUser();
 		} else {
@@ -39,6 +40,7 @@ public class TrieApp {
 	
 	private static void getWordsFromUser() {
 		System.out.print("Enter word, 'quit' when done: ");
+		
 		String word = stdin.next().trim().toLowerCase();
 		while (!"quit".equals(word)) {
 			trie.insertWord(word);
@@ -51,7 +53,9 @@ public class TrieApp {
 	private static void getWordsFromFile() 
 	throws IOException {
 		System.out.print("Enter words file name => ");
-		String wordsFile = stdin.next();
+		String wordsFile = "words4.txt";
+		
+		//String wordsFile = stdin.next();
 		Scanner sc = new Scanner(new File(wordsFile));
 		// words appear one per line in input file
 		// first line has number of words

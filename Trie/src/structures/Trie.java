@@ -67,17 +67,15 @@ public class Trie {
 			TrieNode ptr = root.firstChild;
 			
 			int startIndex = 0;
-
+			System.out.println();
 			while (ptr != null) {
 				String prefix = "";
 				String currNode = words.get(ptr.substr.wordIndex);
 				
-				System.out.println("word: " + word);
+				System.out.println("========== WORD TO INSERT: " + word);
 				System.out.println("currNode: " + currNode);
 				for(int i = startIndex; i <word.length(); i++)
 				{
-					
-					
 					if (i != currNode.length()-1)
 						if(word.charAt(i) == currNode.charAt(i))
 							prefix+=word.charAt(i);
@@ -85,17 +83,38 @@ public class Trie {
 							break;
 					else
 						break;
-					System.out.println("88 prefix: " + prefix);	
+					System.out.println("\n88 prefix: " + prefix);	
 				}
-				System.out.println(" 90 prefix: " + prefix);
+				System.out.println("90 prefix: " + prefix);
 				
 				if (prefix.length() >= 1)
 				{
-					//child
+					System.out.println("92: prefix entered");
+					    System.out.println("  : ptr            = " + words.get(ptr.substr.wordIndex));
+					if (ptr.firstChild != null)
+						System.out.println("  : ptr.FirstChild = " + words.get(ptr.firstChild.substr.wordIndex));
+					else
+						System.out.println("  : ptr.firstChild = null");
 					
-					//check siblings before children somehow
+					if (ptr.sibling != null)
+						System.out.println("  : ptr.sibling    = " + words.get(ptr.sibling.substr.wordIndex));
+					else
+						System.out.println("  : ptr.sibling    = null");
 					
+					while(words.get(ptr.firstChild.substr.wordIndex).substring(0, prefix.length()-1).equals(prefix))
+					{
+						ptr = ptr.firstChild;
+					}
 					
+					/**
+					 * PLAN: if it matches the first child of ptr, then go down a level because all first childs will be left most until ptr.firstchild == null. 
+					 * if it doesn't match, check siblings and while loop ^ 
+					 * 
+					 * So while (ptr.sibling != null)
+					 * while(ptrfirst child matches, repeat until ptr.firstchild is null)
+					 * break out of everything when you reach ptr.firstchild = null and continue. 
+					 * if 
+					 */
 					
 					
 					if (ptr.firstChild == null)
@@ -116,12 +135,48 @@ public class Trie {
 					}
 					else
 					{
-						startIndex  = startIndex + prefix.length();
+//						TrieNode ptrS = ptr.firstChild;
+//						if (words.get(ptrS.substr.wordIndex).contains(prefix))
+//						{
+//							ptr = ptr.firstChild;
+//							//fix ptr index
+//							ptr.substr.startIndex = (short) startIndex;
+//							ptr.substr.endIndex = (short) (startIndex + prefix.length()-1);
+//							
+//							
+//							//add two children for trailing substring
+//							Indexes i1 = new Indexes(words.indexOf(currNode), (short) (startIndex + prefix.length()), (short) (currNode.length()-1));
+//							TrieNode n1 = new TrieNode(i1,null,null);
+//							ptr.firstChild = n1;
+//							
+//							Indexes i2 = new Indexes(words.indexOf(word), (short)(startIndex + prefix.length()), (short) (word.length()-1));
+//							TrieNode n2 = new TrieNode(i2,null,null);
+//							ptr.firstChild.sibling = n2;
+//							break;
+//						}
+//						else
+//						{
+//							while(ptrS.sibling != null)
+//							{
+//								System.out.println("Sibling ptrs: " + words.get(ptrS.sibling.substr.wordIndex));
+//								ptrS = ptrS.sibling;
+//							}
+//						}
+//						if (ptr.firstChild != null)
+//							System.out.println("121 : " + words.get(ptr.firstChild.substr.wordIndex));
+//						else
+//							System.out.println("121  : null");
+						
+						
+						startIndex  += prefix.length();
 						ptr = ptr.firstChild;
 						continue;
 					}
-						
-				}
+					
+					
+
+
+				} // prefix exists
 				else
 				{
 					// sibling
@@ -142,7 +197,7 @@ public class Trie {
 			
 		}
 		
-		print();
+//		print();
 
 	}
 	
