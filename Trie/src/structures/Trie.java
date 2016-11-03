@@ -103,19 +103,47 @@ public class Trie {
 				
 				if (prefix.length() >= 1)
 				{
-//					System.out.println("92: prefix entered");
-//					    System.out.println("  : ptr            = " + words.get(ptr.substr.wordIndex));
-//					if (ptr.firstChild != null)
-//						System.out.println("  : ptr.FirstChild = " + words.get(ptr.firstChild.substr.wordIndex));
-//					else
-//						System.out.println("  : ptr.firstChild = null");
-//					
-//					if (ptr.sibling != null)
-//						System.out.println("  : ptr.sibling    = " + words.get(ptr.sibling.substr.wordIndex));
-//					else
-//						System.out.println("  : ptr.sibling    = null");
+					System.out.println("92: prefix entered");
+					    System.out.println("  : ptr            = " + words.get(ptr.substr.wordIndex));
+					if (ptr.firstChild != null)
+						System.out.println("  : ptr.FirstChild = " + words.get(ptr.firstChild.substr.wordIndex));
+					else
+						System.out.println("  : ptr.firstChild = null");
+					
+					if (ptr.sibling != null)
+						System.out.println("  : ptr.sibling    = " + words.get(ptr.sibling.substr.wordIndex));
+					else
+						System.out.println("  : ptr.sibling    = null");
 
 				
+				
+					
+					
+					TrieNode ptrTrv = ptr;
+					while(ptrTrv.sibling != null)
+					{
+						String ptrWord = words.get(ptrTrv.substr.wordIndex);
+						System.out.println("126: ptrWord " + ptrWord + " " +ptrTrv.toString());
+						System.out.println("   : prefix  " + prefix); 
+						
+						if (ptrWord.substring(0, prefix.length()-1).equals(prefix))
+						{
+							ptrTrv = ptrTrv.firstChild;
+						}
+						else
+						{		
+							ptrTrv = ptrTrv.sibling;
+						}
+						
+						
+					}
+					
+					
+					
+					
+					
+					
+					
 					
 					if (ptr.firstChild == null)
 					{
@@ -138,7 +166,8 @@ public class Trie {
 					else
 					{
 						
-						startIndex  += prefix.length();
+						//startIndex  += prefix.length();
+						startIndex += (prefix.length()-1);
 						ptr = ptr.firstChild;
 						continue;
 					}
