@@ -152,7 +152,7 @@ public class LittleSearchEngine {
 		}
 		
 		
-		
+		 
 		String punct = ".,?:;!";
 		boolean allowMiddleLetters = false;
 		//findStartIndex of when letters start
