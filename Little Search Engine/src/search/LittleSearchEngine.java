@@ -99,7 +99,7 @@ public class LittleSearchEngine {
 	}
 
 	/**
-	 * Scans a document, and loads all keywords found into a hash table of keyword occurrences
+	 * DONE - Scans a document, and loads all keywords found into a hash table of keyword occurrences
 	 * in the document. Uses the getKeyWord method to separate keywords from other words.
 	 * 
 	 * @param docFile Name of the document file to be scanned and loaded
@@ -114,10 +114,10 @@ public class LittleSearchEngine {
 			throw new FileNotFoundException();
 		}
 		
-		
+
+		HashMap<String,Occurrence> keywordHash = new HashMap <String, Occurrence>();
 		Scanner sc = new Scanner(new File(docFile));
 		
-		HashMap<String,Occurrence> keywordHash = new HashMap <String, Occurrence>();
 		
 		while (sc.hasNext())
 		{	
@@ -171,10 +171,15 @@ public class LittleSearchEngine {
 	 */
 	public void mergeKeyWords(HashMap<String,Occurrence> kws) {
 		// COMPLETE THIS METHOD
+		/**
+		 * TLDR; Take every string/occurrence pair in kws and transfer to keywordsIndex
+		 */
+		
+		
 	}
 	
 	/**
-	 * Given a word, returns it as a keyword if it passes the keyword test,
+	 * DONE - Given a word, returns it as a keyword if it passes the keyword test,
 	 * otherwise returns null. A keyword is any word that, after being stripped of any
 	 * TRAILING punctuation, consists only of alphabetic letters, and is not
 	 * a noise word. All words are treated in a case-INsensitive manner.
@@ -187,94 +192,150 @@ public class LittleSearchEngine {
 	public String getKeyWord(String word) {
 		// COMPLETE THIS METHOD
 		word = word.toLowerCase();
-		
-		String strippedWord = "";
-		String[] wordArr = new String[word.length()];
+		System.out.println("\n Word in LowerCase: <" + word + ">");
 		
 		
-		//Adds each letter individually to the list
+		
+		// Kill off .,?!:; at the end of the list
+		while(!Character.isLetter(word.charAt(word.length()-1)))
+		{
+			char c = word.charAt(word.length()-1); // character at the very end of the word
+			switch (c)
+			{
+				case '.': 
+					word = word.substring(0, word.length()-1);
+					break;
+				case ',':
+					word = word.substring(0, word.length()-1);
+					break;
+				case '?': 
+					word = word.substring(0, word.length()-1);
+					break;
+				case ':': 
+					word = word.substring(0, word.length()-1);
+					break;
+				case ';': 
+					word = word.substring(0, word.length()-1);
+					break;
+				case '!': 
+					word = word.substring(0, word.length()-1);
+					break;
+				default:
+					return null; 
+				
+			}
+		}
+		
+		
+		// If at any point in the word minus trailing list is a non-letter, kill the process and return null
 		for (int i = 0; i < word.length(); i++)
 		{
-			wordArr[i] = word.charAt(i)+"";
+			if (!Character.isLetter(word.charAt(i)))
+				return null;
 		}
 		
-		
-		 
-		String punct = ".,?:;!";
-		boolean allowMiddleLetters = false;
-		//findStartIndex of when letters start
-		
-		int wordArrIndex = 0;
-		while(!Character.isLetter(wordArr[wordArrIndex].charAt(0)))
-		{
-			wordArr[wordArrIndex] = null;
-			wordArrIndex++;
-		}
-		
-		System.out.println(word.substring(wordArrIndex));
-		word = word.substring(wordArrIndex);
-		
-		String[] newWordArr = new String[word.length()];
-		System.arraycopy(wordArr, wordArrIndex, newWordArr, 0, newWordArr.length);
-		
-		wordArr = newWordArr;
-		
-		System.out.println(word);
-		//At this point word is stripped off any nonletters at the front
-		
-		
-		//Remove all symbols from end
-		for (int i = 0; i < wordArr.length; i++)
-		{
-			System.out.println(wordArr[i]);
-		}
-		
-		wordArrIndex = wordArr.length-1;
-		System.out.println(wordArr[wordArrIndex].charAt(0));
-		
-		while(!Character.isLetter(wordArr[wordArrIndex].charAt(0)))
-		{
-			wordArrIndex--;
-		}
-		
-		System.out.println(word.substring(0,wordArrIndex+1));
-		word = (word.substring(0,wordArrIndex+1));
-		
-		
-		//TODO: CHECK IF word IS INCLUDED IN noiseWords + has symbols in middle
-		/**
-		 * If (word.contains(symbols))
-		 * 		return null
-		 * else if (noiseWords.contains(word)
-		 * 		return null
-		 * else
-		 * 		return word
-		 *  
-		 */
-		
-		boolean hasNonLetters = false;
-		for (char ch : word.toCharArray()) {
-		  if (!Character.isLetter(ch)){
-		  //if (!Character.isLetterOrDigit(ch)) {
-		    hasNonLetters = true;
-		    break;
-		  }
-		}
-		System.out.println(hasNonLetters);
-		String symbols = new String("~!@#$%^&*()_+-={}|:<>?[];,./\\");
-		
-		
-		
-		if (noiseWords.containsKey(word) || hasNonLetters)
-		{
-			System.out.println("Has Non-Letters  or is a KeyWord = NULL");
+		//checks if the word is one of the noise words
+		if (noiseWords.containsKey(word))
 			return null;
-		}
-		else 
-		{
-			System.out.println("YAY LEGIT WORD");
-			return word;
-		}
+		
+		
+		//pass all the tests = return word.
+		System.out.println(word + " is allowed");
+		return word;
+		
+//		
+//		if (word.length() == 1)
+//		{
+//			return null;
+//		}
+//		
+//		String[] wordArr = new String[word.length()];
+//		
+//		
+//		//Adds each letter individually to the list
+//		for (int i = 0; i < word.length(); i++)
+//		{
+//			wordArr[i] = word.charAt(i)+"";
+//		}
+//		
+//		
+//
+//		//findStartIndex of when letters start
+//		
+//		int wordArrIndex = 0;
+//		while(wordArrIndex <= wordArr.length-1)
+//		{
+//			if (!Character.isLetter(wordArr[wordArrIndex].charAt(0)))
+//				wordArr[wordArrIndex] = null;
+//			else
+//				break;
+//			wordArrIndex++;
+//		}
+//		
+//		System.out.println(word.substring(wordArrIndex));
+//		word = word.substring(wordArrIndex);
+//		
+//		String[] newWordArr = new String[word.length()];
+//		System.arraycopy(wordArr, wordArrIndex, newWordArr, 0, newWordArr.length);
+//		
+//		wordArr = newWordArr;
+//		
+//		System.out.println(word);
+//		//At this point word is stripped off any nonletters at the front
+//		
+//		
+//		//Remove all symbols from end
+//		for (int i = 0; i < wordArr.length; i++)
+//		{
+////			System.out.println(wordArr[i]);
+//		}
+//		
+//		wordArrIndex = wordArr.length-1;
+//	//	System.out.println(wordArr[wordArrIndex].charAt(0));
+//		
+//		while(!Character.isLetter(wordArr[wordArrIndex].charAt(0)))
+//		{
+//			wordArrIndex--;
+//		}
+//		
+//		//System.out.println(word.substring(0,wordArrIndex+1));
+//		word = (word.substring(0,wordArrIndex+1));
+//		
+//		
+//		//TODO: CHECK IF word IS INCLUDED IN noiseWords + has symbols in middle
+//		/**
+//		 * If (word.contains(symbols))
+//		 * 		return null
+//		 * else if (noiseWords.contains(word)
+//		 * 		return null
+//		 * else
+//		 * 		return word
+//		 *  
+//		 */
+//		
+//		boolean hasNonLetters = false;
+//		for (char ch : word.toCharArray()) {
+//		  if (!Character.isLetter(ch)){
+//		  //if (!Character.isLetterOrDigit(ch)) {
+//		    hasNonLetters = true;
+//		    break;
+//		  }
+//		}
+//		System.out.println(hasNonLetters);
+//		String symbols = new String("~!@#$%^&*()_+-={}|:<>?[];,./\\");
+//		
+//		
+//		
+//		if (noiseWords.containsKey(word) || hasNonLetters)
+//		{
+//			System.out.println("Has Non-Letters  or is a KeyWord = NULL");
+//			return null;
+//		}
+//		else 
+//		{
+//			System.out.println("YAY LEGIT WORD");
+//			return word;
+//		}
 		
 	}
 	

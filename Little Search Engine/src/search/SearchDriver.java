@@ -11,9 +11,9 @@ public class SearchDriver {
 		String noiseFile = "";
 		//LSE.makeIndex(docsFile,noiseFile); // already coded.
 		
-		LSE.getKeyWord("|.@#$%^&... Dista1324Nce  ;*135136");
+		LSE.getKeyWord("|.@#$%^&... the  ;*135136");
 		
-		
+		LSE.makeIndex("docs.txt", "noisewords.txt");
 		
 		
 		
