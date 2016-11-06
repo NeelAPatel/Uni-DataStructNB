@@ -139,8 +139,96 @@ public class LittleSearchEngine {
 	 */
 	public String getKeyWord(String word) {
 		// COMPLETE THIS METHOD
-		// THE FOLLOWING LINE HAS BEEN ADDED TO MAKE THE METHOD COMPILE
-		return null;
+		word = word.toLowerCase();
+		
+		String strippedWord = "";
+		String[] wordArr = new String[word.length()];
+		
+		
+		//Adds each letter individually to the list
+		for (int i = 0; i < word.length(); i++)
+		{
+			wordArr[i] = word.charAt(i)+"";
+		}
+		
+		
+		
+		String punct = ".,?:;!";
+		boolean allowMiddleLetters = false;
+		//findStartIndex of when letters start
+		
+		int wordArrIndex = 0;
+		while(!Character.isLetter(wordArr[wordArrIndex].charAt(0)))
+		{
+			wordArr[wordArrIndex] = null;
+			wordArrIndex++;
+		}
+		
+		System.out.println(word.substring(wordArrIndex));
+		word = word.substring(wordArrIndex);
+		
+		String[] newWordArr = new String[word.length()];
+		System.arraycopy(wordArr, wordArrIndex, newWordArr, 0, newWordArr.length);
+		
+		wordArr = newWordArr;
+		
+		System.out.println(word);
+		//At this point word is stripped off any nonletters at the front
+		
+		
+		//Remove all symbols from end
+		for (int i = 0; i < wordArr.length; i++)
+		{
+			System.out.println(wordArr[i]);
+		}
+		
+		wordArrIndex = wordArr.length-1;
+		System.out.println(wordArr[wordArrIndex].charAt(0));
+		
+		while(!Character.isLetter(wordArr[wordArrIndex].charAt(0)))
+		{
+			wordArrIndex--;
+		}
+		
+		System.out.println(word.substring(0,wordArrIndex+1));
+		word = (word.substring(0,wordArrIndex+1));
+		
+		
+		//TODO: CHECK IF word IS INCLUDED IN noiseWords + has symbols in middle
+		/**
+		 * If (word.contains(symbols))
+		 * 		return null
+		 * else if (noiseWords.contains(word)
+		 * 		return null
+		 * else
+		 * 		return word
+		 *  
+		 */
+		
+		boolean hasNonLetters = false;
+		for (char ch : word.toCharArray()) {
+		  if (!Character.isLetter(ch)){
+		  //if (!Character.isLetterOrDigit(ch)) {
+		    hasNonLetters = true;
+		    break;
+		  }
+		}
+		System.out.println(hasNonLetters);
+		String symbols = new String("~!@#$%^&*()_+-={}|:<>?[];,./\\");
+		
+		
+		
+		if (noiseWords.containsKey(word) || hasNonLetters)
+		{
+			System.out.println("Has Non-Letters  or is a KeyWord = NULL");
+			return null;
+		}
+		else 
+		{
+			System.out.println("YAY LEGIT WORD");
+			return word;
+		}
+		
 	}
 	
 	/**
