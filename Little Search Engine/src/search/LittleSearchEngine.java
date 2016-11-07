@@ -143,11 +143,6 @@ public class LittleSearchEngine {
 					keywordHash.put(importedWord, o);				
 				}
 				
-				
-				
-				
-				
-				
 			}	
 		}
 		
@@ -174,6 +169,9 @@ public class LittleSearchEngine {
 		/**
 		 * TLDR; Take every string/occurrence pair in kws and transfer to keywordsIndex
 		 */
+		
+		
+		
 		
 		
 	}
