@@ -2,6 +2,7 @@ package search;
 
 import java.io.*;
 import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * This class encapsulates an occurrence of a keyword in a document. It stores the
@@ -88,14 +89,23 @@ public class LittleSearchEngine {
 			noiseWords.put(word,word);
 		}
 		
-		// index all keywords
+//		// index all keywords
+//		if (docsFile.equals(""))
+//			return;
+		
 		sc = new Scanner(new File(docsFile));
 		while (sc.hasNext()) {
 			String docFile = sc.next();
+			System.out.println("CurrentFile: " + docFile);
 			HashMap<String,Occurrence> kws = loadKeyWords(docFile);
+			
+			System.out.println("load done, merge start");
 			mergeKeyWords(kws);
 		}
 		
+		
+		
+		System.out.println("MAKEINDEX FINISHED");
 	}
 
 	/**
@@ -113,9 +123,10 @@ public class LittleSearchEngine {
 		{
 			throw new FileNotFoundException();
 		}
-		
+			
 
 		HashMap<String,Occurrence> keywordHash = new HashMap <String, Occurrence>();
+		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(new File(docFile));
 		
 		
@@ -126,13 +137,7 @@ public class LittleSearchEngine {
 			
 			if(importedWord != null) // if imported word is null, then no point on importing
 			{
-				//Check to see if word exists in Hash or not
-				/**
-				 * If (key exists in hash)
-				 * 		raise frequency
-				 * or else
-				 * 		add it in 
-				 */
+
 				if (keywordHash.get(importedWord) != null)
 				{
 					keywordHash.get(importedWord).frequency ++;
@@ -148,10 +153,16 @@ public class LittleSearchEngine {
 		
 		
 			
+		//Check to see if word exists in Hash or not
+		/**
+		 * If (key exists in hash)
+		 * 		raise frequency
+		 * or else
+		 * 		add it in 
+		 */
 		
 		
-		
-		// THE FOLLOWING LINE HAS BEEN ADDED TO MAKE THE METHOD COMPILE
+		System.out.println("LOAD KEYWORDS DONE");
 		return keywordHash;
 	}
 	
@@ -170,9 +181,39 @@ public class LittleSearchEngine {
 		 * TLDR; Take every string/occurrence pair in kws and transfer to keywordsIndex
 		 */
 		
+		Set<Entry<String, Occurrence>> entrySet1 = kws.entrySet();
+		Iterator<Entry<String, Occurrence>> entrySetIterator = entrySet1.iterator();
+		while (entrySetIterator.hasNext()) {
+			
+			
+		   Entry<String, Occurrence> entry = entrySetIterator.next();
+		   String key = entry.getKey();
+
+		  // System.out.println("WHILE: key: " + key);
+		   
+		   if(keywordsIndex.containsKey(key)) //If it does contain the item then increase occurence
+			{
+				keywordsIndex.get(key).add(kws.get(key));
+				insertLastOccurrence(keywordsIndex.get(key));
+				keywordsIndex.put(key, keywordsIndex.get(key));
+			}
+			else //if it doesn't contain key, then add to keywords.index;
+			{
+				
+				
+				ArrayList<Occurrence> occurence = new ArrayList<Occurrence>();
+				occurence.add(kws.get(key));
+				keywordsIndex.put(key, occurence);
+			}
+		}
 		
 		
 		
+//		for (String key: kws.keySet())
+//		{
+//			 System.out.println("FOR: key: " + key);
+//		}
+	
 		
 	}
 	
@@ -190,10 +231,12 @@ public class LittleSearchEngine {
 	public String getKeyWord(String word) {
 		// COMPLETE THIS METHOD
 		word = word.toLowerCase();
-		System.out.println("\n Word in LowerCase: <" + word + ">");
-		
-		
-		
+		//System.out.println("\n Word in LowerCase: <" + word + ">");
+		if (word.length() == 1)
+		{
+			return null;
+		}
+		//System.out.println(word);
 		// Kill off .,?!:; at the end of the list
 		while(!Character.isLetter(word.charAt(word.length()-1)))
 		{
@@ -223,117 +266,26 @@ public class LittleSearchEngine {
 				
 			}
 		}
-		
-		
 		// If at any point in the word minus trailing list is a non-letter, kill the process and return null
 		for (int i = 0; i < word.length(); i++)
 		{
-			if (!Character.isLetter(word.charAt(i)))
+			if (Character.isLetter(word.charAt(i)) == false)
+			{
 				return null;
+			}
+				
 		}
 		
-		//checks if the word is one of the noise words
+		//checks if noiseword
 		if (noiseWords.containsKey(word))
+		{
 			return null;
+		}
 		
 		
 		//pass all the tests = return word.
-		System.out.println(word + " is allowed");
+		//System.out.println(word + " is allowed");
 		return word;
-		
-//		
-//		if (word.length() == 1)
-//		{
-//			return null;
-//		}
-//		
-//		String[] wordArr = new String[word.length()];
-//		
-//		
-//		//Adds each letter individually to the list
-//		for (int i = 0; i < word.length(); i++)
-//		{
-//			wordArr[i] = word.charAt(i)+"";
-//		}
-//		
-//		
-//
-//		//findStartIndex of when letters start
-//		
-//		int wordArrIndex = 0;
-//		while(wordArrIndex <= wordArr.length-1)
-//		{
-//			if (!Character.isLetter(wordArr[wordArrIndex].charAt(0)))
-//				wordArr[wordArrIndex] = null;
-//			else
-//				break;
-//			wordArrIndex++;
-//		}
-//		
-//		System.out.println(word.substring(wordArrIndex));
-//		word = word.substring(wordArrIndex);
-//		
-//		String[] newWordArr = new String[word.length()];
-//		System.arraycopy(wordArr, wordArrIndex, newWordArr, 0, newWordArr.length);
-//		
-//		wordArr = newWordArr;
-//		
-//		System.out.println(word);
-//		//At this point word is stripped off any nonletters at the front
-//		
-//		
-//		//Remove all symbols from end
-//		for (int i = 0; i < wordArr.length; i++)
-//		{
-////			System.out.println(wordArr[i]);
-//		}
-//		
-//		wordArrIndex = wordArr.length-1;
-//	//	System.out.println(wordArr[wordArrIndex].charAt(0));
-//		
-//		while(!Character.isLetter(wordArr[wordArrIndex].charAt(0)))
-//		{
-//			wordArrIndex--;
-//		}
-//		
-//		//System.out.println(word.substring(0,wordArrIndex+1));
-//		word = (word.substring(0,wordArrIndex+1));
-//		
-//		
-//		//TODO: CHECK IF word IS INCLUDED IN noiseWords + has symbols in middle
-//		/**
-//		 * If (word.contains(symbols))
-//		 * 		return null
-//		 * else if (noiseWords.contains(word)
-//		 * 		return null
-//		 * else
-//		 * 		return word
-//		 *  
-//		 */
-//		
-//		boolean hasNonLetters = false;
-//		for (char ch : word.toCharArray()) {
-//		  if (!Character.isLetter(ch)){
-//		  //if (!Character.isLetterOrDigit(ch)) {
-//		    hasNonLetters = true;
-//		    break;
-//		  }
-//		}
-//		System.out.println(hasNonLetters);
-//		String symbols = new String("~!@#$%^&*()_+-={}|:<>?[];,./\\");
-//		
-//		
-//		
-//		if (noiseWords.containsKey(word) || hasNonLetters)
-//		{
-//			System.out.println("Has Non-Letters  or is a KeyWord = NULL");
-//			return null;
-//		}
-//		else 
-//		{
-//			System.out.println("YAY LEGIT WORD");
-//			return word;
-//		}
 		
 	}
 	
@@ -352,7 +304,45 @@ public class LittleSearchEngine {
 	public ArrayList<Integer> insertLastOccurrence(ArrayList<Occurrence> occs) {
 		// COMPLETE THIS METHOD
 		// THE FOLLOWING LINE HAS BEEN ADDED TO MAKE THE METHOD COMPILE
-		return null;
+		if (occs.size() == 1)
+			return null;
+		
+		ArrayList<Integer> midValues = new ArrayList<Integer>();
+		int last = occs.get(occs.size()-1).frequency;
+		
+		//Binary search
+		int low = 0, high = occs.size()- 2; 
+		int mid; 
+		
+		while (low < high) 
+		{
+			mid = (low + high) / 2;
+			Occurrence atMid = occs.get(mid);
+			midValues.add(mid);
+			
+			if (atMid.frequency == occs.get(occs.size()-1).frequency)
+			{
+				low = mid;
+				high = mid;
+				break;
+			}
+			else if (atMid.frequency > occs.get(occs.size()-1).frequency)
+				low = mid+1;
+			else if (atMid.frequency < occs.get(occs.size()-1).frequency)
+				high = mid;
+
+		} // while loop
+		
+		
+		
+		//adding into occurance
+		int index = low;
+		if (occs.get(index).frequency < last)
+			occs.add(index, occs.remove(occs.size()-1));
+		else
+			occs.add(index+1, occs.remove(occs.size()-1));
+		
+		return midValues;
 	}
 	
 	/**
@@ -371,7 +361,105 @@ public class LittleSearchEngine {
 	 */
 	public ArrayList<String> top5search(String kw1, String kw2) {
 		// COMPLETE THIS METHOD
+		ArrayList<String> docs = new ArrayList<String>();
+		ArrayList<Occurrence> o1 = null; 
+		ArrayList<Occurrence> o2 = null;
+		
+		if (keywordsIndex.get(kw1) != null)
+			o1 = keywordsIndex.get(kw1);
+		
+		if (keywordsIndex.get(kw2) != null)
+			o2 = keywordsIndex.get(kw2);
+		
+		
+		if (o1 == null && o2 == null) // empty | empty
+			return docs;
+		else if (o1 != null && o2 == null) // Occupied | empty
+		{
+		
+			int i = 0;
+			while (i < o1.size() && docs.size()<5)
+			{
+				if (docs.contains(o1.get(i)))
+					continue;
+				else
+					docs.add(o1.get(i).document);
+				
+				i++;
+			}
+			
+		}
+		else if (o1 == null && o2 != null) // empty | occupied
+		{
+			int i = 0;
+			if (docs.size() < 5)
+				while (i < o2.size() && docs.size()<5)
+				{
+					if (docs.contains(o2.get(i)))
+						continue;
+					else
+						docs.add(o2.get(i).document);
+					
+					i++;
+				}
+		}
+		else // occupied | occupied
+		{
+		int i1 = 0;
+		int i2 = 0;
+		
+		while (i1 < o1.size() && i2 < o2.size() && docs.size()<5)
+		{
+			Occurrence occ1 = o1.get(i1);
+			Occurrence occ2 = o2.get(i2);
+			
+			
+			if (occ1.frequency > occ2.frequency)
+			{
+				if (!docs.contains(occ1.document))
+					docs.add(occ1.document);
+				i1++;
+			}
+			else if (occ1.frequency < occ2.frequency)
+			{
+				if (!docs.contains(occ2.document))
+					docs.add(occ2.document);
+				i2++;
+			}
+			else
+			{
+				if (!docs.contains(occ1.document)) 
+					docs.add(occ1.document);
+				if (docs.size() < 5 && !docs.contains(occ2.document))
+					docs.add(occ2.document);
+				
+				i1++;
+				i2++;
+			}
+		}	
+			if (i1 == o1.size())
+			{
+				while (i2 < o2.size() && docs.size() < 5)
+				{
+					if (!docs.contains(o2.get(i2).document))
+						docs.add(o2.get(i2).document);
+					
+					i2++;
+				}
+			}
+			if (i2 == o2.size())
+			{
+				while (i1 < o2.size() && docs.size() < 5)
+				{
+					if (!docs.contains(o1.get(i1).document))
+						docs.add(o1.get(i1).document);
+					i1++;
+				}// while
+			}//if
+		
+		}
 		// THE FOLLOWING LINE HAS BEEN ADDED TO MAKE THE METHOD COMPILE
-		return null;
+	return docs;
+		
 	}
 }
