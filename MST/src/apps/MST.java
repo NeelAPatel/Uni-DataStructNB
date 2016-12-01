@@ -15,6 +15,13 @@ public class MST {
 	
 		/* COMPLETE THIS METHOD */
 		
+		PartialTreeList ptl = new PartialTreeList();
+		
+		
+		
+		
+		
+		
 		return null;
 	}
 
