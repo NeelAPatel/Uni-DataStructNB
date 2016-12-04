@@ -17,12 +17,50 @@ public class MST {
 		
 		PartialTreeList ptl = new PartialTreeList();
 		
+		for (int i = 0; i < graph.vertices.length; i++)
+		{	
+			// Names of each vertex (A~I)
+			System.out.println("graph.verticies[i]" + graph.vertices[i]);
+			PartialTree pt = new PartialTree(graph.vertices[i]);
+			
+			for (Vertex.Neighbor n = graph.vertices[i].neighbors; n != null; n = n.next) {
+				
+				//Create a new line with two vertexes 
+				Vertex v1 = graph.vertices[i]; 
+				Vertex v2 = n.vertex;
+				int weight = n.weight;
+				PartialTree.Arc arc = new PartialTree.Arc(v1, v2, weight);
+				
+				
+				//gain access to arcs list and add new arc
+				System.out.println("arc: " + arc);
+				pt.getArcs().insert(arc);
+				
+			}
+			ptl.append(pt);
+			
+		}
 		
 		
 		
+		/**
+		 * -Create PartialTreeList
+		 * - for all verticies in a graph {
+		 * --- create new partial tree with vertex
+		 * --- for every neighbour AT VERTEX {
+		 * ------ create new arc (edge w/ two vertexes) 
+		 * ------ add it to a gets arc list
+		 * --- }
+		 * --- add to tree list 
+		 */
 		
+		/**
+		 * TLDR; 
+		 * make a new arc from the neighbours of every vertex and add to partial tree list..?
+		 * 
+		 */
 		
-		return null;
+		return ptl;
 	}
 
 	/**
@@ -35,6 +73,10 @@ public class MST {
 		
 		/* COMPLETE THIS METHOD */
 
+		
+		
+		
+		
 		return null;
 	}
 }

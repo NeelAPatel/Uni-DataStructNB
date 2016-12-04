@@ -76,8 +76,21 @@ public class PartialTreeList implements Iterable<PartialTree> {
      * @return The tree that is removed from the front
      * @throws NoSuchElementException If the list is empty
      */
-    public PartialTree remove() 
-    throws NoSuchElementException {
+    public PartialTree remove() throws NoSuchElementException {
+    	/***
+    	 * Circle linked list? 
+    	 * 
+    	 */
+    	if (rear != null) // node exists
+    	{
+    		if(rear.next == rear) // loops on it own self
+    		{
+    			Node t = rear; // taking away rear
+    			rear = null;   // removing last remaining node
+    			size--;        // decrease size of overall list
+    			return t.tree;  //  
+    		}
+    	}
     		
     		/* COMPLETE THIS METHOD */
     	
