@@ -5,7 +5,6 @@ import java.util.NoSuchElementException;
 
 import structures.Vertex;
 
-
 public class PartialTreeList implements Iterable<PartialTree> {
     
 	/**
@@ -85,10 +84,19 @@ public class PartialTreeList implements Iterable<PartialTree> {
     	{
     		if(rear.next == rear) // loops on it own self
     		{
-    			Node t = rear; // taking away rear
+    			Node x = rear; // taking away rear
     			rear = null;   // removing last remaining node
     			size--;        // decrease size of overall list
-    			return t.tree;  //  
+    			return x.tree;  //  
+    		}
+    		
+    		else // has nodes
+    		{
+    			Node x = rear.next;  // x = front
+    			rear.next = rear.next.next; // points it to one after front
+    			size--;
+    			return x.tree;
+    			
     		}
     	}
     		
