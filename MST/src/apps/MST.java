@@ -103,6 +103,21 @@ public class MST {
 			Vertex v2 = highestPriorityArc.v2;
 			
 			
+			//step 5
+			boolean v2Belong = true;
+			while (v2Belong)
+			{
+				MinHeap<Arc> minHeap = firstPartialtree.getArcs();
+				for(PartialTree.Arc eachArc = )
+				
+				
+			} //end while v2Belong
+			
+			
+			
+			
+			
+			
 			
 			
 			

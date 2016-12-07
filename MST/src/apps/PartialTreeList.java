@@ -99,10 +99,9 @@ public class PartialTreeList implements Iterable<PartialTree> {
     			
     		}
     	}
-    		
-    		/* COMPLETE THIS METHOD */
     	
-    		return null;
+    	//if empty
+    	throw new NoSuchElementException();
     }
 
     /**
