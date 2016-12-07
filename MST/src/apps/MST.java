@@ -17,12 +17,13 @@ public class MST {
 		
 		PartialTreeList ptl = new PartialTreeList();
 		
+		
 		for (int i = 0; i < graph.vertices.length; i++)
 		{	
 			// Names of each vertex (A~I)
 			System.out.println("graph.verticies[i]" + graph.vertices[i]);
 			PartialTree pt = new PartialTree(graph.vertices[i]);
-			
+			//MinHeap heap = new MinHeap();
 			for (Vertex.Neighbor n = graph.vertices[i].neighbors; n != null; n = n.next) {
 				
 				//Create a new line with two vertexes 
@@ -32,14 +33,27 @@ public class MST {
 				PartialTree.Arc arc = new PartialTree.Arc(v1, v2, weight);
 				
 				
+				
 				//gain access to arcs list and add new arc
 				System.out.println("arc: " + arc);
 				pt.getArcs().insert(arc);
 				
+				
+				
+				
 			}
-			ptl.append(pt);
 			
+			//System.out.println(heap.toString());
+			//System.out.println(heap.deleteMin());
+			System.out.println(pt.getArcs());
+			ptl.append(pt);
 		}
+		
+		
+		
+		
+		
+		
 		
 		
 		
@@ -78,8 +92,29 @@ public class MST {
 	public static ArrayList<PartialTree.Arc> execute(PartialTreeList ptlist) {
 		
 		/* COMPLETE THIS METHOD */
-
+		PartialTreeList ptl = ptlist; // PTL = L
+		ArrayList<PartialTree.Arc> arcArr = new ArrayList<PartialTree.Arc>();
+		while(ptl.size() > 1){
+			//Step 3
+			PartialTree firstPartialtree = ptl.remove();  //firstPartialTree = ptx
+			//Step 4
+			PartialTree.Arc highestPriorityArc = firstPartialtree.getArcs().deleteMin();  
+			Vertex v1 = highestPriorityArc.v1; // belongs to ptx
+			Vertex v2 = highestPriorityArc.v2;
+			
+			
+			
+			
+			
+			
+			
+			
+		}//end while
+			
 		
+		/**
+		 * arcs merge
+		 */
 		
 		
 		
