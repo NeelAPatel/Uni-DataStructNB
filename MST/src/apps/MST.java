@@ -82,7 +82,7 @@ public class MST {
 		
 		/* COMPLETE THIS METHOD */
 		PartialTreeList ptl = ptlist; // PTL = L
-		ArrayList<PartialTree.Arc> arcArr = new ArrayList<PartialTree.Arc>();
+		ArrayList<PartialTree.Arc> arrArc = new ArrayList<PartialTree.Arc>();
 		while(ptl.size() > 1)
 		{
 			
@@ -138,12 +138,10 @@ public class MST {
 			ptl.append(PTX);
 			
 			
-			
-			
-			
-			
-			
-			
+			//Add to list of arcs you need to return
+			arrArc.add(PQX);
+
+			//Step 9 - repeats if theres more than 1 partial tree
 		}//end while
 			
 		/*
