@@ -11,7 +11,10 @@ public class MSTDriver {
 		Graph g = new Graph ("graph2.txt");
 		
 		PartialTreeList PTL = MST.initialize(g);
-		MST.execute(PTL);
+		//MST.execute(PTL);
+		
+		System.out.println(PTL.toString());
+		
 		
 		
 		//System.out.println("Main: PTL.toString: " + PTL.toString());

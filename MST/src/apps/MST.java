@@ -2,6 +2,7 @@ package apps;
 
 import structures.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import apps.PartialTree.Arc;
 
@@ -33,35 +34,23 @@ public class MST {
 				Vertex v2 = n.vertex;
 				int weight = n.weight;
 				PartialTree.Arc arc = new PartialTree.Arc(v1, v2, weight);
-				
-				
-				
+
 				//gain access to arcs list and add new arc
 				//System.out.println("arc: " + arc);
 				pt.getArcs().insert(arc);
-				
-				
-				
-				
+
 			}
-		
 			//System.out.println(pt.getArcs());
 			ptl.append(pt);
 		}
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
+		//Loop throough each partial tree
+		for(Iterator<PartialTree> it = ptl.iterator(); it.hasNext();)
+		{
+			PartialTree pt = it.next();
+			System.out.println("Line 60: " + pt);
+		}
 		
 		/**
 		 * -Create PartialTreeList
@@ -142,9 +131,14 @@ public class MST {
 			} //end while v2Belong
 			
 			
-		
+			//Step 7
+			PartialTree PTY = ptl.removeTreeContaining(PQX.v2);
+			//Step 8
+			PTX.merge(PTY);  //PTX + PTY
+			ptl.append(PTX);
 			
-		//Step7
+			
+			
 			
 			
 			
