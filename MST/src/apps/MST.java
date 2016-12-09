@@ -80,12 +80,12 @@ public class MST {
 	 */
 	public static ArrayList<PartialTree.Arc> execute(PartialTreeList ptlist) {
 		
-		/* COMPLETE THIS METHOD */
 		PartialTreeList ptl = ptlist; // PTL = L
 		ArrayList<PartialTree.Arc> arrArc = new ArrayList<PartialTree.Arc>();
+		
+		
 		while(ptl.size() > 1)
 		{
-			
 			//Step 3
 			PartialTree PTX = ptl.remove();  //firstPartialTree = ptx
 			System.out.println("S3: " + PTX);
@@ -118,62 +118,75 @@ public class MST {
 				 * --- go to step 6 (break loop)
 				 */
 				if (PTXcontainsV2) 
-				{	PQX = PTX.getArcs().deleteMin();
+				{	
+					PQX = PTX.getArcs().deleteMin();
 				v2BelongsPTX = true;
-				continue;
+				//continue;
 				}
 				else
 				{
 					v2BelongsPTX = false;
-					break;
+					//break;
 				}
 					
 			} //end while v2Belong
 			
 			
-			//Step 7
-			PartialTree PTY = ptl.removeTreeContaining(PQX.v2);
-			//Step 8
-			PTX.merge(PTY);  //PTX + PTY
-			ptl.append(PTX);
-			
-			
-			//Add to list of arcs you need to return
-			arrArc.add(PQX);
-
-			//Step 9 - repeats if theres more than 1 partial tree
-		}//end while
-			
-		/*
-		 //Step 3
-		PartialTree firstPartialtree = ptl.remove();  //firstPartialTree = ptx
-		//Step 4
-		PartialTree.Arc highestPriorityArc = firstPartialtree.getArcs().deleteMin();  
-		Vertex v1 = highestPriorityArc.v1; // belongs to ptx
-		Vertex v2 = highestPriorityArc.v2;
-		
-		
-		//step 5
-		boolean v2Belong = true;
-		while (v2Belong)
-		{
-			MinHeap<Arc> minHeap = firstPartialtree.getArcs();
-			for (PartialTree.Arc arc: minHeap)
+			PartialTree PTY = null; //?
+			//remove try catch after fixing error
+			try{
+				//Step 7
+				 PTY = ptl.removeTreeContaining(PQX.v2);
+				//Step 8
+				PTX.merge(PTY);  //PTX + PTY
+				ptl.append(PTX);
+				//Add to list of arcs you need to return
+				arrArc.add(PQX);
+			}
+			catch (Exception e)
 			{
-				if ()
+				
 			}
 			
 			
-		} //end while v2Belong
-		
-		 */
-		
-		/**
-		 * arcs merge
-		 */
+			
+			//Step 9 - repeats if theres more than 1 partial tree
+		}//end while
+			
 		
 		
-		
-		return null;
+		return arrArc;
 	}
+	
+	
+	/*
+	 //Step 3
+	PartialTree firstPartialtree = ptl.remove();  //firstPartialTree = ptx
+	//Step 4
+	PartialTree.Arc highestPriorityArc = firstPartialtree.getArcs().deleteMin();  
+	Vertex v1 = highestPriorityArc.v1; // belongs to ptx
+	Vertex v2 = highestPriorityArc.v2;
+	
+	
+	//step 5
+	boolean v2Belong = true;
+	while (v2Belong)
+	{
+		MinHeap<Arc> minHeap = firstPartialtree.getArcs();
+		for (PartialTree.Arc arc: minHeap)
+		{
+			if ()
+		}
+		
+		
+	} //end while v2Belong
+	
+	 */
+	
+	/**
+	 * arcs merge
+	 */
+	
+	
+	
 }

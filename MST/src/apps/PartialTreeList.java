@@ -3,6 +3,7 @@ package apps;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import apps.PartialTreeList.Node;
 import structures.Vertex;
 
 public class PartialTreeList implements Iterable<PartialTree> {
@@ -113,38 +114,85 @@ public class PartialTreeList implements Iterable<PartialTree> {
      */
     public PartialTree removeTreeContaining(Vertex vertex) 
     throws NoSuchElementException {
-    	if (rear == null)
+    	/*
+    	 * if (rear == null){
     		throw new NoSuchElementException(vertex.name);
+    	}
     	
+    	// Search    	
     	
-    	Node prv = rear;
+    	//Node prv = rear;
     	Node ptr = rear.next;
     	
     	do{
-    		if (vertex.getRoot() == ptr.tree.getRoot()) // vertex found
+    		if (ptr.tree.getRoot() == vertex.getRoot()) // vertex found
     		{
     			Node val = rear;
     			rear = null;
     			size--;
     			return val.tree;
     		}
-    		else
-    		{
-    			//vertex missing
-    			throw new NoSuchElementException();
-    		}
+//    		else
+//    		{
+//    			//vertex missing
+//    			throw new NoSuchElementException();
+//    		}
+    		
+    		ptr = ptr.next;
     	}
     	while(ptr != rear.next);
     	
-    	
+    	throw new NoSuchElementException(vertex.name);
 //    	if (ptr == rear.next && ptr.tree.getRoot() != vertex.getRoot())
 //    		throw new NoSuchElementException();
 //    	else
 //    	{
 //    		prv.next = ptr.next;
 //    	}
+    	 */
     		
+    	Node ptr = rear.next;
+		Node prev = rear;
+		if(ptr == prev) {
+			if(ptr.tree.getRoot() == vertex.getRoot()) {
+				Node temp = rear;
+				rear = null;
+				size--;
+				return temp.tree;
+			} else {
+				throw new NoSuchElementException();
+			}
+		}
+		do {
+			if(equals(ptr.tree.getRoot().name, vertex))
+			{
+				Node temp = ptr;
+				prev.next = ptr.next;
+				if(ptr == rear) {
+					rear = prev;
+				}
+				size--;
+				return temp.tree;
+			}
+			ptr = ptr.next;
+			prev = prev.next;
+		} while(ptr != rear.next && ptr != null);
+		throw new NoSuchElementException(vertex.name);
+    	
      }
+    
+    private 	boolean equals(String name, Vertex v) {
+		Vertex ptr = v;
+		while(ptr != null) {
+			if(ptr.name.equals(name)) {
+				return true;
+			}
+			if(ptr == ptr.parent) break;
+			ptr = ptr.parent;
+		}
+
+		return name.equals(v.name);
+	}
     
     /**
      * Gives the number of trees in this list

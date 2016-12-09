@@ -8,12 +8,15 @@ public class MSTDriver {
 	public static void main(String[] args) throws IOException {
 		 
 		//Create graph
-		Graph g = new Graph ("graph2.txt");
-		
+		Graph g = new Graph ("graph1.txt");
+		System.out.println("------------ INITIALIZE -------------");
 		PartialTreeList PTL = MST.initialize(g);
-		//MST.execute(PTL);
+		System.out.println("------------ INITIALIZE -------------");
+		System.out.println("------------ EXECUTE -------------");
 		
-		System.out.println(PTL.toString());
+		MST.execute(PTL);
+		System.out.println("------------ EXECUTE -------------");
+		//System.out.println(PTL.toString());
 		
 		
 		
