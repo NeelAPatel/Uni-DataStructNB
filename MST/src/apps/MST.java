@@ -146,10 +146,8 @@ public class MST {
 				//Add to list of arcs you need to return
 				arrArc.add(PQX);
 			}
-			catch (Exception e)
-			{
-				
-			}
+			catch (Exception e) {}
+			
 			
 			
 			

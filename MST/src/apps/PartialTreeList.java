@@ -164,7 +164,19 @@ public class PartialTreeList implements Iterable<PartialTree> {
 			}
 		}
 		do {
-			if(equals(ptr.tree.getRoot().name, vertex))
+			
+			boolean vertexequalsptr = false;
+			//Vertex ptrx = vertex;
+			while(vertex != null) {
+				if(vertex.name.equals(ptr.tree.getRoot().name)) {
+					vertexequalsptr = true;
+				}
+				if(vertex == vertex.parent) 
+					break;
+				vertex = vertex.parent;
+			}
+			
+			if(vertexequalsptr)
 			{
 				Node temp = ptr;
 				prev.next = ptr.next;
@@ -180,19 +192,6 @@ public class PartialTreeList implements Iterable<PartialTree> {
 		throw new NoSuchElementException(vertex.name);
     	
      }
-    
-    private 	boolean equals(String name, Vertex v) {
-		Vertex ptr = v;
-		while(ptr != null) {
-			if(ptr.name.equals(name)) {
-				return true;
-			}
-			if(ptr == ptr.parent) break;
-			ptr = ptr.parent;
-		}
-
-		return name.equals(v.name);
-	}
     
     /**
      * Gives the number of trees in this list
