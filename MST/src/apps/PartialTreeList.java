@@ -114,43 +114,11 @@ public class PartialTreeList implements Iterable<PartialTree> {
      */
     public PartialTree removeTreeContaining(Vertex vertex) 
     throws NoSuchElementException {
-    	/*
-    	 * if (rear == null){
+    	 if (rear == null){
     		throw new NoSuchElementException(vertex.name);
     	}
     	
-    	// Search    	
-    	
-    	//Node prv = rear;
-    	Node ptr = rear.next;
-    	
-    	do{
-    		if (ptr.tree.getRoot() == vertex.getRoot()) // vertex found
-    		{
-    			Node val = rear;
-    			rear = null;
-    			size--;
-    			return val.tree;
-    		}
-//    		else
-//    		{
-//    			//vertex missing
-//    			throw new NoSuchElementException();
-//    		}
-    		
-    		ptr = ptr.next;
-    	}
-    	while(ptr != rear.next);
-    	
-    	throw new NoSuchElementException(vertex.name);
-//    	if (ptr == rear.next && ptr.tree.getRoot() != vertex.getRoot())
-//    		throw new NoSuchElementException();
-//    	else
-//    	{
-//    		prv.next = ptr.next;
-//    	}
-    	 */
-    		
+    	//CIRCLE LISTT :DD
     	Node ptr = rear.next;
 		Node prev = rear;
 		if(ptr == prev) {
@@ -201,7 +169,7 @@ public class PartialTreeList implements Iterable<PartialTree> {
     public int size() {
     	return size;
     }
-    
+     
     /**
      * Returns an Iterator that can be used to step through the trees in this list.
      * The iterator does NOT support remove.

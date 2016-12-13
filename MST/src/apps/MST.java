@@ -86,8 +86,7 @@ public class MST {
 		PartialTreeList ptl = ptlist; // PTL = L
 		ArrayList<PartialTree.Arc> arrArc = new ArrayList<PartialTree.Arc>();
 		
-		
-		while(ptl.size() > 1)
+		for (int x = ptl.size(); ptl.size() > 1 ; x++)
 		{
 			//Step 3
 			PartialTree PTX = ptl.remove();  //firstPartialTree = ptx
@@ -107,11 +106,8 @@ public class MST {
 				MinHeap<Arc> minHeap = PTX.getArcs();
 				// sets up contains
 				for (PartialTree.Arc arc: minHeap)
-				{
-					if ((arc.v1.name).equals(PQX.v2.name))
+					if ((arc.v1.name).equals(v2.name))
 						PTXcontainsV2 = true;
-				}
-				
 				
 				
 				/**
@@ -124,12 +120,12 @@ public class MST {
 				{	
 					PQX = PTX.getArcs().deleteMin();
 				v2BelongsPTX = true;
-				//continue;
+				continue;
 				}
 				else
 				{
 					v2BelongsPTX = false;
-					//break;
+					break;
 				}
 					
 			} //end while v2Belong
@@ -141,6 +137,7 @@ public class MST {
 				//Step 7
 				 PTY = ptl.removeTreeContaining(PQX.v2);
 				//Step 8
+				 //PTY.merge(PTX)
 				PTX.merge(PTY);  //PTX + PTY
 				ptl.append(PTX);
 				//Add to list of arcs you need to return
@@ -148,14 +145,24 @@ public class MST {
 			}
 			catch (Exception e) {}
 			
-			
+			 
 			
 			
 			//Step 9 - repeats if theres more than 1 partial tree
 		}//end while
 			
 		
-		
+		//OUTPUT
+		  for (PartialTree pt : ptl) 
+		  { 
+			  System.out.println("PTL OUT : " + pt); 
+		  }
+		  
+		  for (int i = 0; i < arrArc.size(); i++)
+		  {
+			  System.out.println("ARC: "+ arrArc.get(i));
+		  }
+	
 		return arrArc;
 	}
 	
